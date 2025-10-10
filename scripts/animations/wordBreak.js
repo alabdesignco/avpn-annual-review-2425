@@ -1,4 +1,4 @@
-window.addEventListener("DOMContentLoaded", () => {
+export const initWordBreak = () => {
     const section = document.querySelector('.section_word-break');
     const text = document.querySelector('.section_word-break .word-break-text');
   
@@ -21,8 +21,6 @@ window.addEventListener("DOMContentLoaded", () => {
     });
   
     gsap.from(section, {
-      backgroundColor: "var(--color-scheme-1--background)",
-      color: "var(--color-scheme-1--text)",
       ease: "power1.out",
       scrollTrigger: {
         trigger: '.section_word-break .word-break_container',
@@ -46,4 +44,4 @@ window.addEventListener("DOMContentLoaded", () => {
         }
       });
     });
-});
+};
