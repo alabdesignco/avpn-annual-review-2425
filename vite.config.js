@@ -14,7 +14,7 @@ export default defineConfig({
     minify: true,                       // Minify via esbuild
     rollupOptions: {
       // ✅ Exclude vendor libraries loaded from CDN in Webflow
-      external: ['gsap', 'ScrollTrigger', 'Observer', 'Lenis', 'd3'],
+      external: ['gsap', 'ScrollTrigger', 'Observer', 'Lenis', 'd3', 'SplitText'],
       output: {
         globals: {
           gsap: 'gsap',
@@ -22,6 +22,7 @@ export default defineConfig({
           Observer: 'Observer',
           Lenis: 'Lenis',
           d3: 'd3',
+          SplitText: 'SplitText',
         },
       },
     },

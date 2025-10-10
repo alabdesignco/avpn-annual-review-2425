@@ -4,6 +4,7 @@ import { initHorizontalScroll } from './animations/horizontalScroll.js';
 import { initStickyTitleScroll } from './animations/stickyTitles.js';
 import { initCircularBarChart } from './animations/charts/circularBarChart.js';
 import { initTreeMapChart } from './animations/charts/treeMapChart.js';
+import { initStaggerColumns } from './animations/staggerColumns.js';
 
 gsap.registerPlugin(ScrollTrigger,Observer,SplitText);
 
@@ -15,4 +16,5 @@ document.addEventListener("DOMContentLoaded", () => {
   initStickyTitleScroll();
   initCircularBarChart();
   initTreeMapChart();
+  initStaggerColumns();
 });
