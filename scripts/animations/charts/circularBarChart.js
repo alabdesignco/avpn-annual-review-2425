@@ -1,0 +1,185 @@
+const initCircularBarChart = () => {
+  const data = [
+    { cause: "Education", count: 396, percent: 62.66 },
+    { cause: "Climate Action & Environment", count: 385, percent: 60.92 },
+    { cause: "Livelihood and Poverty Alleviation", count: 350, percent: 55.38 },
+    { cause: "Health", count: 333, percent: 52.69 },
+    { cause: "Employability", count: 243, percent: 38.45 },
+    { cause: "Gender", count: 260, percent: 41.14 },
+    { cause: "Financial Inclusion", count: 232, percent: 36.71 },
+    { cause: "Agriculture", count: 226, percent: 35.76 },
+    { cause: "Energy", count: 193, percent: 30.54 },
+    { cause: "Water & Sanitation & Hygiene", count: 185, percent: 29.27 },
+    { cause: "Nutrition", count: 143, percent: 22.63 },
+    { cause: "Arts & Culture", count: 132, percent: 20.89 },
+    { cause: "Governance", count: 130, percent: 20.57 },
+    { cause: "Conservation", count: 129, percent: 20.41 },
+    { cause: "Ageing", count: 109, percent: 17.25 },
+    { cause: "Affordable Housing", count: 105, percent: 16.61 }
+  ];
+
+  const getColor = (name) =>
+    getComputedStyle(document.documentElement)
+      .getPropertyValue(name)
+      .trim();
+
+  const colorMap = {
+    "Education": getColor("--color-education"),
+    "Climate Action & Environment": getColor("--color-climate"),
+    "Livelihood and Poverty Alleviation": getColor("--color-livelihood"),
+    "Health": getColor("--color-health"),
+    "Employability": getColor("--color-employability"),
+    "Gender": getColor("--color-gender"),
+    "Financial Inclusion": getColor("--color-financial-inclusion"),
+    "Agriculture": getColor("--color-agriculture"),
+    "Energy": getColor("--color-energy"),
+    "Water & Sanitation & Hygiene": getColor("--color-water"),
+    "Nutrition": getColor("--color-nutrition"),
+    "Arts & Culture": getColor("--color-arts"),
+    "Governance": getColor("--color-governance"),
+    "Conservation": getColor("--color-conservation"),
+    "Ageing": getColor("--color-aging"),
+    "Affordable Housing": getColor("--color-affordable-housing"),
+  };
+
+
+  const drawChart = () => {
+    const containerEl = document.querySelector(".supported-chart");
+    const size = containerEl.offsetWidth;
+    const width = size;
+    const height = size;
+    const innerRadius = size * 0.15;
+
+    d3.select(".supported-chart svg").remove();
+
+    const svg = d3.select(".supported-chart")
+      .append("svg")
+      .attr("viewBox", `0 0 ${width} ${height}`)
+      .attr("preserveAspectRatio", "xMidYMid meet")
+      .style("width", "100%")
+      .style("height", "100%")
+      .append("g")
+      .attr("transform", `translate(${width / 2},${height / 2})`);
+
+    const pie = d3.pie().sort(null).value(1);
+    const arc = d3.arc()
+      .innerRadius(innerRadius)
+      .outerRadius(d => innerRadius + (d.data.percent * size * 0.003))
+      .cornerRadius(10)
+      .padAngle(0.03);
+
+    const arcs = svg.selectAll("path")
+      .data(pie(data))
+      .enter()
+      .append("path")
+      .attr("fill", d => colorMap[d.data.cause] || "#ccc")
+      .attr("d", d3.arc().innerRadius(innerRadius).outerRadius(innerRadius))
+      .attr("stroke", "#fff")
+      .attr("stroke-width", 2)
+      .style("cursor", "pointer");
+
+    arcs.transition()
+      .delay((d, i) => i * 100)
+      .duration(800)
+      .ease(d3.easeCubicOut)
+      .attrTween("d", function(d) {
+        const i = d3.interpolate(innerRadius, innerRadius + (d.data.percent * size * 0.003));
+        return function(t) {
+          return d3.arc()
+            .innerRadius(innerRadius)
+            .outerRadius(i(t))
+            .cornerRadius(10)
+            .padAngle(0.03)(d);
+        };
+      });
+
+    const centerGroup = svg.append("g")
+      .attr("class", "supported-chart_center-text")
+      .style("pointer-events", "none");
+
+    centerGroup.append("text")
+      .attr("class", "center-cause")
+      .attr("y", -10)
+      .attr("opacity", 0)
+      .style("font-size", `${size * 0.018}px`)
+      .style("font-weight", "700")
+      .style("fill", "#000");
+
+    centerGroup.append("text")
+      .attr("class", "center-count")
+      .attr("y", size * 0.025)
+      .attr("opacity", 0)
+      .style("font-size", `${size * 0.014}px`)
+      .style("fill", "#000");
+
+    centerGroup.append("text")
+      .attr("class", "center-percent")
+      .attr("y", size * 0.05)
+      .attr("opacity", 0)
+      .style("font-size", `${size * 0.014}px`)
+      .style("font-weight", "700")
+      .style("fill", "#000");
+
+    arcs
+      .on("mouseover", function(event, d) {
+        svg.selectAll("path").transition().duration(200).style("opacity", 0.3);
+        d3.select(this).transition().duration(200).style("opacity", 1);
+
+        centerGroup.select(".center-cause")
+          .text(d.data.cause)
+          .transition().duration(200).style("opacity", 1);
+        centerGroup.select(".center-count")
+          .text(`Count: ${d.data.count}`)
+          .transition().duration(200).style("opacity", 1);
+        centerGroup.select(".center-percent")
+          .text(`${d.data.percent.toFixed(2)}%`)
+          .transition().duration(200).style("opacity", 1);
+      })
+      .on("mouseout", function() {
+        svg.selectAll("path").transition().duration(200).style("opacity", 1);
+        centerGroup.selectAll("text").transition().duration(200).style("opacity", 0);
+      });
+
+    document.querySelectorAll(".supported-chart_legend-color").forEach((el) => {
+      const index = parseInt(el.dataset.index);
+      const cause = data[index]?.cause;
+      if (!cause) return;
+
+      const color = colorMap[cause];
+      if (color) {
+        el.style.backgroundColor = color;
+      }
+    });
+
+    const slices = svg.selectAll("path");
+
+    document.querySelectorAll(".supported-chart_legend-item").forEach((item) => {
+      const index = parseInt(
+        item.querySelector(".supported-chart_legend-color").dataset.index
+      );
+
+      item.addEventListener("mouseenter", () => {
+        slices.transition().duration(200).style("opacity", 0.3);
+        d3.select(slices.nodes()[index]).transition().duration(200).style("opacity", 1);
+
+        const d = data[index];
+        centerGroup.select(".center-cause").text(d.cause)
+          .transition().duration(200).style("opacity", 1);
+        centerGroup.select(".center-count").text(`Count: ${d.count}`)
+          .transition().duration(200).style("opacity", 1);
+        centerGroup.select(".center-percent").text(`${d.percent.toFixed(2)}%`)
+          .transition().duration(200).style("opacity", 1);
+      });
+
+      item.addEventListener("mouseleave", () => {
+        slices.transition().duration(200).style("opacity", 1);
+        centerGroup.selectAll("text").transition().duration(200).style("opacity", 0);
+      });
+    });
+  };
+
+  drawChart();
+  window.addEventListener("resize", drawChart);
+};
+
+export { initCircularBarChart };
