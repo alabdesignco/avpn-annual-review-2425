@@ -16,11 +16,13 @@ The code is written in ES modules under `/scripts` and compiled into a single pr
 
 ### 1. Develop Locally
 Edit scripts under `scripts/`:
+```bash
 scripts/
 ├── animations/
 ├── utils/
 ├── config/
 └── main.js
+```
 
 Run Vite locally:
 ```bash
@@ -43,9 +45,11 @@ git push
 
 ### 4. Load in Webflow (via jsDelivr CDN)
 Production:
+```html
 <script src="https://cdn.jsdelivr.net/gh/alabdesignco/avpn/dist/bundle.min.js"></script>
-
+```
 Development / QA:
+```html
 <script src="https://cdn.jsdelivr.net/gh/alabdesignco/avpn@dev/dist/bundle.min.js"></script>
 
 ### 5. Versioning
@@ -56,21 +60,26 @@ git push origin v1.0.0
 ```
 
 Use versioned CDN links for stability:
+```html
 <script src="https://cdn.jsdelivr.net/gh/alabdesignco/avpn@v1.0.0/dist/bundle.min.js"></script>
+```
 
 ---
 
 ## Libraries (Loaded via CDN in Webflow)
 These vendor dependencies are loaded directly inside Webflow’s Before  section and excluded from the bundle:
+```html
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/Observer.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@studio-freight/lenis@1.0.33/dist/lenis.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/d3@7.8.5/dist/d3.min.js"></script>
+```
 
 ---
 
 ## Folder Structure
+```bash
 avpn/
 ├── dist/                     # Compiled bundle for Webflow
 │   └── bundle.min.js
@@ -83,6 +92,7 @@ avpn/
 ├── package.json              # Scripts & dependencies
 ├── .gitignore
 └── README.md
+```
 
 ---
 
