@@ -93,30 +93,6 @@ class Grid {
   }
 
   addEvents() {
-    window.addEventListener("wheel", (e) => {
-      e.preventDefault()
-
-      const deltaX = -e.deltaX * 7
-      const deltaY = -e.deltaY * 7
-
-      const currentX = gsap.getProperty(this.grid, "x")
-      const currentY = gsap.getProperty(this.grid, "y")
-
-      const newX = currentX + deltaX
-      const newY = currentY + deltaY
-
-      const bounds = this.draggable.vars.bounds
-      const clampedX = Math.max(bounds.minX, Math.min(bounds.maxX, newX))
-      const clampedY = Math.max(bounds.minY, Math.min(bounds.maxY, newY))
-
-      gsap.to(this.grid, {
-        x: clampedX,
-        y: clampedY,
-        duration: 0.3,
-        ease: "power3.out"
-      })
-    }, { passive: false })
-
     window.addEventListener("resize", () => {
       this.updateBounds()
     })
