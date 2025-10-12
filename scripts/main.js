@@ -1,13 +1,14 @@
 import { smoothScroll } from './utils/smooth-scroll.js';
-import { initInfiniteCanvas } from './animations/infiniteCanvas.js';
+import initInfiniteCanvas from './animations/infiniteCanvas.js';
 import { initHorizontalScroll } from './animations/horizontalScroll.js';
 import { initStickyTitleScroll } from './animations/stickyTitles.js';
 import { initCircularBarChart } from './animations/charts/circularBarChart.js';
 import { initTreeMapChart } from './animations/charts/treeMapChart.js';
 import { initStaggerColumns } from './animations/staggerColumns.js';
 import { initWordBreak } from './animations/wordBreak.js';
-
-gsap.registerPlugin(ScrollTrigger,Observer,SplitText);
+import { initHighlightText } from './animations/highlightText.js';
+  
+gsap.registerPlugin(ScrollTrigger,Observer,SplitText,Draggable);
 
 smoothScroll();
 
@@ -19,4 +20,5 @@ document.addEventListener("DOMContentLoaded", () => {
   initTreeMapChart();
   initStaggerColumns();
   initWordBreak();
+  initHighlightText();
 });
