@@ -1,19 +1,19 @@
 import { defineConfig } from 'vite'
 import { resolve } from 'path'
+import { viteStaticCopy } from 'vite-plugin-static-copy'
 
 export default defineConfig({
   build: {
     lib: {
       entry: resolve(__dirname, 'scripts/main.js'),
-      formats: ['iife'],                // Self-executing bundle for Webflow
-      name: 'avpnScript',               // Global variable accessible in browser
-      fileName: () => 'bundle.min.js'   // Output file name
+      formats: ['iife'],
+      name: 'avpnScript',
+      fileName: () => 'bundle.min.js',
     },
-    outDir: 'dist',                     // Output folder
-    emptyOutDir: true,                  // Clears dist on each build
-    minify: true,                       // Minify via esbuild
+    outDir: 'dist',
+    emptyOutDir: true,
+    minify: true,
     rollupOptions: {
-      // ✅ Exclude vendor libraries loaded from CDN in Webflow
       external: ['gsap', 'ScrollTrigger', 'Observer', 'Lenis', 'd3', 'SplitText'],
       output: {
         globals: {
@@ -27,4 +27,15 @@ export default defineConfig({
       },
     },
   },
+  plugins: [
+    // 👇 This copies index.html to /dist after each build
+    viteStaticCopy({
+      targets: [
+        {
+          src: 'index.html',
+          dest: '.', // copy into dist/
+        },
+      ],
+    }),
+  ],
 })
