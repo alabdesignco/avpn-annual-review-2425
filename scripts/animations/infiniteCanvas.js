@@ -11,6 +11,7 @@ class Grid {
     this.products = [...document.querySelectorAll(".home-header_image-wrapper")]
     this.heading = document.querySelector(".home-header_heading")
     this.navbar = document.querySelector(".navbar_component")
+    this.taglines = [...document.querySelectorAll(".tagline")]
 
     this.isDragging = false
   }
@@ -30,6 +31,12 @@ class Grid {
       scale: 0.5,
       opacity: 0,
     })
+    if (this.taglines.length > 0) {
+      timeline.set(this.taglines, {
+        yPercent: 100,
+        autoAlpha: 0,
+      })
+    }
     timeline.set(this.navbar, {
       y: -100,
       autoAlpha: 0
@@ -42,6 +49,15 @@ class Grid {
       ease: "expo.inOut",
       stagger: 0.02
     })
+    if (this.taglines.length > 0) {
+      timeline.from(this.taglines, {
+        yPercent: 100,
+        autoAlpha: 0,
+        duration: 0.8,
+        ease: "expo.out",
+        stagger: 0.15
+      }, "-=1.5")
+    }
 
     timeline.to(this.products, {
       scale: 1,
@@ -79,6 +95,7 @@ class Grid {
       mask: "chars"
     })
     this.headingChars = this.splitText.chars
+
   }
 
   centerGrid() {
