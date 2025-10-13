@@ -130,32 +130,24 @@
     <div class="section">
       <h2>📋 Quick Start Guide</h2>
       
-      <p><strong>Step 1:</strong> Add required dependencies to your Webflow project</p>
-      <p style="color: #666; margin-top: 0.5rem;">Add these script tags in <strong>Project Settings → Custom Code → Head Code</strong></p>
+      <p><strong>Step 1:</strong> Ensure required libraries are loaded in your Webflow project</p>
+      <p style="color: #666; margin-top: 0.5rem;">The bundle requires the following libraries to be available globally:</p>
       
-      <pre><code>&lt;!-- GSAP Core + Plugins --&gt;
-&lt;script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"&gt;&lt;/script&gt;
-&lt;script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"&gt;&lt;/script&gt;
-&lt;script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/Observer.min.js"&gt;&lt;/script&gt;
-&lt;script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/Draggable.min.js"&gt;&lt;/script&gt;
-&lt;script src="https://unpkg.com/split-type"&gt;&lt;/script&gt;
+      <div class="deps-list" style="margin-top: 1rem;">
+        <div class="dep-item">GSAP (with ScrollTrigger, Observer, Draggable plugins)</div>
+        <div class="dep-item">SplitText (or split-type alternative)</div>
+        <div class="dep-item">Lenis (smooth scroll)</div>
+        <div class="dep-item">D3.js (for chart visualizations)</div>
+        <div class="dep-item">imagesLoaded</div>
+      </div>
 
-&lt;!-- Smooth Scroll --&gt;
-&lt;script src="https://cdn.jsdelivr.net/npm/lenis@1.1.13/dist/lenis.min.js"&gt;&lt;/script&gt;
-
-&lt;!-- D3.js for Charts --&gt;
-&lt;script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"&gt;&lt;/script&gt;
-
-&lt;!-- imagesLoaded --&gt;
-&lt;script src="https://unpkg.com/imagesloaded@5/imagesloaded.pkgd.min.js"&gt;&lt;/script&gt;</code></pre>
-
-      <p><strong>Step 2:</strong> Add the animation bundle</p>
-      <p style="color: #666; margin-top: 0.5rem;">Add this script tag in <strong>Project Settings → Custom Code → Footer Code</strong></p>
+      <p style="margin-top: 1.5rem;"><strong>Step 2:</strong> Add the animation bundle</p>
+      <p style="color: #666; margin-top: 0.5rem;">Load the bundle after all dependencies in <strong>Project Settings → Custom Code → Footer Code</strong></p>
       
       <pre><code>&lt;script src="<span id="bundleUrl">https://your-vercel-url.vercel.app/bundle.min.js</span>"&gt;&lt;/script&gt;</code></pre>
 
       <div class="warning">
-        ⚠️ <strong>Important:</strong> Load dependencies in the correct order. The bundle will fail if libraries aren't available globally.
+        ⚠️ <strong>Important:</strong> The bundle expects all dependencies to be loaded before it executes.
       </div>
     </div>
 
