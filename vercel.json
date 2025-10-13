@@ -2,11 +2,24 @@
   "outputDirectory": "dist",
   "headers": [
     {
-      "source": "/(.*\\.(js|css|json|txt|xml|svg|png|jpg|jpeg|gif|webp|ico))",
+      "source": "/bundle.min.js",
       "headers": [
         {
           "key": "Cache-Control",
           "value": "public, max-age=31536000, immutable"
+        },
+        {
+          "key": "Content-Type",
+          "value": "application/javascript"
+        }
+      ]
+    },
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=0, must-revalidate"
         }
       ]
     }
