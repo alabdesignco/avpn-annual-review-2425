@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AVPN Animation Bundle</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        line-height: 1.6;
+        color: #002943;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 2rem;
+      }
+      .header {
+        text-align: center;
+        margin-bottom: 3rem;
+        padding: 2rem 0;
+        border-bottom: 2px solid #00B3AD;
+      }
+      h1 {
+        color: #002943;
+        margin-bottom: 0.5rem;
+      }
+      .subtitle {
+        color: #666;
+        font-size: 1.1rem;
+      }
+      .actions {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        margin: 2rem 0;
+      }
+      .btn {
+        padding: 0.75rem 1.5rem;
+        border-radius: 6px;
+        text-decoration: none;
+        font-weight: 600;
+        transition: transform 0.2s, box-shadow 0.2s;
+        display: inline-block;
+        cursor: pointer;
+        border: none;
+        font-size: 1rem;
+      }
+      .btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      }
+      .btn-primary {
+        background: #002943;
+        color: white;
+      }
+      .btn-secondary {
+        background: #00B3AD;
+        color: white;
+      }
+      .section {
+        background: #f8f9fa;
+        padding: 2rem;
+        border-radius: 8px;
+        margin: 2rem 0;
+      }
+      h2 {
+        color: #002943;
+        margin-bottom: 1rem;
+      }
+      pre {
+        background: white;
+        padding: 1.5rem;
+        border-radius: 6px;
+        overflow-x: auto;
+        margin: 1rem 0;
+        border: 1px solid #e0e0e0;
+      }
+      code {
+        font-family: 'Monaco', 'Courier New', monospace;
+        font-size: 0.9rem;
+      }
+      .warning {
+        background: #fff3cd;
+        border-left: 4px solid #ffc107;
+        padding: 1rem;
+        margin: 1rem 0;
+        border-radius: 4px;
+      }
+      .info {
+        background: #d1ecf1;
+        border-left: 4px solid #0dcaf0;
+        padding: 1rem;
+        margin: 1rem 0;
+        border-radius: 4px;
+      }
+      #codeViewer {
+        max-height: 60vh;
+        display: none;
+      }
+      .deps-list {
+        display: grid;
+        gap: 0.5rem;
+        margin: 1rem 0;
+      }
+      .dep-item {
+        background: white;
+        padding: 0.75rem;
+        border-radius: 4px;
+        border-left: 3px solid #00B3AD;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="header">
+      <h1>✨ AVPN Animation Bundle</h1>
+      <p class="subtitle">Production-ready GSAP animations for Webflow</p>
+    </div>
+
+    <div class="actions">
+      <a href="./bundle.min.js" download class="btn btn-primary">📥 Download Bundle</a>
+      <button onclick="viewCode()" class="btn btn-secondary">👁️ View Source</button>
+    </div>
+
+    <pre id="codeViewer"><code></code></pre>
+
+    <div class="section">
+      <h2>📋 Quick Start Guide</h2>
+      
+      <p><strong>Step 1:</strong> Add required dependencies to your Webflow project</p>
+      <p style="color: #666; margin-top: 0.5rem;">Add these script tags in <strong>Project Settings → Custom Code → Head Code</strong></p>
+      
+      <pre><code>&lt;!-- GSAP Core + Plugins --&gt;
+&lt;script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"&gt;&lt;/script&gt;
+&lt;script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"&gt;&lt;/script&gt;
+&lt;script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/Observer.min.js"&gt;&lt;/script&gt;
+&lt;script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/Draggable.min.js"&gt;&lt;/script&gt;
+&lt;script src="https://unpkg.com/split-type"&gt;&lt;/script&gt;
+
+&lt;!-- Smooth Scroll --&gt;
+&lt;script src="https://cdn.jsdelivr.net/npm/lenis@1.1.13/dist/lenis.min.js"&gt;&lt;/script&gt;
+
+&lt;!-- D3.js for Charts --&gt;
+&lt;script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"&gt;&lt;/script&gt;
+
+&lt;!-- imagesLoaded --&gt;
+&lt;script src="https://unpkg.com/imagesloaded@5/imagesloaded.pkgd.min.js"&gt;&lt;/script&gt;</code></pre>
+
+      <p><strong>Step 2:</strong> Add the animation bundle</p>
+      <p style="color: #666; margin-top: 0.5rem;">Add this script tag in <strong>Project Settings → Custom Code → Footer Code</strong></p>
+      
+      <pre><code>&lt;script src="<span id="bundleUrl">https://your-vercel-url.vercel.app/bundle.min.js</span>"&gt;&lt;/script&gt;</code></pre>
+
+      <div class="warning">
+        ⚠️ <strong>Important:</strong> Load dependencies in the correct order. The bundle will fail if libraries aren't available globally.
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>🎨 Included Animations</h2>
+      
+      <div class="deps-list">
+        <div class="dep-item"><strong>Infinite Canvas</strong> - Draggable grid with intersection observer effects</div>
+        <div class="dep-item"><strong>Horizontal Scroll</strong> - Smooth horizontal scrolling sections</div>
+        <div class="dep-item"><strong>Sticky Titles</strong> - Animated sticky heading transitions with SplitText</div>
+        <div class="dep-item"><strong>Circular Bar Chart</strong> - Interactive D3.js donut chart visualization</div>
+        <div class="dep-item"><strong>Tree Map Chart</strong> - D3.js hierarchical treemap visualization</div>
+        <div class="dep-item"><strong>Stagger Columns</strong> - Scroll-triggered column stagger animations</div>
+        <div class="dep-item"><strong>Word Break</strong> - Dynamic word break with elastic animations</div>
+        <div class="dep-item"><strong>Highlight Text</strong> - Scroll-based text highlighting effect</div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>🔧 Troubleshooting</h2>
+      
+      <p><strong>Bundle not working?</strong></p>
+      <ul style="margin-left: 2rem; margin-top: 1rem;">
+        <li>Check browser console for errors</li>
+        <li>Verify all dependencies loaded before the bundle</li>
+        <li>Ensure HTML structure matches animation selectors</li>
+        <li>Confirm CDN links are accessible</li>
+      </ul>
+
+      <div class="info" style="margin-top: 1rem;">
+        💡 <strong>Tip:</strong> Open browser DevTools (F12) and check the Console tab for any error messages
+      </div>
+    </div>
+
+    <script>
+      // Update bundle URL with current domain
+      const bundleUrl = document.getElementById('bundleUrl');
+      if (bundleUrl && window.location.hostname !== 'localhost') {
+        bundleUrl.textContent = window.location.origin + '/bundle.min.js';
+      }
+
+      // Code viewer toggle
+      async function viewCode() {
+        const viewer = document.getElementById('codeViewer');
+        const code = viewer.querySelector('code');
+        
+        if (viewer.style.display === 'none') {
+          try {
+            const response = await fetch('./bundle.min.js');
+            const text = await response.text();
+            code.textContent = text;
+            viewer.style.display = 'block';
+            viewer.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+          } catch (error) {
+            code.textContent = 'Error loading bundle: ' + error.message;
+            viewer.style.display = 'block';
+          }
+        } else {
+          viewer.style.display = 'none';
+        }
+      }
+    </script>
+  </body>
+</html>
+
