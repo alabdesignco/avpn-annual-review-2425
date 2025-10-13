@@ -14,7 +14,7 @@ export default defineConfig({
     emptyOutDir: true,
     minify: true,
     rollupOptions: {
-      external: ['gsap', 'ScrollTrigger', 'Observer', 'Lenis', 'd3', 'SplitText'],
+      external: ['gsap', 'ScrollTrigger', 'Observer', 'Lenis', 'd3', 'SplitText', 'Draggable', 'imagesLoaded'],
       output: {
         globals: {
           gsap: 'gsap',
@@ -23,6 +23,8 @@ export default defineConfig({
           Lenis: 'Lenis',
           d3: 'd3',
           SplitText: 'SplitText',
+          Draggable: 'Draggable',
+          imagesLoaded: 'imagesLoaded',
         },
       },
     },
