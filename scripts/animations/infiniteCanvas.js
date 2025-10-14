@@ -32,6 +32,7 @@ class Grid {
     timeline.set(this.products, {
       scale: 0.5,
       opacity: 0,
+      filter: "blur(4px)"
     })
     if (this.taglines.length > 0) {
       timeline.set(this.taglines, {
@@ -64,6 +65,7 @@ class Grid {
     timeline.to(this.products, {
       scale: 1,
       opacity: 1,
+      filter: "blur(0px)",
       duration: 0.6,
       ease: "power3.out",
       stagger: {
@@ -190,6 +192,7 @@ class Grid {
           gsap.to(entry.target, {
             scale: 1,
             opacity: 1,
+            filter: "blur(0px)",
             duration: 0.5,
             ease: "power2.out"
           })
@@ -197,6 +200,7 @@ class Grid {
           gsap.to(entry.target, {
             opacity: 0,
             scale: 0.5,
+            filter: "blur(4px)",
             duration: 0.5,
             ease: "power2.in"
           })
