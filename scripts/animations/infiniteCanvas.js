@@ -14,6 +14,8 @@ class Grid {
     this.taglines = [...document.querySelectorAll(".tagline")]
 
     this.isDragging = false
+    this.baseX = 0
+    this.baseY = 0
   }
 
   init() {
@@ -111,6 +113,9 @@ class Grid {
       x: centerX,
       y: centerY
     })
+    
+    this.baseX = centerX
+    this.baseY = centerY
   }
 
   setupDraggable() {
@@ -131,6 +136,12 @@ class Grid {
       onDragStart: () => {
         this.isDragging = true
         this.grid.classList.add("--is-dragging")
+        gsap.killTweensOf(this.grid)
+      },
+
+      onDrag: () => {
+        this.baseX = this.draggable.x
+        this.baseY = this.draggable.y
       },
 
       onDragEnd: () => {
@@ -143,6 +154,21 @@ class Grid {
   addEvents() {
     window.addEventListener("resize", () => {
       this.updateBounds()
+    })
+
+    this.dom.addEventListener("mousemove", (e) => {
+      if (this.isDragging) return
+      
+      const offsetX = (e.clientX / window.innerWidth - 0.5) * 30
+      const offsetY = (e.clientY / window.innerHeight - 0.5) * 30
+      
+      gsap.to(this.grid, {
+        x: this.baseX + offsetX,
+        y: this.baseY + offsetY,
+        duration: 0.8,
+        ease: "power2.out",
+        overwrite: "auto"
+      })
     })
   }
 
