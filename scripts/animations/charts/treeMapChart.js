@@ -57,7 +57,8 @@ const initTreeMapChart = () => {
     .data(root.leaves())
     .join("g")
     .attr("transform", d => `translate(${d.x0},${d.y0})`)
-    .style("cursor", "pointer");
+    .style("cursor", "pointer")
+    .style("opacity", 0);
 
   const getTextColor = (hex) => {
     const c = d3.color(hex);
@@ -74,7 +75,7 @@ const initTreeMapChart = () => {
       const y = text.attr("y");
       let tspan = text.text(null)
         .append("tspan")
-        .attr("x", 10)
+        .attr("x", 16)
         .attr("y", y);
       while ((word = words.pop())) {
         line.push(word);
@@ -84,7 +85,7 @@ const initTreeMapChart = () => {
           tspan.text(line.join(" "));
           line = [word];
           tspan = text.append("tspan")
-            .attr("x", 10)
+            .attr("x", 16)
             .attr("y", y)
             .attr("dy", `${++lineNumber * lineHeight}em`)
             .text(word);
@@ -100,45 +101,73 @@ const initTreeMapChart = () => {
     const boxW = d.x1 - d.x0;
     const boxH = d.y1 - d.y0;
 
-    g.append("rect")
+    const rect = g.append("rect")
       .attr("fill", fill)
       .attr("rx", 10)
       .attr("ry", 10)
       .attr("width", boxW)
       .attr("height", boxH)
-      .style("transition", "transform 0.25s ease, filter 0.25s ease")
-      .style("filter", "drop-shadow(0 1px 2px rgba(0,0,0,0.05))");
+      .style("filter", "drop-shadow(0 1px 2px rgba(0,0,0,0.05))")
+      .style("transform-origin", `${boxW / 2}px ${boxH / 2}px`);
+
+    gsap.set(rect.node(), { scale: 1 });
 
     g.on("mouseenter", () => {
-      g.raise()
-       .select("rect")
-       .style("transform", "scale(1.05)")
-       .style("filter", "drop-shadow(0 4px 8px rgba(0,0,0,0.15))");
+      g.raise();
+      gsap.to(rect.node(), {
+        scale: 1.05,
+        duration: 0.25,
+        ease: "power2.out"
+      });
+      gsap.to(rect.node(), {
+        filter: "drop-shadow(0 4px 8px rgba(0,0,0,0.15))",
+        duration: 0.25,
+        ease: "power2.out"
+      });
     }).on("mouseleave", () => {
-      g.select("rect")
-       .style("transform", "scale(1)")
-       .style("filter", "drop-shadow(0 1px 2px rgba(0,0,0,0.05))");
+      gsap.to(rect.node(), {
+        scale: 1,
+        duration: 0.25,
+        ease: "power2.out"
+      });
+      gsap.to(rect.node(), {
+        filter: "drop-shadow(0 1px 2px rgba(0,0,0,0.05))",
+        duration: 0.25,
+        ease: "power2.out"
+      });
     });
 
     const label = g.append("text")
-      .attr("x", 10)
-      .attr("y", 20)
+      .attr("x", 16)
+      .attr("y", 24)
       .attr("fill", textColor)
-      .attr("font-size", "13px")
+      .attr("font-size", "16px")
       .attr("font-weight", 600)
       .text(d.data.name)
-      .call(wrap, boxW - 16);
+      .call(wrap, boxW - 32);
 
     if (label.node().getBBox().height > boxH * 0.6) label.style("display","none");
 
     if (boxH > 40 && boxW > 80) {
       g.append("text")
-        .attr("x", boxW - 10)
-        .attr("y", boxH - 10)
+        .attr("x", boxW - 16)
+        .attr("y", boxH - 12)
         .attr("text-anchor", "end")
         .attr("fill", textColor)
         .attr("font-size", "12px")
         .text(`${d.data.percent.toFixed(2)}%`);
+    }
+  });
+
+  gsap.to(leaf.nodes(), {
+    opacity: 1,
+    duration: 0.6,
+    ease: "power2.out",
+    stagger: 0.08,
+    scrollTrigger: {
+      trigger: container,
+      start: "top 80%",
+      toggleActions: "play none none none"
     }
   });
 };
