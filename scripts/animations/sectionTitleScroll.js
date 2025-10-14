@@ -8,7 +8,7 @@ const initSectionTitleScroll = () => {
     
     if (!accentShape1 || !accentShape2 || !titleText) return;
     
-    const split = new SplitText(titleText, { type: "chars" });
+    const split = new SplitText(titleText, { type: "chars", mask:'chars' });
     
     gsap.set([accentShape1, accentShape2], { 
       scale: 0,
@@ -25,8 +25,7 @@ const initSectionTitleScroll = () => {
       scrollTrigger: {
         trigger: title,
         start: "top 80%",
-        end: "bottom 20%",
-        toggleActions: "play none none reverse"
+        end: "bottom 20%"
       }
     });
     
