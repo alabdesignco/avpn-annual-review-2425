@@ -24,7 +24,7 @@ const initHorizontalScroll = () => {
     const headerTl = gsap.timeline({
       scrollTrigger: {
         trigger: headerImageWrapper || wrap,
-        start: "top 80%",
+        start: "top 60%",
       }
     });
 

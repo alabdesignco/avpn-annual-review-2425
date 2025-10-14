@@ -1,4 +1,5 @@
 import { smoothScroll } from './utils/smooth-scroll.js';
+import { initModalBasic } from './utils/modalInit.js';
 import initInfiniteCanvas from './animations/infiniteCanvas.js';
 import { initHorizontalScroll } from './animations/horizontalScroll.js';
 import { initStickyTitleScroll } from './animations/stickyTitles.js';
@@ -15,6 +16,7 @@ gsap.registerPlugin(ScrollTrigger,Observer,SplitText,Draggable);
 smoothScroll();
 
 document.addEventListener("DOMContentLoaded", () => {
+  initModalBasic();
   initInfiniteCanvas();
   initHorizontalScroll();
   initStickyTitleScroll();

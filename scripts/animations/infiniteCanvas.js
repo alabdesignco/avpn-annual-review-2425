@@ -109,7 +109,7 @@ class Grid {
     const windowHeight = window.innerHeight
 
     const centerX = (windowWidth - gridWidth) / 2
-    const centerY = (windowHeight - gridHeight) / 2
+    const centerY = (windowHeight - gridHeight) / 2 - (windowWidth * 0.12)
 
     gsap.set(this.grid, {
       x: centerX,

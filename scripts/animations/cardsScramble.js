@@ -18,6 +18,8 @@ const initCardsScramble = () => {
     });
     
     const resetPortion = (index) => {
+        gsap.set(cards[index], { zIndex: 'auto' });
+        
         gsap.to(cards[index], {
             xPercent: (Math.random() - 0.5) * 10,
             yPercent: (Math.random() - 0.5) * 10,
@@ -29,6 +31,10 @@ const initCardsScramble = () => {
     };
     
     const newPortion = (i) => {
+        cards.forEach((card, index) => {
+            gsap.set(card, { zIndex: index === i ? 20 : 'auto' });
+        });
+        
         gsap.to(cards[i], {
             xPercent: 0,
             yPercent: 0,
