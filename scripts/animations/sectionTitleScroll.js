@@ -43,7 +43,7 @@ const initSectionTitleScroll = () => {
     .to(split.chars, {
       autoAlpha: 1,
       y: 0,
-      duration: 0.7,
+      duration: 0.5,
       stagger: 0.04,
       ease: "power2.out"
     }, "-=0.2");
