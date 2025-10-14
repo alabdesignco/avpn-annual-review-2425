@@ -64,7 +64,7 @@ const initCircularBarChart = () => {
     const pie = d3.pie().sort(null).value(1);
     const arc = d3.arc()
       .innerRadius(innerRadius)
-      .outerRadius(d => innerRadius + (d.data.percent * size * 0.003))
+      .outerRadius(d => innerRadius + (d.data.percent * size * 0.0045))
       .cornerRadius(10)
       .padAngle(0.03);
 
@@ -84,7 +84,7 @@ const initCircularBarChart = () => {
         .duration(800)
         .ease(d3.easeCubicOut)
         .attrTween("d", function(d) {
-          const i = d3.interpolate(innerRadius, innerRadius + (d.data.percent * size * 0.003));
+          const i = d3.interpolate(innerRadius, innerRadius + (d.data.percent * size * 0.0045));
           return function(t) {
             return d3.arc()
               .innerRadius(innerRadius)
@@ -103,41 +103,77 @@ const initCircularBarChart = () => {
       }
     }).add(() => animateBars());
 
+    const wrapText = (text, maxWidth) => {
+      const words = text.split(/\s+/);
+      
+      if (words.length <= 2) {
+        return [text];
+      }
+      
+      const metrics = document.createElement("canvas").getContext("2d");
+      metrics.font = `700 ${size * 0.020}px sans-serif`;
+      
+      let midPoint = Math.ceil(words.length / 2);
+      let line1 = words.slice(0, midPoint).join(" ");
+      let line2 = words.slice(midPoint).join(" ");
+      
+      while (midPoint > 1 && (metrics.measureText(line1).width > maxWidth || metrics.measureText(line2).width > maxWidth)) {
+        midPoint--;
+        line1 = words.slice(0, midPoint).join(" ");
+        line2 = words.slice(midPoint).join(" ");
+      }
+      
+      return [line1, line2];
+    };
+
     const centerGroup = svg.append("g")
       .attr("class", "supported-chart_center-text")
       .style("pointer-events", "none");
 
-    centerGroup.append("text")
+    const centerCause = centerGroup.append("text")
       .attr("class", "center-cause")
-      .attr("y", -10)
       .attr("opacity", 0)
-      .style("font-size", `${size * 0.018}px`)
+      .style("font-size", `${size * 0.020}px`)
       .style("font-weight", "700")
-      .style("fill", "#000");
+      .style("fill", "var(--color-scheme-1--text)")
+      .style("text-anchor", "middle");
 
     centerGroup.append("text")
       .attr("class", "center-count")
-      .attr("y", size * 0.025)
+      .attr("y", size * 0.015)
       .attr("opacity", 0)
-      .style("font-size", `${size * 0.014}px`)
-      .style("fill", "#000");
+      .style("font-size", `${size * 0.018}px`)
+      .style("fill", "var(--_primitives---brand--primary--navy-medium)")
+      .style("text-anchor", "middle");
 
     centerGroup.append("text")
       .attr("class", "center-percent")
-      .attr("y", size * 0.05)
+      .attr("y", size * 0.035)
       .attr("opacity", 0)
-      .style("font-size", `${size * 0.014}px`)
+      .style("font-size", `${size * 0.018}px`)
       .style("font-weight", "700")
-      .style("fill", "#000");
+      .style("fill", "var(--_primitives---brand--primary--navy-medium)")
+      .style("text-anchor", "middle");
 
     arcs
       .on("mouseover", function(event, d) {
         svg.selectAll("path").transition().duration(200).style("opacity", 0.3);
         d3.select(this).transition().duration(200).style("opacity", 1);
 
-        centerGroup.select(".center-cause")
-          .text(d.data.cause)
-          .transition().duration(200).style("opacity", 1);
+        const lines = wrapText(d.data.cause, innerRadius * 1.8);
+        const lineHeight = size * 0.02;
+        const bottomMargin = lines.length > 1 ? size * 0.008 : 0;
+        const startY = -(lines.length - 1) * lineHeight / 2 - size * 0.01 - bottomMargin;
+
+        centerCause.selectAll("*").remove();
+        lines.forEach((line, i) => {
+          centerCause.append("tspan")
+            .attr("x", 0)
+            .attr("dy", i === 0 ? 0 : lineHeight)
+            .text(line);
+        });
+        centerCause.attr("y", startY).transition().duration(200).style("opacity", 1);
+
         centerGroup.select(".center-count")
           .text(`Count: ${d.data.count}`)
           .transition().duration(200).style("opacity", 1);
@@ -173,8 +209,20 @@ const initCircularBarChart = () => {
         d3.select(slices.nodes()[index]).transition().duration(200).style("opacity", 1);
 
         const d = data[index];
-        centerGroup.select(".center-cause").text(d.cause)
-          .transition().duration(200).style("opacity", 1);
+        const lines = wrapText(d.cause, innerRadius * 1.8);
+        const lineHeight = size * 0.02;
+        const bottomMargin = lines.length > 1 ? size * 0.008 : 0;
+        const startY = -(lines.length - 1) * lineHeight / 2 - size * 0.01 - bottomMargin;
+
+        centerCause.selectAll("*").remove();
+        lines.forEach((line, i) => {
+          centerCause.append("tspan")
+            .attr("x", 0)
+            .attr("dy", i === 0 ? 0 : lineHeight)
+            .text(line);
+        });
+        centerCause.attr("y", startY).transition().duration(200).style("opacity", 1);
+
         centerGroup.select(".center-count").text(`Count: ${d.count}`)
           .transition().duration(200).style("opacity", 1);
         centerGroup.select(".center-percent").text(`${d.percent.toFixed(2)}%`)
