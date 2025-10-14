@@ -1,6 +1,7 @@
 const initHorizontalScroll = () => {
   document.querySelectorAll(".horizontal-scroll-section_wrapper").forEach((wrap) => {
     const track = wrap.querySelector(".horizontal-scroll-section_track");
+    const headerImageWrapper = wrap.querySelector(".foreword-header_image-wrapper");
     const headerImage = wrap.querySelector(".foreword-header_image");
     const headerAccent1 = wrap.querySelector(".foreword-header_accent.is-1");
     const headerAccent2 = wrap.querySelector(".foreword-header_accent.is-2");
@@ -22,7 +23,7 @@ const initHorizontalScroll = () => {
 
     const headerTl = gsap.timeline({
       scrollTrigger: {
-        trigger: wrap,
+        trigger: headerImageWrapper || wrap,
         start: "top 80%",
       }
     });
