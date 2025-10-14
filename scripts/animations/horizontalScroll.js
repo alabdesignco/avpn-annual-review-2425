@@ -20,6 +20,17 @@ const initHorizontalScroll = () => {
     if (headerAccent1) gsap.set(headerAccent1, { scale: 0, transformOrigin: "center" });
     if (headerAccent2) gsap.set(headerAccent2, { scale: 0, transformOrigin: "center" });
 
+    const headerTl = gsap.timeline({
+      scrollTrigger: {
+        trigger: wrap,
+        start: "top 80%",
+      }
+    });
+
+    if (headerImage) headerTl.to(headerImage, { opacity: 1, duration: 0.6 }, 0);
+    if (headerAccent1) headerTl.to(headerAccent1, { scale: 1, duration: 0.8, ease: "back.out(1.7)" }, 0);
+    if (headerAccent2) headerTl.to(headerAccent2, { scale: 1, duration: 0.8, ease: "back.out(1.7)" }, 0.15);
+
     const tl = gsap.timeline({
       scrollTrigger: {
         trigger: wrap,
@@ -29,10 +40,6 @@ const initHorizontalScroll = () => {
       },
       defaults: { ease: "power2.out" },
     });
-
-    if (headerImage) tl.to(headerImage, { opacity: 1, duration: 0.3 }, 0);
-    if (headerAccent1) tl.to(headerAccent1, { scale: 1, duration: 0.3, ease: "back.out(1.7)" }, 0);
-    if (headerAccent2) tl.to(headerAccent2, { scale: 1, duration: 0.3, ease: "back.out(1.7)" }, 0.1);
 
     tl.to(track, { xPercent: -100, ease: "none" }, 0);
 
