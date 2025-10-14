@@ -29,8 +29,8 @@ const initHorizontalScroll = () => {
     });
 
     if (headerImage) headerTl.to(headerImage, { opacity: 1, duration: 0.6 }, 0);
-    if (headerAccent1) headerTl.to(headerAccent1, { scale: 1, duration: 0.8, ease: "back.out(1.7)" }, 0);
-    if (headerAccent2) headerTl.to(headerAccent2, { scale: 1, duration: 0.8, ease: "back.out(1.7)" }, 0.15);
+    if (headerAccent1) headerTl.to(headerAccent1, { scale: 1, duration: 0.8, ease: "back.out(1.7)" }, 0.6);
+    if (headerAccent2) headerTl.to(headerAccent2, { scale: 1, duration: 0.8, ease: "back.out(1.7)" }, 0.7);
 
     const tl = gsap.timeline({
       scrollTrigger: {
