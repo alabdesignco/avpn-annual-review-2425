@@ -13,8 +13,6 @@ const initHorizontalScroll = () => {
     ScrollTrigger.refresh();
     window.addEventListener("resize", setScrollDistance);
 
-    gsap.set(accentItems, { scale: 0, transformOrigin: "center" });
-
     const tl = gsap.timeline({
       scrollTrigger: {
         trigger: wrap,
@@ -28,8 +26,10 @@ const initHorizontalScroll = () => {
     tl.to(track, { xPercent: -100, ease: "none" }, 0);
 
     accentItems.forEach((item, index) => {
+      const randomRotation = Math.random() > 0.5 ? 180 : -180;
+      gsap.set(item, { scale: 0, rotation: randomRotation, transformOrigin: "center" });
       const progress = index / (accentItems.length - 1 || 1);
-      tl.to(item, { scale: 1, duration: 0.3 }, progress * 0.7);
+      tl.to(item, { scale: 1, rotation: 0, duration: 0.3 }, progress * 0.7);
     });
   });
 };

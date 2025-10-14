@@ -16,3 +16,4 @@ yarn-error.log*
 # Optional: if you use a dev CDN branch, keep dist tracked only on main
 # Uncomment below if you commit dist manually
 # !dist/bundle.min.js
+.vercel

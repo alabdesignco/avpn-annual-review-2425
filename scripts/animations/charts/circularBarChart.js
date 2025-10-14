@@ -78,20 +78,30 @@ const initCircularBarChart = () => {
       .attr("stroke-width", 2)
       .style("cursor", "pointer");
 
-    arcs.transition()
-      .delay((d, i) => i * 100)
-      .duration(800)
-      .ease(d3.easeCubicOut)
-      .attrTween("d", function(d) {
-        const i = d3.interpolate(innerRadius, innerRadius + (d.data.percent * size * 0.003));
-        return function(t) {
-          return d3.arc()
-            .innerRadius(innerRadius)
-            .outerRadius(i(t))
-            .cornerRadius(10)
-            .padAngle(0.03)(d);
-        };
-      });
+    const animateBars = () => {
+      arcs.transition()
+        .delay((d, i) => i * 100)
+        .duration(800)
+        .ease(d3.easeCubicOut)
+        .attrTween("d", function(d) {
+          const i = d3.interpolate(innerRadius, innerRadius + (d.data.percent * size * 0.003));
+          return function(t) {
+            return d3.arc()
+              .innerRadius(innerRadius)
+              .outerRadius(i(t))
+              .cornerRadius(10)
+              .padAngle(0.03)(d);
+          };
+        });
+    };
+
+    gsap.timeline({
+      scrollTrigger: {
+        trigger: ".supported-chart",
+        start: "top 80%",
+        once: true
+      }
+    }).add(() => animateBars());
 
     const centerGroup = svg.append("g")
       .attr("class", "supported-chart_center-text")
