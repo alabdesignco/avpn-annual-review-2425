@@ -1,0 +1,49 @@
+export function initCountUp() {
+  document.querySelectorAll('.members-content_wrapper').forEach(wrapper => {
+    const numberContainer = wrapper.querySelector('.members-number');
+    const h2 = wrapper.querySelector('.heading-style-h2');
+    const buttonGroup = wrapper.querySelector('.button-group');
+    
+    if (!numberContainer || !h2 || !buttonGroup) return;
+
+    const target = numberContainer.querySelector('span:first-child');
+    if (!target) return;
+
+    const endValue = parseFloat(target.textContent.replace(/,/g, ''));
+    const hasComma = target.textContent.includes(',');
+    const hasDecimal = target.textContent.includes('.');
+    const decimals = hasDecimal ? (target.textContent.split('.')[1] || '').length : 0;
+
+    const counter = { value: 0 };
+
+    gsap.set([h2, buttonGroup], { opacity: 0, y: 30 });
+
+    const tl = gsap.timeline({
+      scrollTrigger: {
+        trigger: wrapper,
+        start: 'top 80%',
+        once: true
+      }
+    });
+
+    tl.to(counter, {
+      value: endValue,
+      duration: 2,
+      ease: 'power2.out',
+      onUpdate: () => {
+        const formatted = hasComma 
+          ? counter.value.toLocaleString('en-US', { minimumFractionDigits: decimals, maximumFractionDigits: decimals })
+          : counter.value.toFixed(decimals);
+        target.textContent = formatted;
+      }
+    })
+    .to([h2, buttonGroup], {
+      opacity: 1,
+      y: 0,
+      duration: 0.8,
+      stagger: 0.2,
+      ease: 'power2.out'
+    }, '-=0.5');
+  });
+}
+
