@@ -22,8 +22,6 @@ export function initOdometerCounter() {
       duration: 2000
     });
 
-    gsap.set([h2, buttonGroup], { opacity: 0, y: 30, visibility: 'hidden' });
-
     const tl = gsap.timeline({
       scrollTrigger: {
         trigger: wrapper,
@@ -35,10 +33,9 @@ export function initOdometerCounter() {
     tl.call(() => {
       odometer.update(endValue);
     })
-    .to([h2, buttonGroup], {
-      opacity: 1,
-      y: 0,
-      visibility: 'visible',
+    .from([h2, buttonGroup], {
+      opacity: 0,
+      y: 30,
       duration: 0.8,
       stagger: 0.2,
       ease: 'power2.out'
