@@ -13,6 +13,8 @@ import { initCardsScramble } from './animations/cardsScramble.js';
 import { initDirectionalListHover } from './animations/directionalHover.js';
 import { initOdometerCounter } from './animations/odometerCounter.js';
 import { initLogoWallCycle } from './animations/logoWallCycle.js';
+import { initTeamTabs } from './animations/teamTabs.js';
+import { initGlobalParallax } from './utils/globalParallax.js';
   
 gsap.registerPlugin(ScrollTrigger,Observer,SplitText,Draggable);
 
@@ -33,4 +35,6 @@ document.addEventListener("DOMContentLoaded", () => {
   initDirectionalListHover();
   initOdometerCounter();
   initLogoWallCycle();
+  initTeamTabs();
+  initGlobalParallax();
 });

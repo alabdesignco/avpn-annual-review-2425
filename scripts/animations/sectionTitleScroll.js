@@ -8,7 +8,7 @@ const initSectionTitleScroll = () => {
     
     if (!accentShape1 || !accentShape2 || !titleText) return;
     
-    const split = new SplitText(titleText, { type: "chars", mask:'chars' });
+    const split = new SplitText(titleText, { type: "words", mask:'words' });
     
     gsap.set([accentShape1, accentShape2], { 
       scale: 0,
@@ -16,7 +16,7 @@ const initSectionTitleScroll = () => {
       transformOrigin: "center center"
     });
     
-    gsap.set(split.chars, { 
+    gsap.set(split.words, { 
       autoAlpha: 0,
       y: 30
     });
@@ -40,11 +40,11 @@ const initSectionTitleScroll = () => {
       duration: 0.5,
       ease: "back.out(1.4)"
     }, "-=0.3")
-    .to(split.chars, {
+    .to(split.words, {
       autoAlpha: 1,
       y: 0,
-      duration: 0.3,
-      stagger: 0.04,
+      duration: 0.7,
+      stagger: 0.08,
       ease: "power2.out"
     }, "-=0.2");
   });
