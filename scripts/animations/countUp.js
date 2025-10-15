@@ -17,6 +17,10 @@ export function initCountUp() {
 
     const counter = { value: startValue };
 
+    target.textContent = hasComma 
+      ? startValue.toLocaleString('en-US', { minimumFractionDigits: decimals, maximumFractionDigits: decimals })
+      : startValue.toFixed(decimals);
+
     gsap.set([h2, buttonGroup], { opacity: 0, y: 30 });
 
     const tl = gsap.timeline({
