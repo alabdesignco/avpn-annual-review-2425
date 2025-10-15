@@ -33,9 +33,12 @@ export function initOdometerCounter() {
     tl.call(() => {
       odometer.update(endValue);
     })
-    .from([h2, buttonGroup], {
+    .fromTo([h2, buttonGroup], {
       opacity: 0,
-      y: 30,
+      y: 30
+    }, {
+      opacity: 1,
+      y: 0,
       duration: 0.8,
       stagger: 0.2,
       ease: 'power2.out'
