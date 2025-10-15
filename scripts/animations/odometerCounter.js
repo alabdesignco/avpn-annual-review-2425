@@ -41,6 +41,6 @@ export function initOdometerCounter() {
       duration: 0.8,
       stagger: 0.2,
       ease: 'power2.out'
-    }, '-=0.5');
+    }, '-=0.4');
   });
 }
