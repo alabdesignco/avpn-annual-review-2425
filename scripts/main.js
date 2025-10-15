@@ -10,6 +10,7 @@ import { initWordBreak } from './animations/wordBreak.js';
 import { initHighlightText } from './animations/highlightText.js';
 import { initSectionTitleScroll } from './animations/sectionTitleScroll.js';
 import { initCardsScramble } from './animations/cardsScramble.js';
+import { initDirectionalListHover } from './animations/directionalHover.js';
   
 gsap.registerPlugin(ScrollTrigger,Observer,SplitText,Draggable);
 
@@ -27,4 +28,5 @@ document.addEventListener("DOMContentLoaded", () => {
   initHighlightText();
   initSectionTitleScroll();
   initCardsScramble();
+  initDirectionalListHover();
 });
