@@ -12,6 +12,7 @@ import { initSectionTitleScroll } from './animations/sectionTitleScroll.js';
 import { initCardsScramble } from './animations/cardsScramble.js';
 import { initDirectionalListHover } from './animations/directionalHover.js';
 import { initOdometerCounter } from './animations/odometerCounter.js';
+import { initLogoWallCycle } from './animations/logoWallCycle.js';
   
 gsap.registerPlugin(ScrollTrigger,Observer,SplitText,Draggable);
 
@@ -31,4 +32,5 @@ document.addEventListener("DOMContentLoaded", () => {
   initCardsScramble();
   initDirectionalListHover();
   initOdometerCounter();
+  initLogoWallCycle();
 });
