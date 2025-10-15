@@ -9,12 +9,13 @@ export function initCountUp() {
     const target = numberContainer.querySelector('span:first-child');
     if (!target) return;
 
-    const endValue = parseFloat(target.textContent.replace(/,/g, ''));
+    const startValue = parseFloat(numberContainer.getAttribute('data-count-start')) || 0;
+    const endValue = parseFloat(numberContainer.getAttribute('data-count-end')) || parseFloat(target.textContent.replace(/,/g, ''));
     const hasComma = target.textContent.includes(',');
     const hasDecimal = target.textContent.includes('.');
     const decimals = hasDecimal ? (target.textContent.split('.')[1] || '').length : 0;
 
-    const counter = { value: 0 };
+    const counter = { value: startValue };
 
     gsap.set([h2, buttonGroup], { opacity: 0, y: 30 });
 
