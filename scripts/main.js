@@ -11,7 +11,8 @@ import { initHighlightText } from './animations/highlightText.js';
 import { initSectionTitleScroll } from './animations/sectionTitleScroll.js';
 import { initCardsScramble } from './animations/cardsScramble.js';
 import { initDirectionalListHover } from './animations/directionalHover.js';
-import { initCountUp } from './animations/countUp.js';
+// import { initCountUp } from './animations/countUp.js';
+import { initOdometerCounter } from './animations/odometerCounter.js';
   
 gsap.registerPlugin(ScrollTrigger,Observer,SplitText,Draggable);
 
@@ -30,5 +31,6 @@ document.addEventListener("DOMContentLoaded", () => {
   initSectionTitleScroll();
   initCardsScramble();
   initDirectionalListHover();
-  initCountUp();
+  // initCountUp();
+  initOdometerCounter();
 });
