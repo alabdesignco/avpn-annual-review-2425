@@ -45,6 +45,10 @@ class Grid {
       autoAlpha: 0
     })
 
+    timeline.to(this.heading, {
+      autoAlpha: 1,
+      duration: 0.1
+    })
     timeline.from(this.headingChars, {
       yPercent: 100,
       autoAlpha: 0,
@@ -53,9 +57,9 @@ class Grid {
       stagger: 0.02
     })
     if (this.taglines.length > 0) {
-      timeline.from(this.taglines, {
-        yPercent: 100,
-        autoAlpha: 0,
+      timeline.to(this.taglines, {
+        yPercent: 0,
+        autoAlpha: 1,
         duration: 0.8,
         ease: "expo.out",
         stagger: 0.15
