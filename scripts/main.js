@@ -18,6 +18,7 @@ import { initTeamTabs } from './animations/teamTabs.js';
 import { initGlobalParallax } from './utils/globalParallax.js';
 import { initCountrySelect } from './utils/populateCountrySelect.js';
 import { initFooterWaves } from './animations/footerWaves.js';
+import { initImageBreak } from './animations/imageBreak.js';
   
 gsap.registerPlugin(ScrollTrigger,Observer,SplitText,Draggable);
 
@@ -43,4 +44,5 @@ document.addEventListener("DOMContentLoaded", () => {
   initGlobalParallax();
   initCountrySelect();
   initFooterWaves();
+  initImageBreak();
 });

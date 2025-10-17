@@ -1,9 +1,10 @@
 export const initTitleWaterfall = () => {
-    const root = document.querySelector('.section_highlight-content .is-title-waterfall');
-    if (!root) return;
+    const containers = document.querySelectorAll('.section_highlight-content.is-title-waterfall .highlight-title_container');
+    if (!containers.length) return;
 
-    root.querySelectorAll('.highlight-title_container').forEach(container => {
+    containers.forEach(container => {
         const title = container.querySelector('.highlight-title-heading');
+        if (!title) return;
         
         const split = new SplitText(title, { 
             type: 'chars',
@@ -11,27 +12,30 @@ export const initTitleWaterfall = () => {
         });
         
         const letters = split.chars;
-        const dist = container.clientHeight - title.clientHeight;
-
-        ScrollTrigger.create({
-            trigger: container,
-            pin: title,
-            start: 'top top',
-            end: '+=' + dist,
-        });
         
-        letters.forEach(letter => {
-            const randomDistance = Math.random() * dist;
+        requestAnimationFrame(() => {
+            const dist = container.clientHeight - title.clientHeight;
 
-            gsap.from(letter, {
-                y: randomDistance,
-                ease: 'none',
-                scrollTrigger: {
-                    trigger: title,
-                    start: 'top top',
-                    end: '+=' + randomDistance,
-                    scrub: true
-                }
+            ScrollTrigger.create({
+                trigger: container,
+                pin: title,
+                start: 'top top',
+                end: '+=' + dist,
+            });
+            
+            letters.forEach(letter => {
+                const randomDistance = Math.random() * dist;
+
+                gsap.from(letter, {
+                    y: randomDistance,
+                    ease: 'none',
+                    scrollTrigger: {
+                        trigger: title,
+                        start: 'top top',
+                        end: '+=' + randomDistance,
+                        scrub: true
+                    }
+                });
             });
         });
     });
