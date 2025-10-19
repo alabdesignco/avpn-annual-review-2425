@@ -67,9 +67,9 @@ export function initLogoWallCycle() {
         parent.appendChild(pool.shift());
       }
 
-      tl = gsap.timeline({ repeat: -1, repeatDelay: loopDelay });
+      tl = gsap.timeline({ repeat: -1, paused: true });
       tl.call(swapNext);
-      tl.play();
+      tl.to({}, { duration: duration + loopDelay });
     }
 
     function swapNext() {
@@ -121,18 +121,44 @@ export function initLogoWallCycle() {
 
     setup();
 
-    ScrollTrigger.create({
-      trigger: root,
-      start: 'top bottom',
-      end: 'bottom top',
-      onEnter:     () => tl.play(),
-      onLeave:     () => tl.pause(),
-      onEnterBack: () => tl.play(),
-      onLeaveBack: () => tl.pause()
+    let st;
+
+    ScrollTrigger.addEventListener('refreshInit', () => {
+      if (st) st.kill();
     });
 
-    document.addEventListener('visibilitychange', () =>
-      document.hidden ? tl.pause() : tl.play()
-    );
+    const initScrollTrigger = () => {
+      st = ScrollTrigger.create({
+        trigger: root,
+        start: 'top bottom',
+        end: 'bottom top',
+        onEnter:     () => tl.play(),
+        onLeave:     () => tl.pause(),
+        onEnterBack: () => tl.play(),
+        onLeaveBack: () => tl.pause()
+      });
+
+      if (st.isActive) {
+        tl.play();
+      }
+    };
+
+    if (document.readyState === 'complete') {
+      ScrollTrigger.refresh();
+      gsap.delayedCall(0.3, initScrollTrigger);
+    } else {
+      window.addEventListener('load', () => {
+        ScrollTrigger.refresh();
+        gsap.delayedCall(0.3, initScrollTrigger);
+      });
+    }
+
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) {
+        tl.pause();
+      } else if (st && st.isActive) {
+        tl.play();
+      }
+    });
   });
 }
