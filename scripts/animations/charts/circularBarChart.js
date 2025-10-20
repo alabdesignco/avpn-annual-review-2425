@@ -1,21 +1,21 @@
 const initCircularBarChart = () => {
   const data = [
-    { cause: "Education", count: 396, percent: 62.66 },
-    { cause: "Climate Action & Environment", count: 385, percent: 60.92 },
-    { cause: "Livelihood and Poverty Alleviation", count: 350, percent: 55.38 },
-    { cause: "Health", count: 333, percent: 52.69 },
-    { cause: "Employability", count: 243, percent: 38.45 },
-    { cause: "Gender", count: 260, percent: 41.14 },
-    { cause: "Financial Inclusion", count: 232, percent: 36.71 },
-    { cause: "Agriculture", count: 226, percent: 35.76 },
-    { cause: "Energy", count: 193, percent: 30.54 },
-    { cause: "Water & Sanitation & Hygiene", count: 185, percent: 29.27 },
-    { cause: "Nutrition", count: 143, percent: 22.63 },
-    { cause: "Arts & Culture", count: 132, percent: 20.89 },
-    { cause: "Governance", count: 130, percent: 20.57 },
-    { cause: "Conservation", count: 129, percent: 20.41 },
-    { cause: "Ageing", count: 109, percent: 17.25 },
-    { cause: "Affordable Housing", count: 105, percent: 16.61 }
+    { cause: "Affordable Housing", count: 105, percent: 17 },
+    { cause: "Ageing", count: 109, percent: 17 },
+    { cause: "Agriculture", count: 226, percent: 36 },
+    { cause: "Arts & Culture", count: 132, percent: 21 },
+    { cause: "Climate Action & Environment", count: 385, percent: 61 },
+    { cause: "Conservation", count: 129, percent: 20 },
+    { cause: "Education", count: 396, percent: 63 },
+    { cause: "Employability", count: 243, percent: 38 },
+    { cause: "Energy", count: 193, percent: 31 },
+    { cause: "Financial Inclusion", count: 232, percent: 37 },
+    { cause: "Gender", count: 260, percent: 41 },
+    { cause: "Governance", count: 130, percent: 21 },
+    { cause: "Health", count: 333, percent: 53 },
+    { cause: "Livelihood and Poverty Alleviation", count: 350, percent: 55 },
+    { cause: "Nutrition", count: 143, percent: 23 },
+    { cause: "Water & Sanitation & Hygiene", count: 185, percent: 29 }
   ];
 
   const getColor = (name) =>
@@ -139,16 +139,8 @@ const initCircularBarChart = () => {
       .style("text-anchor", "middle");
 
     centerGroup.append("text")
-      .attr("class", "center-count")
-      .attr("y", size * 0.015)
-      .attr("opacity", 0)
-      .style("font-size", `${size * 0.018}px`)
-      .style("fill", "var(--_primitives---brand--primary--navy-medium)")
-      .style("text-anchor", "middle");
-
-    centerGroup.append("text")
       .attr("class", "center-percent")
-      .attr("y", size * 0.035)
+      .attr("y", size * 0.025)
       .attr("opacity", 0)
       .style("font-size", `${size * 0.018}px`)
       .style("font-weight", "700")
@@ -174,11 +166,8 @@ const initCircularBarChart = () => {
         });
         centerCause.attr("y", startY).transition().duration(200).style("opacity", 1);
 
-        centerGroup.select(".center-count")
-          .text(`Count: ${d.data.count}`)
-          .transition().duration(200).style("opacity", 1);
         centerGroup.select(".center-percent")
-          .text(`${d.data.percent.toFixed(2)}%`)
+          .text(`${d.data.percent}%`)
           .transition().duration(200).style("opacity", 1);
       })
       .on("mouseout", function() {
@@ -223,9 +212,7 @@ const initCircularBarChart = () => {
         });
         centerCause.attr("y", startY).transition().duration(200).style("opacity", 1);
 
-        centerGroup.select(".center-count").text(`Count: ${d.count}`)
-          .transition().duration(200).style("opacity", 1);
-        centerGroup.select(".center-percent").text(`${d.percent.toFixed(2)}%`)
+        centerGroup.select(".center-percent").text(`${d.percent}%`)
           .transition().duration(200).style("opacity", 1);
       });
 
