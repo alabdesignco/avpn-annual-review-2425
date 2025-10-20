@@ -18,6 +18,7 @@ import { initGlobalParallax } from './utils/globalParallax.js';
 import { initFooterWaves } from './animations/footerWaves.js';
 import { initImageBreak } from './animations/imageBreak.js';
 import { initMembersSection } from './animations/sections/members.js';
+import { initRegionsSection } from './animations/sections/regions.js';
   
 gsap.registerPlugin(ScrollTrigger,Observer,SplitText,Draggable);
 
@@ -43,4 +44,5 @@ document.addEventListener("DOMContentLoaded", () => {
   initFooterWaves();
   initImageBreak();
   initMembersSection();
+  initRegionsSection();
 });
