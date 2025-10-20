@@ -2,8 +2,8 @@ import { initOdometerCounter } from '../odometerCounter.js';
 
 export function initMembersSection() {
   initOdometerCounter();
-  initMembersTabs();
-  initMembersReveal();
+  const startRotation = initMembersTabs();
+  initMembersReveal(startRotation);
 }
 
 function initMembersTabs() {
@@ -19,10 +19,11 @@ function initMembersTabs() {
 
   let currentIndex = 0;
   let autoRotateTimer;
+  let autoRotateTimeout;
 
   const switchToTab = (item) => {
     const iconWrapper = item.querySelector(".members-tab_icon-wrapper");
-    const titleElement = item.querySelector(".text-size-small");
+    const titleElement = item.querySelector(".tab-title-small");
     if (!iconWrapper || !titleElement) return;
 
     const icon = iconWrapper.innerHTML;
@@ -42,14 +43,20 @@ function initMembersTabs() {
     }
   };
 
-  const startAutoRotate = () => {
-    autoRotateTimer = setInterval(() => {
+  const startAutoRotate = (initialDelay = 8000) => {
+    autoRotateTimeout = setTimeout(() => {
       currentIndex = (currentIndex + 1) % tabItems.length;
       switchToTab(tabItems[currentIndex]);
-    }, 5000);
+      
+      autoRotateTimer = setInterval(() => {
+        currentIndex = (currentIndex + 1) % tabItems.length;
+        switchToTab(tabItems[currentIndex]);
+      }, 10000);
+    }, initialDelay);
   };
 
   const resetAutoRotate = () => {
+    clearTimeout(autoRotateTimeout);
     clearInterval(autoRotateTimer);
     startAutoRotate();
   };
@@ -62,10 +69,10 @@ function initMembersTabs() {
     });
   });
 
-  startAutoRotate();
+  return startAutoRotate;
 }
 
-function initMembersReveal() {
+function initMembersReveal(startRotation) {
   const wrappers = document.querySelectorAll('.members-content_wrapper');
   const tabItems = document.querySelectorAll("[cs-element='tab-item']");
   const tabCenter = document.querySelector("[data-member-tab-center]");
@@ -89,6 +96,9 @@ function initMembersReveal() {
         trigger: wrapper,
         start: 'top 80%',
         once: true
+      },
+      onComplete: () => {
+        if (startRotation) startRotation(2000);
       }
     });
 
