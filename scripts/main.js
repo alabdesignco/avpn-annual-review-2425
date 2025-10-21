@@ -19,7 +19,7 @@ import { initFooterWaves } from './animations/footerWaves.js';
 import { initImageBreak } from './animations/imageBreak.js';
 import { initMembersSection } from './animations/sections/members.js';
 import { initRegionsSection } from './animations/sections/regions.js';
-  
+import { initEventsSection } from './animations/sections/events.js';
 gsap.registerPlugin(ScrollTrigger,Observer,SplitText,Draggable);
 
 smoothScroll();
@@ -45,4 +45,5 @@ document.addEventListener("DOMContentLoaded", () => {
   initImageBreak();
   initMembersSection();
   initRegionsSection();
+  initEventsSection();
 });
