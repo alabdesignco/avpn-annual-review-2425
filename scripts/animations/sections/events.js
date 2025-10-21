@@ -77,12 +77,22 @@ export function initEventsSection() {
 
     switchTab(0);
     
-    contentItems.forEach((item, i) =>
+    contentItems.forEach((item, i) => {
       item.addEventListener("click", () => {
         if (item === activeContent) return;
         switchTab(i);
-      })
-    );
+      });
+      
+      if (autoplay) {
+        item.addEventListener("mouseenter", () => {
+          if (item === activeContent && progressBarTween) progressBarTween.pause();
+        });
+        
+        item.addEventListener("mouseleave", () => {
+          if (item === activeContent && progressBarTween) progressBarTween.resume();
+        });
+      }
+    });
     
   });
 }
