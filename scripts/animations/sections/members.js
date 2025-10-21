@@ -15,7 +15,8 @@ function initMembersTabs() {
 
   const mainTitle = tabMain.querySelector("h3.heading-style-h6");
   const mainIcon = tabMain.querySelector(".member-tab-center_icon");
-  if (!mainTitle || !mainIcon) return;
+  const mainParagraph = tabMain.querySelector("p");
+  if (!mainTitle || !mainIcon || !mainParagraph) return;
 
   let currentIndex = 0;
   let autoRotateTimer;
@@ -24,15 +25,18 @@ function initMembersTabs() {
   const switchToTab = (item) => {
     const iconWrapper = item.querySelector(".members-tab_icon-wrapper");
     const titleElement = item.querySelector(".tab-title-small");
-    if (!iconWrapper || !titleElement) return;
+    const descriptionParagraph = item.querySelector(".members-tab_description > p");
+    if (!iconWrapper || !titleElement || !descriptionParagraph) return;
 
     const icon = iconWrapper.innerHTML;
     const title = titleElement.textContent;
+    const description = descriptionParagraph.textContent;
     const color = item.getAttribute("data-member-color");
 
     if (mainTitle.innerText !== title) {
       mainTitle.innerHTML = title;
       mainIcon.innerHTML = icon;
+      mainParagraph.textContent = description;
       tabMain.parentNode.setAttribute("data-member-color", color);
 
       gsap.fromTo(
