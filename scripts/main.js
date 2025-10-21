@@ -24,7 +24,7 @@ import { initImpactActionSection } from './animations/sections/impact-action.js'
 
 gsap.registerPlugin(ScrollTrigger,Observer,SplitText,Draggable);
 
-smoothScroll();
+window.lenis = smoothScroll();
 
 document.addEventListener("DOMContentLoaded", () => {
   initModalBasic();

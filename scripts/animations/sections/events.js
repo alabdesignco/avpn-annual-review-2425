@@ -1,4 +1,10 @@
+import { initModalSlide } from '../../utils/modalInitSlide.js';
+
 export function initEventsSection() {
+  const modalControls = initModalSlide();
+  let globalProgressBarTween = null;
+  let currentActiveIndex = 0;
+
   const wrappers = document.querySelectorAll('[data-tabs="wrapper"]');
   
   wrappers.forEach((wrapper) => {
@@ -12,6 +18,8 @@ export function initEventsSection() {
     let activeVisual = null;
     let isAnimating = false;
     let progressBarTween = null;
+    
+    globalProgressBarTween = progressBarTween;
 
     function startProgressBar(index) {
       if (progressBarTween) progressBarTween.kill();
@@ -30,6 +38,8 @@ export function initEventsSection() {
           }
         },
       });
+      
+      globalProgressBarTween = progressBarTween;
     }
 
     function switchTab(index) {
@@ -56,6 +66,7 @@ export function initEventsSection() {
         onComplete: () => {
           activeContent = incomingContent;
           activeVisual = incomingVisual;
+          currentActiveIndex = index;
           isAnimating = false;
           if (autoplay) startProgressBar(index);
         },
@@ -77,10 +88,24 @@ export function initEventsSection() {
 
     switchTab(0);
     
+    modalControls.setOnClose(() => {
+      if (autoplay && globalProgressBarTween) {
+        globalProgressBarTween.resume();
+      }
+      if (window.lenis) window.lenis.start();
+    });
+    
     contentItems.forEach((item, i) => {
       item.addEventListener("click", () => {
-        if (item === activeContent) return;
-        switchTab(i);
+        if (modalControls) {
+          const modalTarget = item.getAttribute('data-modal-slide-target');
+          
+          if (modalTarget) {
+            if (globalProgressBarTween) globalProgressBarTween.pause();
+            if (window.lenis) window.lenis.stop();
+            modalControls.openModal(modalTarget);
+          }
+        }
       });
       
       if (autoplay) {
