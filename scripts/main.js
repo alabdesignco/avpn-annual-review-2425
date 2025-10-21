@@ -20,6 +20,8 @@ import { initImageBreak } from './animations/imageBreak.js';
 import { initMembersSection } from './animations/sections/members.js';
 import { initRegionsSection } from './animations/sections/regions.js';
 import { initEventsSection } from './animations/sections/events.js';
+import { initImpactActionSection } from './animations/sections/impact-action.js';
+
 gsap.registerPlugin(ScrollTrigger,Observer,SplitText,Draggable);
 
 smoothScroll();
@@ -46,4 +48,5 @@ document.addEventListener("DOMContentLoaded", () => {
   initMembersSection();
   initRegionsSection();
   initEventsSection();
+  initImpactActionSection();
 });
