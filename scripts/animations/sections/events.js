@@ -2,8 +2,8 @@ import { initModalSlide } from '../../utils/modalInitSlide.js';
 
 export function initEventsSection() {
   const modalControls = initModalSlide();
-  let globalProgressBarTween = null;
-  let currentActiveIndex = 0;
+  const allProgressTweens = [];
+  let isModalOpen = false;
 
   const wrappers = document.querySelectorAll('[data-tabs="wrapper"]');
   
@@ -19,7 +19,7 @@ export function initEventsSection() {
     let isAnimating = false;
     let progressBarTween = null;
     
-    globalProgressBarTween = progressBarTween;
+    const tweenRef = { current: null };
 
     function startProgressBar(index) {
       if (progressBarTween) progressBarTween.kill();
@@ -39,7 +39,7 @@ export function initEventsSection() {
         },
       });
       
-      globalProgressBarTween = progressBarTween;
+      tweenRef.current = progressBarTween;
     }
 
     function switchTab(index) {
@@ -66,7 +66,6 @@ export function initEventsSection() {
         onComplete: () => {
           activeContent = incomingContent;
           activeVisual = incomingVisual;
-          currentActiveIndex = index;
           isAnimating = false;
           if (autoplay) startProgressBar(index);
         },
@@ -86,14 +85,9 @@ export function initEventsSection() {
         .set(incomingBar, { scaleX: 0, transformOrigin: "left center" }, 0);
     }
 
-    switchTab(0);
+    allProgressTweens.push(tweenRef);
     
-    modalControls.setOnClose(() => {
-      if (autoplay && globalProgressBarTween) {
-        globalProgressBarTween.resume();
-      }
-      if (window.lenis) window.lenis.start();
-    });
+    switchTab(0);
     
     contentItems.forEach((item, i) => {
       item.addEventListener("click", () => {
@@ -101,7 +95,10 @@ export function initEventsSection() {
           const modalTarget = item.getAttribute('data-modal-slide-target');
           
           if (modalTarget) {
-            if (globalProgressBarTween) globalProgressBarTween.pause();
+            isModalOpen = true;
+            allProgressTweens.forEach(ref => {
+              if (ref.current) ref.current.pause();
+            });
             if (window.lenis) window.lenis.stop();
             modalControls.openModal(modalTarget);
           }
@@ -110,14 +107,21 @@ export function initEventsSection() {
       
       if (autoplay) {
         item.addEventListener("mouseenter", () => {
-          if (item === activeContent && progressBarTween) progressBarTween.pause();
+          if (item === activeContent && progressBarTween && !isModalOpen) progressBarTween.pause();
         });
         
         item.addEventListener("mouseleave", () => {
-          if (item === activeContent && progressBarTween) progressBarTween.resume();
+          if (item === activeContent && progressBarTween && !isModalOpen) progressBarTween.resume();
         });
       }
     });
-    
+  });
+  
+  modalControls.setOnClose(() => {
+    isModalOpen = false;
+    allProgressTweens.forEach(ref => {
+      if (ref.current) ref.current.resume();
+    });
+    if (window.lenis) window.lenis.start();
   });
 }

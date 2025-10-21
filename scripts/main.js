@@ -26,7 +26,7 @@ gsap.registerPlugin(ScrollTrigger,Observer,SplitText,Draggable);
 
 window.lenis = smoothScroll();
 
-document.addEventListener("DOMContentLoaded", () => {
+const initAllAnimations = () => {
   initModalBasic();
   initHeaderSection();
   initHorizontalScroll();
@@ -49,4 +49,9 @@ document.addEventListener("DOMContentLoaded", () => {
   initRegionsSection();
   initEventsSection();
   initImpactActionSection();
+};
+
+document.addEventListener("DOMContentLoaded", async () => {
+  await document.fonts.ready;
+  initAllAnimations();
 });

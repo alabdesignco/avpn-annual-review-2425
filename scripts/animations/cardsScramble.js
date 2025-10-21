@@ -18,6 +18,8 @@ const initCardsScramble = () => {
     });
     
     const resetPortion = (index) => {
+        if (index < 0 || index >= cards.length) return;
+        
         gsap.set(cards[index], { zIndex: 'auto' });
         
         gsap.to(cards[index], {
@@ -78,7 +80,9 @@ const initCardsScramble = () => {
     });
     
     container.addEventListener("mouseleave", () => {
-        resetPortion(currentPortion - 1);
+        if (currentPortion > 0) {
+            resetPortion(currentPortion - 1);
+        }
         currentPortion = 0;
         
         gsap.to(cardContent, {
