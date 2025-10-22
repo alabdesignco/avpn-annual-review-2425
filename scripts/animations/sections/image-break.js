@@ -1,29 +1,26 @@
-export function initImageBreak() {
-    const W = window.innerWidth
-    const H = window.innerHeight
+export const initImageBreakSection = () => {
+    const W = window.innerWidth;
+    const H = window.innerHeight;
 
-    const container = document.querySelector('.section_image-break .image-break_wrapper')
-    const medias = container.querySelectorAll('.image-break_media')
-    const textElement = document.querySelector('.section_image-break .image-break_text')
+    const container = document.querySelector('.section_image-break .image-break_wrapper');
+    const medias = container.querySelectorAll('.image-break_media');
+    const textElement = document.querySelector('.section_image-break .image-break_text');
     
+    let chars;
     if (textElement) {
-        const text = textElement.textContent
-        textElement.innerHTML = text.split('').map(char => 
-            char === ' ' ? '<span>&nbsp;</span>' : `<span>${char}</span>`
-        ).join('')
-        
-        const chars = textElement.querySelectorAll('span')
-        gsap.set(chars, { opacity: 0, yPercent: 100 })
+        const split = new SplitText(textElement, { type: 'chars' });
+        chars = split.chars;
+        gsap.set(chars, { opacity: 0, yPercent: 100 });
     }
 
     medias.forEach(media => {
         gsap.set(media, {
             x: (Math.random() - 0.5) * 0.16 * W,
             y: (Math.random() - 0.5) * 0.1 * W
-        })
-    })
+        });
+    });
 
-    const distance = container.clientWidth - document.body.clientWidth
+    const distance = container.clientWidth - document.body.clientWidth;
     const scrollTween = gsap.to(container, {
         x: - distance,
         ease: 'none',
@@ -33,7 +30,7 @@ export function initImageBreak() {
             scrub: true,
             end: '+=' + distance
         }
-    })
+    });
 
     medias.forEach(media => {
         gsap.from(media, {
@@ -48,7 +45,7 @@ export function initImageBreak() {
                 end: 'left 65%',
                 scrub: true,
             }
-        })
+        });
 
         gsap.fromTo(media, {
             rotation: 0,
@@ -66,13 +63,12 @@ export function initImageBreak() {
                 end: 'right -10%',
                 scrub: true
             }
-        })
-    })
+        });
+    });
 
-    if (textElement && medias.length > 0) {
-        const chars = textElement.querySelectorAll('span')
-        const centerIndex = Math.floor(chars.length / 2)
-        const lastMedia = medias[medias.length - 1]
+    if (chars && medias.length > 0) {
+        const centerIndex = Math.floor(chars.length / 2);
+        const lastMedia = medias[medias.length - 1];
         
         gsap.to(chars, {
             opacity: 1,
@@ -90,6 +86,7 @@ export function initImageBreak() {
                 start: 'left center',
                 toggleActions: 'play none none none'
             }
-        })
+        });
     }
-}
+};
+

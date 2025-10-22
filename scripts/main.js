@@ -16,7 +16,7 @@ import { initLogoWallCycle } from './animations/logoWallCycle.js';
 import { initTeamTabs } from './animations/teamTabs.js';
 import { initGlobalParallax } from './utils/globalParallax.js';
 import { initFooterWaves } from './animations/footerWaves.js';
-import { initImageBreak } from './animations/imageBreak.js';
+import { initImageBreakSection } from './animations/sections/image-break.js';
 import { initMembersSection } from './animations/sections/members.js';
 import { initRegionsSection } from './animations/sections/regions.js';
 import { initEventsSection } from './animations/sections/events.js';
@@ -45,7 +45,7 @@ const initAllAnimations = () => {
   initTeamTabs();
   initGlobalParallax();
   initFooterWaves();
-  initImageBreak();
+  initImageBreakSection();
   initMembersSection();
   initRegionsSection();
   initEventsSection();
