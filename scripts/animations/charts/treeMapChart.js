@@ -112,6 +112,29 @@ const initTreeMapChart = () => {
 
     gsap.set(rect.node(), { scale: 1 });
 
+    const label = g.append("text")
+      .attr("x", 16)
+      .attr("y", 24)
+      .attr("fill", textColor)
+      .attr("font-size", "1rem")
+      .attr("font-weight", 600)
+      .text(d.data.name)
+      .call(wrap, boxW - 32);
+
+    if (label.node().getBBox().height > boxH * 0.6) label.style("display","none");
+
+    let percentText = null;
+    if (boxH > 40 && boxW > 80) {
+      percentText = g.append("text")
+        .attr("x", boxW - 16)
+        .attr("y", boxH - 12)
+        .attr("text-anchor", "end")
+        .attr("fill", textColor)
+        .attr("font-size", "1.25rem")
+        .attr("opacity", 0)
+        .text(`${d.data.percent.toFixed(2)}%`);
+    }
+
     g.on("mouseenter", () => {
       g.raise();
       gsap.to(rect.node(), {
@@ -124,6 +147,18 @@ const initTreeMapChart = () => {
         duration: 0.25,
         ease: "power2.out"
       });
+      gsap.to(leaf.nodes().filter(n => n !== g.node()), {
+        opacity: 0.3,
+        duration: 0.25,
+        ease: "power2.out"
+      });
+      if (percentText) {
+        gsap.to(percentText.node(), {
+          opacity: 1,
+          duration: 0.25,
+          ease: "power2.out"
+        });
+      }
     }).on("mouseleave", () => {
       gsap.to(rect.node(), {
         scale: 1,
@@ -135,28 +170,19 @@ const initTreeMapChart = () => {
         duration: 0.25,
         ease: "power2.out"
       });
+      gsap.to(leaf.nodes(), {
+        opacity: 1,
+        duration: 0.25,
+        ease: "power2.out"
+      });
+      if (percentText) {
+        gsap.to(percentText.node(), {
+          opacity: 0,
+          duration: 0.25,
+          ease: "power2.out"
+        });
+      }
     });
-
-    const label = g.append("text")
-      .attr("x", 16)
-      .attr("y", 24)
-      .attr("fill", textColor)
-      .attr("font-size", "16px")
-      .attr("font-weight", 600)
-      .text(d.data.name)
-      .call(wrap, boxW - 32);
-
-    if (label.node().getBBox().height > boxH * 0.6) label.style("display","none");
-
-    if (boxH > 40 && boxW > 80) {
-      g.append("text")
-        .attr("x", boxW - 16)
-        .attr("y", boxH - 12)
-        .attr("text-anchor", "end")
-        .attr("fill", textColor)
-        .attr("font-size", "12px")
-        .text(`${d.data.percent.toFixed(2)}%`);
-    }
   });
 
   gsap.to(leaf.nodes(), {
