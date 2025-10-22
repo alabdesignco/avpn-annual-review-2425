@@ -19,11 +19,7 @@ const initStickyTitleScroll = () => {
           overlapOffset = 0.15;
     
     images.forEach((img, imgIndex) => {
-      if (imgIndex === 0) {
-        gsap.set(img, { autoAlpha: 1, scale: 1 });
-      } else {
-        gsap.set(img, { autoAlpha: 0, scale: 1.1 });
-      }
+      gsap.set(img, { autoAlpha: 0, scale: 1.1 });
     });
     
     headings.forEach((heading, index) => {
@@ -40,7 +36,15 @@ const initStickyTitleScroll = () => {
       const currentImage = wrap.querySelector(`.bg-shape.is-${index + 1} img`);
       
       if (index === 0) {
-        headingTl.set(currentImage, { autoAlpha: 1, scale: 1 }, 0);
+        headingTl.fromTo(currentImage, {
+          autoAlpha: 0,
+          scale: 1.1
+        }, {
+          autoAlpha: 1,
+          scale: 1,
+          duration: 0.8,
+          ease: "power2.out"
+        }, 0.2);
       } else {
         const prevImage = wrap.querySelector(`.bg-shape.is-${index} img`);
         
