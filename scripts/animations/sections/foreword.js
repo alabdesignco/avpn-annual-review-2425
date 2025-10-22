@@ -50,6 +50,22 @@ const initForewordSection = () => {
       const progress = index / (accentItems.length - 1 || 1);
       tl.to(item, { scale: 1, rotation: 0, duration: 0.3 }, progress * 0.7);
     });
+
+    const foreword = wrap.querySelector("#foreword");
+    if (foreword) {
+      const paragraphs = Array.from(foreword.querySelectorAll("p"));
+      const columns = 6;
+      
+      for (let col = 0; col < columns; col++) {
+        const columnItems = paragraphs.filter((_, index) => index % columns === col);
+        tl.from(columnItems, {
+          xPercent: 100,
+          autoAlpha: 0,
+          duration: 0.1,
+          ease: "power2.out"
+        }, col * 0.01);
+      }
+    }
   });
 };
 
