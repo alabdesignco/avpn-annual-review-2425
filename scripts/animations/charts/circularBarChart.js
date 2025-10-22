@@ -45,7 +45,10 @@ const initCircularBarChart = () => {
 
   const drawChart = () => {
     const containerEl = document.querySelector(".supported-chart");
-    const size = containerEl.offsetWidth;
+    const containerWidth = containerEl.offsetWidth;
+    const containerHeight = containerEl.offsetHeight;
+    
+    const size = Math.min(containerWidth, containerHeight);
     const width = size;
     const height = size;
     const innerRadius = size * 0.15;
@@ -59,7 +62,7 @@ const initCircularBarChart = () => {
       .style("width", "100%")
       .style("height", "100%")
       .append("g")
-      .attr("transform", `translate(${width / 2},${height / 2})`);
+      .attr("transform", `translate(${width / 2},${height / 2 - 100})`);
 
     const pie = d3.pie().sort(null).value(1);
     const arc = d3.arc()
