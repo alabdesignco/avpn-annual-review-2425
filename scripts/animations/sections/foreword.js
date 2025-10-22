@@ -1,11 +1,11 @@
-const initHorizontalScroll = () => {
+const initForewordSection = () => {
   document.querySelectorAll(".horizontal-scroll-section_wrapper").forEach((wrap) => {
     const track = wrap.querySelector(".horizontal-scroll-section_track");
     const headerImageWrapper = wrap.querySelector(".foreword-header_image-wrapper");
     const headerImage = wrap.querySelector(".foreword-header_image");
     const headerAccent1 = wrap.querySelector(".foreword-header_accent.is-1");
     const headerAccent2 = wrap.querySelector(".foreword-header_accent.is-2");
-    const accentItems = [1, 2, 3, 4].map(i => 
+    const accentItems = [1, 2, 3, 4, 5, 6].map(i => 
       wrap.querySelector(`.foreword-content-accent_wrapper.is-${i}`)
     ).filter(Boolean);
 
@@ -53,4 +53,5 @@ const initHorizontalScroll = () => {
   });
 };
 
-export { initHorizontalScroll };
+export { initForewordSection };
+

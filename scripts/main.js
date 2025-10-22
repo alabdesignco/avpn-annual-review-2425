@@ -1,7 +1,7 @@
 import { smoothScroll } from './utils/smooth-scroll.js';
 import { initModalBasic } from './utils/modalInit.js';
 import { initHeaderSection } from './animations/sections/header.js';
-import { initHorizontalScroll } from './animations/horizontalScroll.js';
+import { initForewordSection } from './animations/sections/foreword.js';
 import { initStickyTitleScroll } from './animations/stickyTitles.js';
 import { initCircularBarChart } from './animations/charts/circularBarChart.js';
 import { initTreeMapChart } from './animations/charts/treeMapChart.js';
@@ -29,7 +29,7 @@ window.lenis = smoothScroll();
 const initAllAnimations = () => {
   initModalBasic();
   initHeaderSection();
-  initHorizontalScroll();
+  initForewordSection();
   initStickyTitleScroll();
   initCircularBarChart();
   initTreeMapChart();
