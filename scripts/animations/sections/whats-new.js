@@ -1,4 +1,4 @@
-const initStaggerColumns = () => {
+export function initStaggerColumns() {
     const root = document.querySelector('.section_new');
     if (!root) return;
 
@@ -44,6 +44,5 @@ const initStaggerColumns = () => {
             }, index > 0 ? '+=0.5' : 0);
         });
     });
-};
+}
 
-export { initStaggerColumns };

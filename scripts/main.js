@@ -5,7 +5,7 @@ import { initForewordSection } from './animations/sections/foreword.js';
 import { initStickyTitleScroll } from './animations/sections/stickyTitles.js';
 import { initCircularBarChart } from './animations/charts/circularBarChart.js';
 import { initTreeMapChart } from './animations/charts/treeMapChart.js';
-import { initStaggerColumns } from './animations/staggerColumns.js';
+import { initStaggerColumns } from './animations/sections/whats-new.js';
 import { initWordBreak } from './animations/wordBreak.js';
 import { initHighlightText } from './animations/highlightText.js';
 import { initTitleWaterfall } from './animations/titleWaterfall.js';
