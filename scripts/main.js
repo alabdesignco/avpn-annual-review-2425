@@ -2,7 +2,7 @@ import { smoothScroll } from './utils/smooth-scroll.js';
 import { initModalBasic } from './utils/modalInit.js';
 import { initHeaderSection } from './animations/sections/header.js';
 import { initForewordSection } from './animations/sections/foreword.js';
-import { initStickyTitleScroll } from './animations/stickyTitles.js';
+import { initStickyTitleScroll } from './animations/sections/stickyTitles.js';
 import { initCircularBarChart } from './animations/charts/circularBarChart.js';
 import { initTreeMapChart } from './animations/charts/treeMapChart.js';
 import { initStaggerColumns } from './animations/staggerColumns.js';
