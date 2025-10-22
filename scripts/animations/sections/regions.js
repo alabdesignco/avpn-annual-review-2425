@@ -1,4 +1,4 @@
-export function initRegionsSection() {
+export const initRegionsSection = () => {
   const buttons = Array.from(document.querySelectorAll('.region_button'));
   const overlays = Array.from(document.querySelectorAll('.regions_base.is-overlay'));
   if (!buttons.length || !overlays.length) return;
@@ -35,6 +35,6 @@ export function initRegionsSection() {
     if (!overlay) return;
     btn.addEventListener('click', () => showOverlay(overlay, btn));
   });
-}
+};
 
 

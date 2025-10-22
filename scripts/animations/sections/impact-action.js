@@ -1,4 +1,4 @@
-export function initImpactActionSection() {
+export const initImpactActionSection = () => {
   const highlightScrollSections = document.querySelectorAll('.section_highlight-scroll');
   
   highlightScrollSections.forEach((section) => {

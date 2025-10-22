@@ -1,6 +1,6 @@
 import { preloadImages } from '../../utils/imageLoaded.js'
 
-const initHeaderSection = () => {
+export const initHeaderSection = () => {
   const container = document.querySelector(".section_home-header .home-header_wrapper");
   if (!container) return;
 
@@ -228,5 +228,3 @@ class Grid {
     document.body.classList.remove('loading')
   })
 };
-
-export { initHeaderSection };

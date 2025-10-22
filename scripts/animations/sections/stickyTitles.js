@@ -1,4 +1,4 @@
-const initStickyTitleScroll = () => {
+export const initStickyTitleScroll = () => {
   const wraps = document.querySelectorAll('[data-sticky-title="wrap"]');
   
   wraps.forEach(wrap => {
@@ -88,5 +88,3 @@ const initStickyTitleScroll = () => {
     });
   });
 };
-
-export { initStickyTitleScroll };

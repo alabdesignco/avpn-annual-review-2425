@@ -1,6 +1,6 @@
 import { initModalSlide } from '../../utils/modalInitSlide.js';
 
-export function initEventsSection() {
+export const initEventsSection = () => {
   const modalControls = initModalSlide();
   const allProgressTweens = [];
   let isModalOpen = false;
@@ -124,4 +124,4 @@ export function initEventsSection() {
     });
     if (window.lenis) window.lenis.start();
   });
-}
+};

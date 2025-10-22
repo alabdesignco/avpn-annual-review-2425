@@ -1,12 +1,12 @@
 import { initOdometerCounter } from '../odometerCounter.js';
 
-export function initMembersSection() {
+export const initMembersSection = () => {
   initOdometerCounter();
   const startRotation = initMembersTabs();
   initMembersReveal(startRotation);
-}
+};
 
-function initMembersTabs() {
+const initMembersTabs = () => {
   const tabItems = document.querySelectorAll("[cs-element='tab-item']");
   const tabMain = document.querySelector("[cs-element='tab-main']");
   if (!tabMain) return;
@@ -74,9 +74,9 @@ function initMembersTabs() {
   });
 
   return startAutoRotate;
-}
+};
 
-function initMembersReveal(startRotation) {
+const initMembersReveal = (startRotation) => {
   const wrappers = document.querySelectorAll('.members-content_wrapper');
   const tabItems = document.querySelectorAll("[cs-element='tab-item']");
   const tabCenter = document.querySelector("[data-member-tab-center]");
@@ -127,4 +127,4 @@ function initMembersReveal(startRotation) {
       ease: 'back.out(1.4)'
     }, '<');
   });
-}
+};
