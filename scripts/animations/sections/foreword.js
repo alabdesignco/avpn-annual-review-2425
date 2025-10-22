@@ -1,4 +1,4 @@
-const initForewordSection = () => {
+export const initForewordSection = () => {
   document.querySelectorAll(".horizontal-scroll-section_wrapper").forEach((wrap) => {
     const track = wrap.querySelector(".horizontal-scroll-section_track");
     const headerImageWrapper = wrap.querySelector(".foreword-header_image-wrapper");
@@ -68,6 +68,3 @@ const initForewordSection = () => {
     }
   });
 };
-
-export { initForewordSection };
-
