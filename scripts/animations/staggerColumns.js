@@ -16,31 +16,33 @@ const initStaggerColumns = () => {
         })
     );
 
-    gsap.set(splits.map(split => split.words), { yPercent: 100 });
+    gsap.set(splits.flatMap(split => split.words), { yPercent: 100 });
 
-    ScrollTrigger.create({
-        trigger: pinHeight,
-        start: 'top top',
-        end: 'bottom bottom',
-        pin: container
-    });
-
-    const tl = gsap.timeline({
-        scrollTrigger: {
+    requestAnimationFrame(() => {
+        ScrollTrigger.create({
             trigger: pinHeight,
             start: 'top top',
             end: 'bottom bottom',
-            scrub: true
-        }
-    });
+            pin: container
+        });
 
-    splits.forEach((split, index) => {
-        tl.to(split.words, {
-            yPercent: 0,
-            duration: 1,
-            stagger: 0.2,
-            ease: 'power4.out'
-        }, index > 0 ? '+=0.5' : 0);
+        const tl = gsap.timeline({
+            scrollTrigger: {
+                trigger: pinHeight,
+                start: 'top top',
+                end: 'bottom bottom',
+                scrub: true
+            }
+        });
+
+        splits.forEach((split, index) => {
+            tl.to(split.words, {
+                yPercent: 0,
+                duration: 1,
+                stagger: 0.2,
+                ease: 'power4.out'
+            }, index > 0 ? '+=0.5' : 0);
+        });
     });
 };
 
