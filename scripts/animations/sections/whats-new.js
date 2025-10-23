@@ -18,31 +18,45 @@ export const initStaggerColumns = () => {
 
     gsap.set(splits.flatMap(split => split.words), { yPercent: 100 });
 
-    requestAnimationFrame(() => {
-        ScrollTrigger.create({
-            trigger: pinHeight,
-            start: 'top top',
-            end: 'bottom bottom',
-            pin: container
-        });
+    let initialized = false;
 
-        const tl = gsap.timeline({
-            scrollTrigger: {
-                trigger: pinHeight,
-                start: 'top top',
-                end: 'bottom bottom',
-                scrub: true
-            }
-        });
+    ScrollTrigger.create({
+        trigger: root,
+        start: 'top bottom',
+        once: true,
+        onEnter: () => {
+            if (initialized) return;
+            initialized = true;
 
-        splits.forEach((split, index) => {
-            tl.to(split.words, {
-                yPercent: 0,
-                duration: 1,
-                stagger: 0.2,
-                ease: 'power4.out'
-            }, index > 0 ? '+=0.5' : 0);
-        });
+            requestAnimationFrame(() => {
+                ScrollTrigger.refresh();
+
+                ScrollTrigger.create({
+                    trigger: pinHeight,
+                    start: 'top top',
+                    end: 'bottom bottom',
+                    pin: container
+                });
+
+                const tl = gsap.timeline({
+                    scrollTrigger: {
+                        trigger: pinHeight,
+                        start: 'top top',
+                        end: 'bottom bottom',
+                        scrub: true
+                    }
+                });
+
+                splits.forEach((split, index) => {
+                    tl.to(split.words, {
+                        yPercent: 0,
+                        duration: 1,
+                        stagger: 0.2,
+                        ease: 'power4.out'
+                    }, index > 0 ? '+=0.5' : 0);
+                });
+            });
+        }
     });
 };
 
