@@ -11,10 +11,3 @@ export const initBenefitsSection = () => {
     });
   });
 };
-
-if (typeof Webflow !== 'undefined') {
-  Webflow.push(() => initBenefitsTierClick());
-} else {
-  document.addEventListener('DOMContentLoaded', initBenefitsTierClick);
-}
-
