@@ -5,7 +5,7 @@ export function initHighlightText(){
     const scrollEnd = heading.getAttribute("data-highlight-scroll-end") || "center 40%"
     const fadedValue = heading.getAttribute("data-highlight-fade") || 0.2
     const staggerValue = heading.getAttribute("data-highlight-stagger") || 0.1
-    const bgColor = heading.getAttribute("data-highlight-bg") || "193, 230, 231"
+    const bgColor = heading.getAttribute("data-highlight-bg") || "#C1E6E7"
     
     new SplitText(heading, {
       type: "words",
@@ -35,21 +35,24 @@ export function initHighlightText(){
             const wrapper = wordWrappers[index];
             const wordDelay = index * staggerValue;
             
-            tl.from(wrapper, {
-              backgroundColor: `rgba(${bgColor}, 0)`,
-              duration: 0.3,
-              ease: "linear"
+            tl.set(wrapper, {
+              backgroundColor: bgColor
             }, wordDelay)
+            .to(wrapper, {
+              backgroundColor: bgColor,
+              duration: 0.2,
+              ease: "linear"
+            }, wordDelay + 0.2)
             .from(word, {
               opacity: 0,
               duration: 0.2,
               ease: "linear"
-            }, wordDelay + 0.1)
+            }, wordDelay + 0.4)
             .to(wrapper, {
-              backgroundColor: `rgba(${bgColor}, 0)`,
+              backgroundColor: "transparent",
               duration: 0.3,
               ease: "linear"
-            }, wordDelay + 0.4);
+            }, wordDelay + 0.6);
           });
         });
         return ctx;
