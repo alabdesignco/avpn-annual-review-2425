@@ -66,9 +66,13 @@ const initMembersTabs = () => {
   };
 
   tabItems.forEach((item, index) => {
-    item.addEventListener("click", () => {
+    item.addEventListener("mouseenter", () => {
       currentIndex = index;
       switchToTab(item);
+      resetAutoRotate();
+    });
+
+    item.addEventListener("mouseleave", () => {
       resetAutoRotate();
     });
   });
