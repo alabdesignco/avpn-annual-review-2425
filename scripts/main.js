@@ -1,4 +1,5 @@
 import { smoothScroll } from './utils/smooth-scroll.js';
+import { initScrollReveal } from './utils/scrollReveal.js';
 import { initModalBasic } from './utils/modalInit.js';
 import { initHeaderSection } from './animations/sections/header.js';
 import { initForewordSection } from './animations/sections/foreword.js';
@@ -23,11 +24,12 @@ import { initEventsSection } from './animations/sections/events.js';
 import { initImpactActionSection } from './animations/sections/impact-action.js';
 import { initBenefitsSection } from './animations/sections/benefits.js';
 
-gsap.registerPlugin(ScrollTrigger,Observer,SplitText,Draggable);
+gsap.registerPlugin(ScrollTrigger,Observer,SplitText);
 
 window.lenis = smoothScroll();
 
 const initAllAnimations = () => {
+  initScrollReveal();
   initModalBasic();
   initHeaderSection();
   initForewordSection();
