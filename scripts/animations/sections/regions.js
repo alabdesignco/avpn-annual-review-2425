@@ -1,9 +1,31 @@
 export const initRegionsSection = () => {
+  const wrapper = document.querySelector('.regions_wrapper');
+  const buttonWrapper = document.querySelector('.region_button-wrapper');
   const buttons = Array.from(document.querySelectorAll('.region_button'));
   const overlays = Array.from(document.querySelectorAll('.regions_base.is-overlay'));
   const reflectionItems = Array.from(document.querySelectorAll('.regions-reflections_item'));
   
   if (!buttons.length || !overlays.length) return;
+
+  if (wrapper && buttonWrapper) {
+    const children = Array.from(buttonWrapper.children);
+    
+    const tl = gsap.timeline();
+    
+    tl.from(wrapper, {
+      scale: 0.8,
+      autoAlpha: 0,
+      duration: 1.5,
+      ease: 'back.out(1.7)'
+    })
+    .from(children, {
+      autoAlpha: 0,
+      y: 20,
+      duration: 1.2,
+      stagger: 0.1,
+      ease: 'back.out(1.7)'
+    },"+=0.05");
+  }
 
   const getKeyFromClass = el => {
     const match = el.className.match(/is-(?!overlay)([a-z0-9-]+)/i);
