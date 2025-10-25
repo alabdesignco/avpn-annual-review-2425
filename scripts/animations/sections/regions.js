@@ -39,14 +39,21 @@ export const initRegionsSection = () => {
   let activeOverlay;
   let activeReflection;
   let activeButton;
+  let hideTimeout;
 
   const show = (overlay, reflection, button) => {
+    if (hideTimeout) {
+      clearTimeout(hideTimeout);
+      hideTimeout = null;
+    }
+
     if (activeOverlay === overlay && activeReflection === reflection) return;
 
     const prevOverlay = activeOverlay;
     const prevReflection = activeReflection;
 
     if (prevOverlay) {
+      gsap.killTweensOf(prevOverlay);
       gsap.to(prevOverlay, { 
         autoAlpha: 0, 
         duration: 0.2, 
@@ -55,6 +62,7 @@ export const initRegionsSection = () => {
     }
 
     if (prevReflection) {
+      gsap.killTweensOf(prevReflection);
       gsap.to(prevReflection, { 
         autoAlpha: 0, 
         duration: 0.2 
@@ -69,6 +77,7 @@ export const initRegionsSection = () => {
     if (activeButton) activeButton.classList.add('is-active');
 
     if (activeOverlay) {
+      gsap.killTweensOf(activeOverlay);
       gsap.set(activeOverlay, { display: 'block' });
       gsap.fromTo(
         activeOverlay, 
@@ -78,6 +87,7 @@ export const initRegionsSection = () => {
     }
 
     if (activeReflection) {
+      gsap.killTweensOf(activeReflection);
       gsap.fromTo(
         activeReflection, 
         { autoAlpha: 0, scale: 0.8 }, 
@@ -93,14 +103,13 @@ export const initRegionsSection = () => {
     
     if (!overlay) return;
     
-    btn.addEventListener('click', () => show(overlay, reflection, btn));
+    btn.addEventListener('mouseenter', () => show(overlay, reflection, btn));
+    btn.addEventListener('mouseleave', () => {
+      if (activeOverlay === overlay) {
+        hideTimeout = setTimeout(() => {
+          show(null, null, null);
+        }, 100);
+      }
+    });
   });
-
-  const defaultOverlay = overlayMap.get('global-markets');
-  const defaultReflection = reflectionMap.get('global-markets');
-  const defaultButton = buttons.find(btn => keyFor(btn) === 'global-markets');
-  
-  if (defaultOverlay) {
-    show(defaultOverlay, defaultReflection, defaultButton);
-  }
 };
