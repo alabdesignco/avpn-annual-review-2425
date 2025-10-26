@@ -14,17 +14,16 @@ export default defineConfig({
     emptyOutDir: true,
     minify: true,
     rollupOptions: {
-      external: ['gsap', 'ScrollTrigger', 'Observer', 'Lenis', 'd3', 'SplitText', 'Draggable', 'imagesLoaded'],
+      external: ['gsap', 'ScrollTrigger', 'Lenis', 'd3', 'SplitText', 'imagesLoaded', 'Matter'],
       output: {
         globals: {
           gsap: 'gsap',
           ScrollTrigger: 'ScrollTrigger',
-          Observer: 'Observer',
           Lenis: 'Lenis',
           d3: 'd3',
           SplitText: 'SplitText',
-          Draggable: 'Draggable',
           imagesLoaded: 'imagesLoaded',
+          Matter: 'Matter',
         },
       },
     },
