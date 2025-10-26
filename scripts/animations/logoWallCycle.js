@@ -1,5 +1,5 @@
 export function initLogoWallCycle() {
-  const loopDelay = 1.5;
+  const loopDelay = 1;
   const duration  = 0.9;
 
   document.querySelectorAll('[data-logo-wall-cycle-init]').forEach(root => {
