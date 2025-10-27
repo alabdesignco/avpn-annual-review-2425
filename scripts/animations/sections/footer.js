@@ -6,6 +6,31 @@ export const initFalling2DMatterJS = () => {
     return;
   }
 
+  // Fallback initialization that doesn't depend on ScrollTrigger
+  const fallbackInit = () => {
+    const container = document.querySelector("#canvas-target");
+    if (container && !container.hasAttribute('data-matter-initialized')) {
+      // Check if footer section is actually visible
+      const footerSection = container.closest('.footer_component');
+      if (footerSection) {
+        const rect = footerSection.getBoundingClientRect();
+        const isVisible = rect.top < window.innerHeight && rect.bottom > 0;
+        
+        if (isVisible) {
+          console.log('Fallback: Footer section is visible - initializing Matter.js physics');
+          initPhysics(container);
+          container.setAttribute('data-matter-initialized', 'true');
+        } else {
+          console.log('Fallback: Footer section not visible yet, retrying in 1 second');
+          setTimeout(fallbackInit, 1000);
+        }
+      }
+    }
+  };
+
+  // Set up fallback timer as backup (longer delay since footer is last)
+  setTimeout(fallbackInit, 4000);
+
   const Engine = Matter.Engine,
     Render = Matter.Render,
     Runner = Matter.Runner,
@@ -282,22 +307,44 @@ export const initFalling2DMatterJS = () => {
       return;
     }
 
-    document.querySelectorAll(".footer_component").forEach((section) => {
-      if (section.querySelector("#canvas-target")) {
-        ScrollTrigger.create({
-          trigger: section,
-          start: "top top",
-          once: true,
-          onEnter: () => {
-            const container = section.querySelector("#canvas-target");
-            if (container && !container.hasAttribute('data-matter-initialized')) {
-              initPhysics(container);
-              container.setAttribute('data-matter-initialized', 'true');
+    // Wait for other ScrollTriggers to initialize first
+    const initFooterScrollTriggers = () => {
+      document.querySelectorAll(".footer_component").forEach((section) => {
+        if (section.querySelector("#canvas-target")) {
+          ScrollTrigger.create({
+            trigger: section,
+            start: "top 80%", // Start when footer is 80% in view
+            end: "bottom 20%", // End when footer is 20% out of view
+            once: true,
+            refreshPriority: 1, // Lower priority than partners.js (-1)
+            onEnter: () => {
+              const container = section.querySelector("#canvas-target");
+              if (container && !container.hasAttribute('data-matter-initialized')) {
+                console.log('Footer ScrollTrigger activated - initializing Matter.js');
+                initPhysics(container);
+                container.setAttribute('data-matter-initialized', 'true');
+              }
+            },
+            onLeave: () => {
+              console.log('Footer section left view');
+            },
+            onEnterBack: () => {
+              console.log('Footer section entered back');
             }
-          },
-        });
-      }
-    });
+          });
+        }
+      });
+    };
+
+    // Initialize after other sections have had time to set up their ScrollTriggers
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', () => {
+        // Wait longer since footer is last in the sequence
+        setTimeout(initFooterScrollTriggers, 1000);
+      });
+    } else {
+      setTimeout(initFooterScrollTriggers, 1000);
+    }
   } else {
     window.addEventListener("load", () => {
       const container = document.querySelector("#canvas-target");
