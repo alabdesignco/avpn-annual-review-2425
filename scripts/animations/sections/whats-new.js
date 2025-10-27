@@ -5,6 +5,7 @@ export const initStaggerColumns = () => {
     const pinHeight = root.querySelector('.new_pin-height');
     const container = root.querySelector('.new_layout');
     const paragraphs = root.querySelectorAll('.new-paragraph_item');
+    const buttonGroup = root.querySelector('.button-group');
 
     if (!pinHeight || !container || paragraphs.length === 0) return;
 
@@ -55,6 +56,16 @@ export const initStaggerColumns = () => {
                         ease: 'power4.out'
                     }, index > 0 ? '+=0.5' : 0);
                 });
+
+                if (buttonGroup) {
+                    gsap.set(buttonGroup, { opacity: 0, y: 20 });
+                    tl.to(buttonGroup, {
+                        opacity: 1,
+                        y: 0,
+                        duration: 0.8,
+                        ease: 'power2.out'
+                    }, '+=0.3');
+                }
             });
         }
     });
