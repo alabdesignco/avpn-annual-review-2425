@@ -9,7 +9,7 @@ import { initTreeMapChart } from './animations/charts/treeMapChart.js';
 import { initStaggerColumns } from './animations/sections/whats-new.js';
 import { initWordBreak } from './animations/wordBreak.js';
 import { initHighlightText } from './animations/highlightText.js';
-import { initTitleWaterfall } from './animations/titleWaterfall.js';
+// import { initTitleWaterfall } from './animations/titleWaterfall.js';
 import { initSectionTitleScroll } from './animations/sectionTitleScroll.js';
 import { initCardsScramble } from './animations/cardsScramble.js';
 import { initDirectionalListHover } from './animations/directionalHover.js';
@@ -23,6 +23,7 @@ import { initRegionsSection } from './animations/sections/regions.js';
 import { initEventsSection } from './animations/sections/events.js';
 import { initImpactActionSection } from './animations/sections/impact-action.js';
 import { initBenefitsSection } from './animations/sections/benefits.js';
+import { initImpactHighlights } from './animations/sections/impact-highlights.js';
 
 gsap.registerPlugin(ScrollTrigger,Observer,SplitText);
 
@@ -39,7 +40,8 @@ const initAllAnimations = () => {
   initStaggerColumns();
   initWordBreak();
   initHighlightText();
-  initTitleWaterfall();
+  // initTitleWaterfall();
+  initImpactHighlights();
   initSectionTitleScroll();
   initCardsScramble();
   initDirectionalListHover();
