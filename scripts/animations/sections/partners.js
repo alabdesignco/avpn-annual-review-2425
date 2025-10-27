@@ -32,6 +32,7 @@ export function initPartners() {
         start: 'top 60%',
         end: 'bottom 20%',
         toggleActions: 'play none none reverse',
+        refreshPriority: -1,
         onEnter: () => console.log('Partners entrance animation triggered')
       }
     });
