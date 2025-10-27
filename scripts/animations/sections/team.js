@@ -1,4 +1,52 @@
-export function initTeamTabs() {
+export function initTeam() {
+  const initEntranceAnimations = () => {
+    const section = document.querySelector('.section_team');
+    if (!section) return;
+
+    const introText = section.querySelector('.team_top .text-size-large');
+    const filterGroup = section.querySelector('.filter-group');
+
+    console.log('Team section elements found:', {
+      introText: !!introText,
+      filterGroup: !!filterGroup
+    });
+
+    if (!introText || !filterGroup) {
+      console.log('Missing elements for team entrance animation');
+      return;
+    }
+
+    gsap.set([introText, filterGroup], { 
+      opacity: 0, 
+      y: 30 
+    });
+
+    const tl = gsap.timeline({
+      scrollTrigger: {
+        trigger: section,
+        start: 'top 60%',
+        end: 'bottom 20%',
+        toggleActions: 'play none none reverse',
+        onEnter: () => console.log('Team entrance animation triggered')
+      }
+    });
+
+    tl.to(introText, { 
+      opacity: 1, 
+      y: 0, 
+      duration: 0.8, 
+      ease: 'power3.out' 
+    })
+    .to(filterGroup, { 
+      opacity: 1, 
+      y: 0, 
+      duration: 0.6, 
+      ease: 'power2.out' 
+    }, '-=0.4');
+  };
+
+  initEntranceAnimations();
+
   const groups = document.querySelectorAll('[data-filter-group]');
 
   groups.forEach((group) => {

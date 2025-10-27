@@ -12,7 +12,7 @@ import { initSectionTitleScroll } from './animations/sectionTitleScroll.js';
 import { initCardsScramble } from './animations/cardsScramble.js';
 import { initWork } from './animations/sections/work.js';
 import { initPartners } from './animations/sections/partners.js';
-import { initTeamTabs } from './animations/teamTabs.js';
+import { initTeam } from './animations/sections/team.js';
 import { initGlobalParallax } from './utils/globalParallax.js';
 import { initSectionBgTransition } from './utils/sectionBgTransition.js';
 import { initFalling2DMatterJS } from './animations/sections/footer.js';
@@ -43,7 +43,7 @@ const initAllAnimations = () => {
   initCardsScramble();
   initWork();
   initPartners();
-  initTeamTabs();
+  initTeam();
   initGlobalParallax();
   initSectionBgTransition();
   initFalling2DMatterJS();
