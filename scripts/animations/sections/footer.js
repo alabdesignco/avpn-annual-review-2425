@@ -228,19 +228,34 @@ export const initFalling2DMatterJS = () => {
     resizeHandler = () => {
       clearTimeout(resizeTimeout);
       resizeTimeout = setTimeout(() => {
+        // Pause physics during resize
+        Runner.stop(runner);
+        
         const rect = container.getBoundingClientRect();
         const newWidth = rect.width;
         const newHeight = rect.height;
 
+        // Update canvas dimensions
         render.canvas.width = newWidth * (window.devicePixelRatio || 2);
         render.canvas.height = newHeight * (window.devicePixelRatio || 2);
         render.canvas.style.width = `${newWidth}px`;
         render.canvas.style.height = `${newHeight}px`;
 
-        engine.world.gravity.y = gravity;
+        // Get all non-static bodies (falling objects)
+        const bodies = Composite.allBodies(engine.world).filter(body => !body.isStatic);
+        
+        // Reposition objects that are outside new boundaries
+        bodies.forEach(body => {
+          const x = Math.max(50, Math.min(body.position.x, newWidth - 50));
+          const y = Math.max(50, Math.min(body.position.y, newHeight - 50));
+          Matter.Body.setPosition(body, { x, y });
+          Matter.Body.setVelocity(body, { x: 0, y: 0 });
+        });
 
+        // Remove old walls
         Composite.remove(engine.world, [boxTop, boxBottom, boxLeft, boxRight]);
 
+        // Create new walls
         const wallDepth = newWidth / 4;
         boxTop = Bodies.rectangle(newWidth / 2, -wallDepth, newWidth * 2, wallDepth * 2, { isStatic: true });
         boxBottom = Bodies.rectangle(newWidth / 2, newHeight + wallDepth, newWidth * 2, wallDepth * 2, { isStatic: true });
@@ -248,6 +263,9 @@ export const initFalling2DMatterJS = () => {
         boxRight = Bodies.rectangle(newWidth + wallDepth, newHeight / 2, wallDepth * 2, newHeight * 2, { isStatic: true });
 
         Composite.add(engine.world, [boxTop, boxBottom, boxLeft, boxRight]);
+
+        // Resume physics
+        Runner.run(runner, engine);
       }, 200);
     };
     window.addEventListener("resize", resizeHandler);
