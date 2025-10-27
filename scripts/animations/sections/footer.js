@@ -1,160 +1,294 @@
 export const initFalling2DMatterJS = () => {
-  const canvas = document.querySelector("#canvas-target");
-  if (!canvas) return;
+  const animateOnScroll = true;
 
-  const canvasWidth = canvas.clientWidth + 2;
-  const canvasHeight = canvas.clientHeight + 2;
-  const canvasWallDepth = canvasWidth / 4;
-  const objectAmount = 25;
-  const objectSize = canvasWidth / 15;
-  const objectRestitution = 0.75;
-  const worldGravity = 2;
+  if (typeof Matter === 'undefined') {
+    console.warn('Matter.js is not loaded. Falling2D animation will not initialize.');
+    return;
+  }
 
   const Engine = Matter.Engine,
     Render = Matter.Render,
     Runner = Matter.Runner,
     Bodies = Matter.Bodies,
     Composite = Matter.Composite,
-    Mouse = Matter.Mouse,
     Events = Matter.Events;
 
-  const engine = Engine.create();
-  engine.world.gravity.y = worldGravity;
+  let engine, render, runner;
+  let boxTop, boxBottom, boxLeft, boxRight;
+  let resizeHandler, mousemoveHandler, mouseleaveHandler;
 
-  const render = Render.create({
-    element: canvas,
-    engine: engine,
-    options: {
-      background: "transparent",
-      wireframes: false,
-      width: canvasWidth,
-      height: canvasHeight,
-      pixelRatio: 2,
-      border: "none",
-    }
-  });
-
-  function getRandomNumber(min, max) {
-    return Math.random() * (max - min) + min;
-  }
-
-  const min = objectSize / 2;
-  const max = canvasWidth - (objectSize / 2);
   const COLORS = ["#e42919", "#00b4ae", "#007b69", "#f27c38", "#ffd552", "#91c7d6"];
+  const gravity = 2;
+  const objectAmount = 25;
+  const objectRestitution = 0.65;
+
+  const getRandomNumber = (min, max) => Math.random() * (max - min) + min;
+
+  const cleanup = () => {
+    if (engine) {
+      Engine.clear(engine);
+    }
+    if (render) {
+      Render.stop(render);
+    }
+    if (runner) {
+      Runner.stop(runner);
+    }
+    if (resizeHandler) {
+      window.removeEventListener("resize", resizeHandler);
+    }
+    if (mousemoveHandler && mouseleaveHandler) {
+      const container = document.querySelector("#canvas-target");
+      if (container) {
+        container.removeEventListener("mousemove", mousemoveHandler);
+        container.removeEventListener("mouseleave", mouseleaveHandler);
+      }
+    }
+  };
 
   const createSemicircle = (x, y, radius, color) => {
     const vertices = [];
     const segments = 20;
-
     for (let i = 0; i <= segments; i++) {
       const angle = Math.PI * (i / segments);
       vertices.push({ x: Math.cos(angle) * radius, y: -Math.sin(angle) * radius });
     }
     vertices.push({ x: -radius, y: 0 });
-
     return Bodies.fromVertices(x, y, [vertices], {
       restitution: objectRestitution,
-      render: { fillStyle: color, strokeStyle: color }
+      render: { fillStyle: color, strokeStyle: color },
     });
   };
 
-  const createObject = () => {
-    const color = COLORS[Math.floor(Math.random() * COLORS.length)];
-    const shapeType = Math.random();
+  const initPhysics = (container) => {
+    cleanup();
+    const rect = container.getBoundingClientRect();
+    const containerWidth = rect.width;
+    const containerHeight = rect.height;
+    const containerWallDepth = containerWidth / 4;
 
-    if (shapeType < 0.25) {
-      const radius = objectSize * (0.3 + Math.random() * 0.95);
-      const circle = Bodies.circle(getRandomNumber(min, max), -objectSize, radius, {
-        restitution: objectRestitution,
-        render: { fillStyle: color, strokeStyle: color }
-      });
-      Composite.add(engine.world, circle);
-    } else if (shapeType < 0.5) {
-      const radius = objectSize * (0.3 + Math.random() * 0.95);
-      const semicircle = createSemicircle(getRandomNumber(min, max), -objectSize, radius, color);
-      Composite.add(engine.world, semicircle);
-    } else if (shapeType < 0.75) {
-      const size = objectSize * (0.5 + Math.random() * 0.75);
-      const rectangle = Bodies.rectangle(getRandomNumber(min, max), -objectSize, size, size, {
-        chamfer: { radius: size * 0.15 },
-        restitution: objectRestitution,
-        render: { fillStyle: color, strokeStyle: color }
-      });
-      Composite.add(engine.world, rectangle);
-    } else {
-      const size = objectSize * (0.5 + Math.random() * 0.75);
-      const baseRadius = size * 0.15;
-      const cornerIndex = Math.floor(Math.random() * 4);
-      const normalRadius = baseRadius * (0.5 + Math.random() * 0.5);
-      const largeRadius = normalRadius * 3;
+    const objectSize = containerWidth / 15;
+    const min = objectSize / 2;
+    const max = containerWidth - objectSize / 2;
 
-      const radiusArray = [normalRadius, normalRadius, normalRadius, normalRadius];
-      radiusArray[cornerIndex] = largeRadius;
+    engine = Engine.create();
+    engine.world.gravity.y = gravity;
+    engine.timing.timeScale = 0.9;
 
-      const variedRectangle = Bodies.rectangle(getRandomNumber(min, max), -objectSize, size, size, {
-        chamfer: { radius: radiusArray },
-        restitution: objectRestitution,
-        render: { fillStyle: color, strokeStyle: color }
+    render = Render.create({
+      element: container,
+      engine: engine,
+      options: {
+        background: "transparent",
+        wireframes: false,
+        width: containerWidth,
+        height: containerHeight,
+        pixelRatio: window.devicePixelRatio || 2,
+      },
+    });
+
+    render.canvas.width = containerWidth * (window.devicePixelRatio || 2);
+    render.canvas.height = containerHeight * (window.devicePixelRatio || 2);
+    render.canvas.style.width = `${containerWidth}px`;
+    render.canvas.style.height = `${containerHeight}px`;
+
+    // Build world walls
+    boxTop = Bodies.rectangle(
+      containerWidth / 2,
+      -containerWallDepth,
+      containerWidth * 2,
+      containerWallDepth * 2,
+      { isStatic: true }
+    );
+    boxBottom = Bodies.rectangle(
+      containerWidth / 2,
+      containerHeight + containerWallDepth,
+      containerWidth * 2,
+      containerWallDepth * 2,
+      { isStatic: true }
+    );
+    boxLeft = Bodies.rectangle(
+      -containerWallDepth,
+      containerHeight / 2,
+      containerWallDepth * 2,
+      containerHeight * 2,
+      { isStatic: true }
+    );
+    boxRight = Bodies.rectangle(
+      containerWidth + containerWallDepth,
+      containerHeight / 2,
+      containerWallDepth * 2,
+      containerHeight * 2,
+      { isStatic: true }
+    );
+
+    Composite.add(engine.world, [boxTop, boxBottom, boxLeft, boxRight]);
+
+    // Object creation
+    const createObject = () => {
+      const color = COLORS[Math.floor(Math.random() * COLORS.length)];
+      const shapeType = Math.random();
+
+      if (shapeType < 0.25) {
+        const radius = objectSize * (0.3 + Math.random() * 0.95);
+        const circle = Bodies.circle(getRandomNumber(min, max), -objectSize, radius, {
+          restitution: objectRestitution,
+          render: { fillStyle: color, strokeStyle: color },
+        });
+        Composite.add(engine.world, circle);
+      } else if (shapeType < 0.5) {
+        const radius = objectSize * (0.3 + Math.random() * 0.95);
+        const semicircle = createSemicircle(getRandomNumber(min, max), -objectSize, radius, color);
+        Composite.add(engine.world, semicircle);
+      } else if (shapeType < 0.75) {
+        const size = objectSize * (0.5 + Math.random() * 0.75);
+        const rectangle = Bodies.rectangle(getRandomNumber(min, max), -objectSize, size, size, {
+          chamfer: { radius: size * 0.15 },
+          restitution: objectRestitution,
+          render: { fillStyle: color, strokeStyle: color },
+        });
+        Composite.add(engine.world, rectangle);
+      } else {
+        const size = objectSize * (0.5 + Math.random() * 0.75);
+        const baseRadius = size * 0.15;
+        const cornerIndex = Math.floor(Math.random() * 4);
+        const normalRadius = baseRadius * (0.5 + Math.random() * 0.5);
+        const largeRadius = normalRadius * 3;
+        const radiusArray = [normalRadius, normalRadius, normalRadius, normalRadius];
+        radiusArray[cornerIndex] = largeRadius;
+
+        const variedRectangle = Bodies.rectangle(
+          getRandomNumber(min, max),
+          -objectSize,
+          size,
+          size,
+          {
+            chamfer: { radius: radiusArray },
+            restitution: objectRestitution,
+            render: { fillStyle: color, strokeStyle: color },
+          }
+        );
+        Composite.add(engine.world, variedRectangle);
+      }
+    };
+
+    runner = Runner.create();
+    Render.run(render);
+    Runner.run(runner, engine);
+
+    let objectsCreated = 0;
+    const spawnLoop = () => {
+      if (objectsCreated < objectAmount) {
+        createObject();
+        objectsCreated++;
+        setTimeout(spawnLoop, 100);
+      }
+    };
+    setTimeout(spawnLoop, 100);
+
+    // Hover lift effect
+    let mouseX = 0;
+    let mouseY = 0;
+    let isMouseOverCanvas = false;
+
+    mousemoveHandler = (e) => {
+      const rect = container.getBoundingClientRect();
+      mouseX = e.clientX - rect.left;
+      mouseY = e.clientY - rect.top;
+      isMouseOverCanvas = true;
+    };
+
+    mouseleaveHandler = () => {
+      isMouseOverCanvas = false;
+    };
+
+    container.addEventListener("mousemove", mousemoveHandler);
+    container.addEventListener("mouseleave", mouseleaveHandler);
+
+    Events.on(engine, "afterUpdate", () => {
+      if (!isMouseOverCanvas) return;
+      const bodies = Composite.allBodies(engine.world).filter((b) => !b.isStatic);
+      const hoverRadius = 150;
+      bodies.forEach((body) => {
+        const dx = body.position.x - mouseX;
+        const dy = body.position.y - mouseY;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+        if (distance < hoverRadius) {
+          const forceStrength = (1 - distance / hoverRadius) * 0.2;
+          Matter.Body.setVelocity(body, {
+            x: body.velocity.x,
+            y: Math.min(body.velocity.y - forceStrength, -15),
+          });
+        }
       });
-      Composite.add(engine.world, variedRectangle);
-    }
+    });
+
+    // Responsive resize — updates canvas and walls
+    let resizeTimeout;
+    resizeHandler = () => {
+      clearTimeout(resizeTimeout);
+      resizeTimeout = setTimeout(() => {
+        const rect = container.getBoundingClientRect();
+        const newWidth = rect.width;
+        const newHeight = rect.height;
+
+        render.canvas.width = newWidth * (window.devicePixelRatio || 2);
+        render.canvas.height = newHeight * (window.devicePixelRatio || 2);
+        render.canvas.style.width = `${newWidth}px`;
+        render.canvas.style.height = `${newHeight}px`;
+
+        engine.world.gravity.y = gravity;
+
+        Composite.remove(engine.world, [boxTop, boxBottom, boxLeft, boxRight]);
+
+        const wallDepth = newWidth / 4;
+        boxTop = Bodies.rectangle(newWidth / 2, -wallDepth, newWidth * 2, wallDepth * 2, { isStatic: true });
+        boxBottom = Bodies.rectangle(newWidth / 2, newHeight + wallDepth, newWidth * 2, wallDepth * 2, { isStatic: true });
+        boxLeft = Bodies.rectangle(-wallDepth, newHeight / 2, wallDepth * 2, newHeight * 2, { isStatic: true });
+        boxRight = Bodies.rectangle(newWidth + wallDepth, newHeight / 2, wallDepth * 2, newHeight * 2, { isStatic: true });
+
+        Composite.add(engine.world, [boxTop, boxBottom, boxLeft, boxRight]);
+      }, 200);
+    };
+    window.addEventListener("resize", resizeHandler);
   };
 
-  // Walls
-  const boxTop = Bodies.rectangle(canvasWidth / 2, canvasHeight + canvasWallDepth, canvasWidth * 2, canvasWallDepth * 2, { isStatic: true });
-  const boxLeft = Bodies.rectangle(-canvasWallDepth, canvasHeight / 2, canvasWallDepth * 2, canvasHeight, { isStatic: true });
-  const boxRight = Bodies.rectangle(canvasWidth + canvasWallDepth, canvasHeight / 2, canvasWallDepth * 2, canvasHeight, { isStatic: true });
-  const boxBottom = Bodies.rectangle(canvasWidth / 2, -canvasWallDepth, canvasWidth * 2, canvasWallDepth * 2, { isStatic: true });
-  Composite.add(engine.world, [boxTop, boxLeft, boxRight, boxBottom]);
-
-  const runner = Runner.create();
-  let objectsCreated = 0;
-
-  const repeatedFunction = () => {
-    if (objectsCreated < objectAmount) {
-      createObject();
-      objectsCreated++;
-      setTimeout(repeatedFunction, 100);
+  // Scroll-triggered init
+  if (animateOnScroll) {
+    if (typeof ScrollTrigger === 'undefined') {
+      console.warn('ScrollTrigger is not loaded. Falling back to load event initialization.');
+      window.addEventListener("load", () => {
+        const container = document.querySelector("#canvas-target");
+        if (container) initPhysics(container);
+      });
+      return;
     }
-  };
 
-  // Start Matter.js engine immediately
-  Render.run(render);
-  Runner.run(runner, engine);
-  setTimeout(repeatedFunction, 100);
-  // Mouse interaction using native DOM events (canvas-specific)
-  let mouseX = 0;
-  let mouseY = 0;
-  let isMouseOverCanvas = false;
-
-  canvas.addEventListener('mousemove', (e) => {
-    const rect = canvas.getBoundingClientRect();
-    mouseX = e.clientX - rect.left;
-    mouseY = e.clientY - rect.top;
-    isMouseOverCanvas = true;
-  });
-
-  canvas.addEventListener('mouseleave', () => {
-    isMouseOverCanvas = false;
-  });
-
-  Events.on(engine, "afterUpdate", () => {
-    if (!isMouseOverCanvas) return;
-    
-    const bodies = Composite.allBodies(engine.world).filter(b => !b.isStatic);
-    const hoverRadius = 150;
-    
-    bodies.forEach(body => {
-      const dx = body.position.x - mouseX;
-      const dy = body.position.y - mouseY;
-      const distance = Math.sqrt(dx * dx + dy * dy);
-      if (distance < hoverRadius) {
-        const forceStrength = (1 - distance / hoverRadius) * 0.2;
-        Matter.Body.setVelocity(body, {
-          x: body.velocity.x,
-          y: Math.min(body.velocity.y - forceStrength, -15)
+    document.querySelectorAll(".footer_component").forEach((section) => {
+      if (section.querySelector("#canvas-target")) {
+        ScrollTrigger.create({
+          trigger: section,
+          start: "top top",
+          once: true,
+          onEnter: () => {
+            const container = section.querySelector("#canvas-target");
+            if (container && !container.hasAttribute('data-matter-initialized')) {
+              initPhysics(container);
+              container.setAttribute('data-matter-initialized', 'true');
+            }
+          },
         });
       }
     });
-  });
+  } else {
+    window.addEventListener("load", () => {
+      const container = document.querySelector("#canvas-target");
+      if (container && !container.hasAttribute('data-matter-initialized')) {
+        initPhysics(container);
+        container.setAttribute('data-matter-initialized', 'true');
+      }
+    });
+  }
+
+  return { cleanup };
 };
