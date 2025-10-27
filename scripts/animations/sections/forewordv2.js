@@ -39,23 +39,43 @@ export const initHorizontalScrolling = () => {
           if (ceoAccent2) entranceTl.to(ceoAccent2, { scale: 1, duration: 0.8, ease: "back.out(1.7)" }, 0.7, "<");
           if (ceoLabelWrapper) entranceTl.to(ceoLabelWrapper, { opacity: 1, y: 0, duration: 0.6, ease: "power2.out" }, 0.8, "<");
 
+          // Individual shape control
           shapes.forEach((shape, index) => {
-            const baseDelay = 0.3; // Base delay for all shapes
-            const shapeDelay = index * 0.2; // Delay between each shape
-            const startOffset = baseDelay + shapeDelay;
-            const endOffset = 0.2; // Fixed end offset for all shapes
+            // Set initial state
+            gsap.set(shape, { 
+              scale: 0, 
+              rotation: 0, 
+              transformOrigin: "center" 
+            });
             
-            gsap.fromTo(shape, {
-              scale: 0,
-            }, {
+            // Horizontal scroll timing - based on scroll progress (200% width container)
+            const shapeTimings = [
+              { start: "10%", end: "25%" },  // Shape 1: appears at 10% scroll progress
+              { start: "25%", end: "40%" },  // Shape 2: appears at 25% scroll progress
+              { start: "40%", end: "55%" },  // Shape 3: appears at 40% scroll progress
+              { start: "55%", end: "70%" }   // Shape 4: appears at 55% scroll progress
+            ];
+            
+            const timing = shapeTimings[index] || shapeTimings[0];
+            
+            gsap.to(shape, {
               scale: 1,
               ease: "power2.out",
               scrollTrigger: {
                 trigger: wrap,
-                start: `top+=${startOffset * 100}% top`,
-                end: `bottom-=${endOffset * 100}% bottom`,
-                scrub: 5,
+                start: `left+=${timing.start} left`,
+                end: `left+=${timing.end} left`,
+                scrub: 1,
               }
+            });
+
+            // Continuous looping rotation with random speed
+            const randomDuration = 2 + Math.random() * 4; // Random duration between 2-6 seconds
+            gsap.to(shape, {
+              rotation: 360,
+              duration: randomDuration,
+              ease: "none",
+              repeat: -1
             });
           });
         });
