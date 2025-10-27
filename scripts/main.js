@@ -10,7 +10,7 @@ import { initWordBreak } from './animations/wordBreak.js';
 import { initHighlightText } from './animations/highlightText.js';
 import { initSectionTitleScroll } from './animations/sectionTitleScroll.js';
 import { initCardsScramble } from './animations/cardsScramble.js';
-import { initDirectionalListHover } from './animations/directionalHover.js';
+import { initWork } from './animations/sections/work.js';
 import { initPartners } from './animations/sections/partners.js';
 import { initTeamTabs } from './animations/teamTabs.js';
 import { initGlobalParallax } from './utils/globalParallax.js';
@@ -41,7 +41,7 @@ const initAllAnimations = () => {
   initImpactHighlights();
   initSectionTitleScroll();
   initCardsScramble();
-  initDirectionalListHover();
+  initWork();
   initPartners();
   initTeamTabs();
   initGlobalParallax();

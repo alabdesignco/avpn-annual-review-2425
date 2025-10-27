@@ -1,4 +1,4 @@
-export function initDirectionalListHover() {
+export function initWork() {
 
     const directionMap = {
       top: 'translateY(-100%)',
