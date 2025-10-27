@@ -9,7 +9,6 @@ import { initTreeMapChart } from './animations/charts/treeMapChart.js';
 import { initStaggerColumns } from './animations/sections/whats-new.js';
 import { initWordBreak } from './animations/wordBreak.js';
 import { initHighlightText } from './animations/highlightText.js';
-// import { initTitleWaterfall } from './animations/titleWaterfall.js';
 import { initSectionTitleScroll } from './animations/sectionTitleScroll.js';
 import { initCardsScramble } from './animations/cardsScramble.js';
 import { initDirectionalListHover } from './animations/directionalHover.js';
@@ -40,7 +39,6 @@ const initAllAnimations = () => {
   initStaggerColumns();
   initWordBreak();
   initHighlightText();
-  // initTitleWaterfall();
   initImpactHighlights();
   initSectionTitleScroll();
   initCardsScramble();
