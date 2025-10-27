@@ -6,15 +6,7 @@ export function initWork() {
     const workListItems = section.querySelectorAll('.work_list > *');
     const button = section.querySelector('.button');
 
-    console.log('Work section elements found:', {
-      workListItems: workListItems.length,
-      button: !!button
-    });
-
-    if (!workListItems.length || !button) {
-      console.log('Missing elements for work entrance animation');
-      return;
-    }
+    if (!workListItems.length || !button) return;
 
     gsap.set([...workListItems, button], { 
       opacity: 0, 
@@ -27,7 +19,6 @@ export function initWork() {
         start: 'top 60%',
         end: 'bottom 20%',
         toggleActions: 'play none none reverse',
-        onEnter: () => console.log('Work entrance animation triggered')
       }
     });
 

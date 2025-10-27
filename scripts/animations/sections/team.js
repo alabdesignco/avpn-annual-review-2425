@@ -6,15 +6,7 @@ export function initTeam() {
     const introText = section.querySelector('.team_top .text-size-large');
     const filterGroup = section.querySelector('.filter-group');
 
-    console.log('Team section elements found:', {
-      introText: !!introText,
-      filterGroup: !!filterGroup
-    });
-
-    if (!introText || !filterGroup) {
-      console.log('Missing elements for team entrance animation');
-      return;
-    }
+    if (!introText || !filterGroup) return;
 
     gsap.set([introText, filterGroup], { 
       opacity: 0, 
@@ -26,8 +18,7 @@ export function initTeam() {
         trigger: section,
         start: 'top 60%',
         end: 'bottom 20%',
-        toggleActions: 'play none none reverse',
-        onEnter: () => console.log('Team entrance animation triggered')
+        toggleActions: 'play none none reverse'
       }
     });
 

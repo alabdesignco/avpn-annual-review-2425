@@ -10,16 +10,7 @@ export const initEventsSection = () => {
     const eventItems = document.querySelectorAll('.events_list-wrapper > *');
     const button = document.querySelector('.events_bottom .button');
 
-    console.log('Events section elements found:', {
-      introParagraph: !!introParagraph,
-      eventItems: eventItems.length,
-      button: !!button
-    });
-
-    if (!introParagraph || !eventItems.length || !button) {
-      console.log('Missing elements for events entrance animation');
-      return;
-    }
+    if (!introParagraph || !eventItems.length || !button) return;
 
     gsap.set([introParagraph, ...eventItems, button], { 
       opacity: 0, 
@@ -32,7 +23,6 @@ export const initEventsSection = () => {
         start: 'top 60%',
         end: 'bottom 20%',
         toggleActions: 'play none none reverse',
-        onEnter: () => console.log('Events entrance animation triggered')
       }
     });
 

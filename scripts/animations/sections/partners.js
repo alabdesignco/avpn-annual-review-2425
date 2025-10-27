@@ -10,16 +10,7 @@ export function initPartners() {
     const button = section.querySelector('.partners_top .button');
     const logoWallComponent = section.querySelector('.partners-logo-wall_component');
 
-    console.log('Partners section elements found:', {
-      introText: !!introText,
-      button: !!button,
-      logoWallComponent: !!logoWallComponent
-    });
-
-    if (!introText || !button || !logoWallComponent) {
-      console.log('Missing elements for partners entrance animation');
-      return;
-    }
+    if (!introText || !button || !logoWallComponent) return;
 
     gsap.set([introText, button, logoWallComponent], { 
       opacity: 0, 
@@ -33,7 +24,6 @@ export function initPartners() {
         end: 'bottom 20%',
         toggleActions: 'play none none reverse',
         refreshPriority: -1,
-        onEnter: () => console.log('Partners entrance animation triggered')
       }
     });
 
