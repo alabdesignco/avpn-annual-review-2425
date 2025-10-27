@@ -1,6 +1,54 @@
 export function initWork() {
+  const initEntranceAnimations = () => {
+    const section = document.querySelector('.section_work');
+    if (!section) return;
 
-    const directionMap = {
+    const workListItems = section.querySelectorAll('.work_list > *');
+    const button = section.querySelector('.button');
+
+    console.log('Work section elements found:', {
+      workListItems: workListItems.length,
+      button: !!button
+    });
+
+    if (!workListItems.length || !button) {
+      console.log('Missing elements for work entrance animation');
+      return;
+    }
+
+    gsap.set([...workListItems, button], { 
+      opacity: 0, 
+      y: 30 
+    });
+
+    const tl = gsap.timeline({
+      scrollTrigger: {
+        trigger: section,
+        start: 'top 60%',
+        end: 'bottom 20%',
+        toggleActions: 'play none none reverse',
+        onEnter: () => console.log('Work entrance animation triggered')
+      }
+    });
+
+    tl.to(workListItems, { 
+      opacity: 1, 
+      y: 0, 
+      duration: 0.6, 
+      ease: 'power2.out',
+      stagger: 0.15
+    })
+    .to(button, { 
+      opacity: 1, 
+      y: 0, 
+      duration: 0.6, 
+      ease: 'power2.out' 
+    }, '-=0.3');
+  };
+
+  initEntranceAnimations();
+
+  const directionMap = {
       top: 'translateY(-100%)',
       bottom: 'translateY(100%)',
       left: 'translateX(-100%)',
