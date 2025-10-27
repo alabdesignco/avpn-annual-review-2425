@@ -5,6 +5,60 @@ export const initEventsSection = () => {
   const allProgressTweens = [];
   let isModalOpen = false;
 
+  const initEntranceAnimations = () => {
+    const introParagraph = document.querySelector('.section_events .events_top .text-size-medium');
+    const eventItems = document.querySelectorAll('.events_list-wrapper > *');
+    const button = document.querySelector('.events_bottom .button');
+
+    console.log('Events section elements found:', {
+      introParagraph: !!introParagraph,
+      eventItems: eventItems.length,
+      button: !!button
+    });
+
+    if (!introParagraph || !eventItems.length || !button) {
+      console.log('Missing elements for events entrance animation');
+      return;
+    }
+
+    gsap.set([introParagraph, ...eventItems, button], { 
+      opacity: 0, 
+      y: 30 
+    });
+
+    const tl = gsap.timeline({
+      scrollTrigger: {
+        trigger: '.section_events',
+        start: 'top 60%',
+        end: 'bottom 20%',
+        toggleActions: 'play none none reverse',
+        onEnter: () => console.log('Events entrance animation triggered')
+      }
+    });
+
+    tl.to(introParagraph, { 
+      opacity: 1, 
+      y: 0, 
+      duration: 0.8, 
+      ease: 'power3.out' 
+    })
+    .to(eventItems, { 
+      opacity: 1, 
+      y: 0, 
+      duration: 0.6, 
+      ease: 'power2.out',
+      stagger: 0.15
+    }, '-=0.4')
+    .to(button, { 
+      opacity: 1, 
+      y: 0, 
+      duration: 0.6, 
+      ease: 'power2.out' 
+    }, '-=0.2');
+  };
+
+  initEntranceAnimations();
+
   const wrappers = document.querySelectorAll('[data-tabs="wrapper"]');
   
   wrappers.forEach((wrapper) => {
