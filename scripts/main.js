@@ -2,7 +2,6 @@ import { smoothScroll } from './utils/smooth-scroll.js';
 import { initScrollReveal } from './utils/scrollReveal.js';
 import { initModalBasic } from './utils/modalInit.js';
 import { initHeaderSection } from './animations/sections/header.js';
-// import { initForewordSection } from './animations/sections/foreword.js';
 import { initHorizontalScrolling } from './animations/sections/forewordv2.js';
 import { initStickyTitleScroll } from './animations/sections/stickyTitles.js';
 import { initCircularBarChart } from './animations/charts/circularBarChart.js';
@@ -26,7 +25,7 @@ import { initImpactActionSection } from './animations/sections/impact-action.js'
 import { initBenefitsSection } from './animations/sections/benefits.js';
 import { initImpactHighlights } from './animations/sections/impact-highlights.js';
 
-gsap.registerPlugin(ScrollTrigger,Observer,SplitText);
+gsap.registerPlugin(ScrollTrigger,SplitText);
 
 window.lenis = smoothScroll();
 
@@ -34,7 +33,6 @@ const initAllAnimations = () => {
   initScrollReveal();
   initModalBasic();
   initHeaderSection();
-  // initForewordSection();
   initHorizontalScrolling();
   initStickyTitleScroll();
   initCircularBarChart();
