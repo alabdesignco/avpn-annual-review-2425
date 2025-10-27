@@ -1,5 +1,4 @@
 import { smoothScroll } from './utils/smooth-scroll.js';
-import { initScrollReveal } from './utils/scrollReveal.js';
 import { initModalBasic } from './utils/modalInit.js';
 import { initHeaderSection } from './animations/sections/header.js';
 import { initHorizontalScrolling } from './animations/sections/forewordv2.js';
@@ -30,7 +29,6 @@ gsap.registerPlugin(ScrollTrigger,SplitText);
 window.lenis = smoothScroll();
 
 const initAllAnimations = () => {
-  initScrollReveal();
   initModalBasic();
   initHeaderSection();
   initHorizontalScrolling();
