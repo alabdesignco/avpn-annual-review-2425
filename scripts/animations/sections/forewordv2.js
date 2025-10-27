@@ -39,6 +39,39 @@ export const initHorizontalScrolling = () => {
           if (ceoAccent2) entranceTl.to(ceoAccent2, { scale: 1, duration: 0.8, ease: "back.out(1.7)" }, 0.7, "<");
           if (ceoLabelWrapper) entranceTl.to(ceoLabelWrapper, { opacity: 1, y: 0, duration: 0.6, ease: "power2.out" }, 0.8, "<");
 
+          // Rich text reveal animation
+          const richTextElements = wrap.querySelectorAll("#foreword > p");
+          if (richTextElements.length) {
+            gsap.set(richTextElements, { opacity: 0, y: 30 });
+            
+            gsap.to(richTextElements, {
+              opacity: 1,
+              y: 0,
+              duration: 0.8,
+              stagger: 0.2,
+              ease: "power2.out",
+              scrollTrigger: {
+                trigger: wrap,
+                start: "top 20%",
+                end: "bottom -100%",
+                scrub: 1,
+                onUpdate: (self) => {
+                  // console.log(`Rich text progress: ${Math.round(self.progress * 100)}%`);
+                }
+              }
+            });
+          }
+
+          // Progress checker for debugging
+          // ScrollTrigger.create({
+          //   trigger: wrap,
+          //   start: "top top",
+          //   end: "bottom bottom",
+          //   onUpdate: (self) => {
+          //     // console.log(`Section progress: ${Math.round(self.progress * 100)}%`);
+          //   }
+          // });
+
           // Individual shape control
           shapes.forEach((shape, index) => {
             // Set initial state
@@ -48,12 +81,12 @@ export const initHorizontalScrolling = () => {
               transformOrigin: "center" 
             });
             
-            // Horizontal scroll timing - based on scroll progress (200% width container)
+            // Horizontal scroll timing - adjusted for extended rich text duration (-100%)
             const shapeTimings = [
-              { start: "10%", end: "25%" },  // Shape 1: appears at 10% scroll progress
-              { start: "25%", end: "40%" },  // Shape 2: appears at 25% scroll progress
-              { start: "40%", end: "55%" },  // Shape 3: appears at 40% scroll progress
-              { start: "55%", end: "70%" }   // Shape 4: appears at 55% scroll progress
+              { start: "0%", end: "10%" },   // Shape 1: appears immediately
+              { start: "10%", end: "25%" },  // Shape 2: appears at 10% progress
+              { start: "25%", end: "40%" },  // Shape 3: appears at 25% progress
+              { start: "40%", end: "55%" }   // Shape 4: appears at 40% progress
             ];
             
             const timing = shapeTimings[index] || shapeTimings[0];
