@@ -12,7 +12,7 @@ import { initHighlightText } from './animations/highlightText.js';
 import { initSectionTitleScroll } from './animations/sectionTitleScroll.js';
 import { initCardsScramble } from './animations/cardsScramble.js';
 import { initDirectionalListHover } from './animations/directionalHover.js';
-import { initLogoWallCycle } from './animations/logoWallCycle.js';
+import { initPartners } from './animations/sections/partners.js';
 import { initTeamTabs } from './animations/teamTabs.js';
 import { initGlobalParallax } from './utils/globalParallax.js';
 import { initSectionBgTransition } from './utils/sectionBgTransition.js';
@@ -44,7 +44,7 @@ const initAllAnimations = () => {
   initSectionTitleScroll();
   initCardsScramble();
   initDirectionalListHover();
-  initLogoWallCycle();
+  initPartners();
   initTeamTabs();
   initGlobalParallax();
   initSectionBgTransition();
