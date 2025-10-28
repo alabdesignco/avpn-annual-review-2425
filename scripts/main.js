@@ -61,3 +61,12 @@ document.addEventListener("DOMContentLoaded", async () => {
   await document.fonts.ready;
   initAllAnimations();
 });
+
+// Global ScrollTrigger refresh on window resize
+let resizeTimeout;
+window.addEventListener("resize", () => {
+  clearTimeout(resizeTimeout);
+  resizeTimeout = setTimeout(() => {
+    ScrollTrigger.refresh();
+  }, 100);
+});
