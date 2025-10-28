@@ -27,7 +27,6 @@ export const initImpactActionSection = () => {
       endTrigger: lastItem,
       end: "bottom center",
       scrub: 1,
-      markers: true,
       onUpdate: (self) => {
         const progress = self.progress;
         
@@ -47,7 +46,6 @@ export const initImpactActionSection = () => {
         trigger: item,
         start: "top center",
         toggleActions: "play none none reverse",
-        markers: true,
         animation: gsap.to(item, { 
           autoAlpha: 1, 
           y: 0, 
