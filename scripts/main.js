@@ -23,6 +23,7 @@ import { initEventsSection } from './animations/sections/events.js';
 import { initImpactActionSection } from './animations/sections/impact-action.js';
 import { initBenefitsSection } from './animations/sections/benefits.js';
 import { initImpactHighlights } from './animations/sections/impact-highlights.js';
+import { initAccentShapes } from './utils/accentShapes.js';
 
 gsap.registerPlugin(ScrollTrigger,SplitText);
 
@@ -53,6 +54,7 @@ const initAllAnimations = () => {
   initEventsSection();
   initImpactActionSection();
   initBenefitsSection();
+  initAccentShapes();
 };
 
 document.addEventListener("DOMContentLoaded", async () => {
