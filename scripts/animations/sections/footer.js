@@ -17,11 +17,9 @@ export const initFalling2DMatterJS = () => {
         const isVisible = rect.top < window.innerHeight && rect.bottom > 0;
         
         if (isVisible) {
-          console.log('Fallback: Footer section is visible - initializing Matter.js physics');
           initPhysics(container);
           container.setAttribute('data-matter-initialized', 'true');
         } else {
-          console.log('Fallback: Footer section not visible yet, retrying in 1 second');
           setTimeout(fallbackInit, 1000);
         }
       }
@@ -320,16 +318,9 @@ export const initFalling2DMatterJS = () => {
             onEnter: () => {
               const container = section.querySelector("#canvas-target");
               if (container && !container.hasAttribute('data-matter-initialized')) {
-                console.log('Footer ScrollTrigger activated - initializing Matter.js');
                 initPhysics(container);
                 container.setAttribute('data-matter-initialized', 'true');
               }
-            },
-            onLeave: () => {
-              console.log('Footer section left view');
-            },
-            onEnterBack: () => {
-              console.log('Footer section entered back');
             }
           });
         }
