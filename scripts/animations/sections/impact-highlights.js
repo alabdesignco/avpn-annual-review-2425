@@ -125,7 +125,7 @@ export const initImpactHighlights = () => {
                 ease: 'power2.out',
                 scrollTrigger: {
                     trigger: contentContainer,
-                    start: 'top 60%',
+                    start: 'top 80%',
                     end: 'bottom 20%',
                     toggleActions: 'play none none reverse'
                 }
