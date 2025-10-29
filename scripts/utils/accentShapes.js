@@ -29,8 +29,8 @@ export function initAccentShapes() {
           const startOpacity = parseFloat(shape.getAttribute("data-accent-opacity-start")) || 0
           const endOpacity = parseFloat(shape.getAttribute("data-accent-opacity-end")) || 1
           
-          const scrollStart = shape.getAttribute("data-accent-scroll-start") || "top 40%"
-          const scrollEnd = shape.getAttribute("data-accent-scroll-end") || "bottom 40%"
+          const scrollStart = shape.getAttribute("data-accent-scroll-start") || "top 80%"
+          const scrollEnd = shape.getAttribute("data-accent-scroll-end") || "bottom 20%"
           
           const duration = parseFloat(shape.getAttribute("data-accent-duration")) || 0.8
           const ease = shape.getAttribute("data-accent-ease") || "back.out(1.7)"
