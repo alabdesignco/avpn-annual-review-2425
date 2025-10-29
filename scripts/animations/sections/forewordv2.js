@@ -41,7 +41,10 @@ export const initHorizontalScrolling = () => {
           if (ceoLabelWrapper) entranceTl.to(ceoLabelWrapper, { opacity: 1, y: 0, duration: 0.6, ease: "power2.out" }, 0.6);
           const richTextElements = wrap.querySelectorAll("#foreword > p");
           if (richTextElements.length) {
-            gsap.set(richTextElements, { opacity: 0, y: 30 });
+            gsap.set(richTextElements, { 
+              opacity: 0,
+              clipPath: "circle(0% at 100% 0%)"
+            });
             richTextElements.forEach((p) => {
               const strongElements = p.querySelectorAll('strong');
               strongElements.forEach((strong) => {
@@ -57,10 +60,14 @@ export const initHorizontalScrolling = () => {
               strongElements.forEach((strong, sIndex) => {
                 if (!strong.hasAttribute('data-highlighted')) {
                   strong.setAttribute('data-highlighted', 'true');
+                  const textLength = strong.textContent.trim().length;
+                  const baseDuration = 0.4;
+                  const durationPerChar = 0.02;
+                  const duration = Math.min(baseDuration + (textLength * durationPerChar), 2.5);
                   const staggerDelay = sIndex * 0.15;
                   gsap.to(strong, {
                     '--highlight-width': '100%',
-                    duration: 0.6,
+                    duration: duration,
                     delay: staggerDelay,
                     ease: "power2.out"
                   });
@@ -99,7 +106,7 @@ export const initHorizontalScrolling = () => {
               pin: true,
               invalidateOnRefresh: true,
               onUpdate: (self) => {
-                console.log(`Foreword horizontal progress: ${Math.round(self.progress * 100)}%`);
+                // console.log(`Foreword horizontal progress: ${Math.round(self.progress * 100)}%`);
                 const progress = Math.min(Math.max(self.progress, 0), 1);
                 const activeIndex = Math.min(Math.floor(progress * paragraphCount), paragraphCount - 1);
                 
@@ -107,9 +114,8 @@ export const initHorizontalScrolling = () => {
                   if (index <= activeIndex) {
                     gsap.to(paragraph, {
                       opacity: 1,
-                      y: 0,
-                      duration: 0.3,
-                      ease: "power2.out"
+                      clipPath: "circle(150% at 100% 0%)",
+                      duration: 0.8
                     });
                     
                     if (!triggeredIndexes.has(index)) {
@@ -118,10 +124,14 @@ export const initHorizontalScrolling = () => {
                       strongElements.forEach((strong, sIndex) => {
                         if (!strong.hasAttribute('data-highlighted')) {
                           strong.setAttribute('data-highlighted', 'true');
+                          const textLength = strong.textContent.trim().length;
+                          const baseDuration = 0.4;
+                          const durationPerChar = 0.02;
+                          const duration = Math.min(baseDuration + (textLength * durationPerChar), 2.5);
                           const staggerDelay = sIndex * 0.15;
                           gsap.to(strong, {
                             '--highlight-width': '100%',
-                            duration: 0.6,
+                            duration: duration,
                             delay: staggerDelay,
                             ease: "power2.out"
                           });
@@ -141,7 +151,4 @@ export const initHorizontalScrolling = () => {
     }
   );
 
-  window.addEventListener('resize', () => {
-    ScrollTrigger.refresh();
-  });
 };
