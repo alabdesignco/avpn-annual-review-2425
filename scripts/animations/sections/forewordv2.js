@@ -1,4 +1,6 @@
 export const initHorizontalScrolling = () => {
+  if (typeof document === 'undefined') return;
+  
   const mm = gsap.matchMedia();
 
   mm.add(
@@ -20,7 +22,6 @@ export const initHorizontalScrolling = () => {
           const ceoAccent1 = wrap.querySelector(".foreword-header_accent.is-1");
           const ceoAccent2 = wrap.querySelector(".foreword-header_accent.is-2");
           const ceoLabelWrapper = wrap.querySelector(".foreword_ceo-label-wrapper");
-          const shapes = [1, 2, 3, 4].map(i => wrap.querySelector(`.is-foreword-${i}`)).filter(Boolean);
 
           if (ceoImageWrapper) gsap.set(ceoImageWrapper, { opacity: 0 });
           if (ceoAccent1) gsap.set(ceoAccent1, { scale: 0, transformOrigin: "center" });
@@ -35,82 +36,85 @@ export const initHorizontalScrolling = () => {
           });
 
           if (ceoImageWrapper) entranceTl.to(ceoImageWrapper, { opacity: 1, duration: 0.6 }, 0);
-          if (ceoAccent1) entranceTl.to(ceoAccent1, { scale: 1, duration: 0.8, ease: "back.out(1.7)" }, 0.6, "<");
-          if (ceoAccent2) entranceTl.to(ceoAccent2, { scale: 1, duration: 0.8, ease: "back.out(1.7)" }, 0.7, "<");
-          if (ceoLabelWrapper) entranceTl.to(ceoLabelWrapper, { opacity: 1, y: 0, duration: 0.6, ease: "power2.out" }, 0.8, "<");
-
-          // Rich text reveal animation
+          if (ceoAccent1) entranceTl.to(ceoAccent1, { scale: 1, duration: 0.8, ease: "back.out(1.7)" }, 0.6);
+          if (ceoAccent2) entranceTl.to(ceoAccent2, { scale: 1, duration: 0.8, ease: "back.out(1.7)" }, 0.6);
+          if (ceoLabelWrapper) entranceTl.to(ceoLabelWrapper, { opacity: 1, y: 0, duration: 0.6, ease: "power2.out" }, 0.6);
           const richTextElements = wrap.querySelectorAll("#foreword > p");
           if (richTextElements.length) {
             gsap.set(richTextElements, { opacity: 0, y: 30 });
-            
-            gsap.to(richTextElements, {
-              opacity: 1,
-              y: 0,
-              duration: 0.8,
-              stagger: 0.2,
-              ease: "power2.out",
-              scrollTrigger: {
-                trigger: wrap,
-                start: "top 20%",
-                end: "bottom -100%",
-                scrub: 1,
-                onUpdate: (self) => {
-                  // console.log(`Rich text progress: ${Math.round(self.progress * 100)}%`);
+            richTextElements.forEach((p) => {
+              const strongElements = p.querySelectorAll('strong');
+              strongElements.forEach((strong) => {
+                gsap.set(strong, { '--highlight-width': '0%' });
+              });
+            });
+            richTextElements.forEach((p, index) => {
+              p.classList.add(`foreword-paragraph-${index}`);
+            });
+
+            const initParagraphReveal = () => {
+              gsap.to(richTextElements, {
+                opacity: 1,
+                y: 0,
+                duration: 0.8,
+                stagger: 0.2,
+                ease: "power2.out",
+                scrollTrigger: {
+                  trigger: wrap,
+                  start: "top 40%",
+                  end: "bottom -100%",
+                  scrub: 1
                 }
+              });
+            };
+
+            const checkParagraphOpacity = (paragraph) => {
+              const computedStyle = window.getComputedStyle(paragraph);
+              const opacity = parseFloat(computedStyle.opacity);
+              return opacity >= 0.90;
+            };
+
+            const triggerHighlights = (paragraph) => {
+              const strongElements = paragraph.querySelectorAll('strong');
+              strongElements.forEach((strong, sIndex) => {
+                if (!strong.hasAttribute('data-highlighted')) {
+                  strong.setAttribute('data-highlighted', 'true');
+                  const staggerDelay = sIndex * 0.15;
+                  gsap.to(strong, {
+                    '--highlight-width': '100%',
+                    duration: 0.6,
+                    delay: staggerDelay,
+                    ease: "power2.out"
+                  });
+                }
+              });
+            };
+
+            const monitorParagraphOpacity = () => {
+              richTextElements.forEach((paragraph) => {
+                if (!paragraph.hasAttribute('data-highlighted') && checkParagraphOpacity(paragraph)) {
+                  triggerHighlights(paragraph);
+                }
+              });
+            };
+
+            initParagraphReveal();
+
+            ScrollTrigger.create({
+              trigger: wrap,
+              start: "top 20%",
+              end: "bottom -100%",
+              scrub: 1,
+              onUpdate: (self) => {
+                richTextElements.forEach((p) => {
+                  if (!p.hasAttribute('data-highlighted') && self.progress > 0.2 && checkParagraphOpacity(p)) {
+                    triggerHighlights(p);
+                  }
+                });
               }
             });
           }
 
-          // Progress checker for debugging
-          // ScrollTrigger.create({
-          //   trigger: wrap,
-          //   start: "top top",
-          //   end: "bottom bottom",
-          //   onUpdate: (self) => {
-          //     // console.log(`Section progress: ${Math.round(self.progress * 100)}%`);
-          //   }
-          // });
-
-          // Individual shape control
-          shapes.forEach((shape, index) => {
-            // Set initial state
-            gsap.set(shape, { 
-              scale: 0, 
-              rotation: 0, 
-              transformOrigin: "center" 
-            });
-            
-            // Horizontal scroll timing - adjusted for extended rich text duration (-100%)
-            const shapeTimings = [
-              { start: "0%", end: "10%" },   // Shape 1: appears immediately
-              { start: "10%", end: "25%" },  // Shape 2: appears at 10% progress
-              { start: "25%", end: "40%" },  // Shape 3: appears at 25% progress
-              { start: "40%", end: "55%" }   // Shape 4: appears at 40% progress
-            ];
-            
-            const timing = shapeTimings[index] || shapeTimings[0];
-            
-            gsap.to(shape, {
-              scale: 1,
-              ease: "power2.out",
-              scrollTrigger: {
-                trigger: wrap,
-                start: `left+=${timing.start} left`,
-                end: `left+=${timing.end} left`,
-                scrub: 1,
-              }
-            });
-
-            // Continuous looping rotation with random speed
-            const randomDuration = 2 + Math.random() * 4; // Random duration between 2-6 seconds
-            gsap.to(shape, {
-              rotation: 360,
-              duration: randomDuration,
-              ease: "none",
-              repeat: -1
-            });
-          });
         });
 
         wrappers.forEach((wrap) => {
@@ -126,7 +130,7 @@ export const initHorizontalScrolling = () => {
           const panels = gsap.utils.toArray("[data-horizontal-scroll-panel]", wrap);
           if (panels.length < 2) return;
 
-          gsap.to(panels, {
+          const horizontalTween = gsap.to(panels, {
             x: () => -(wrap.scrollWidth - window.innerWidth),
             ease: "none",
             scrollTrigger: {
@@ -136,8 +140,12 @@ export const initHorizontalScrolling = () => {
               scrub: true,
               pin: true,
               invalidateOnRefresh: true,
+              onUpdate: (self) => {
+                console.log(`Foreword horizontal progress: ${Math.round(self.progress * 100)}%`);
+              }
             },
           });
+
         });
       });
 
