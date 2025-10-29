@@ -38,7 +38,7 @@ export const initFalling2DMatterJS = () => {
 
   let engine, render, runner;
   let boxTop, boxBottom, boxLeft, boxRight;
-  let resizeHandler, mousemoveHandler, mouseleaveHandler;
+  let resizeHandler, mousemoveHandler, mouseleaveHandler, touchStartHandler, touchMoveHandler, touchEndHandler;
 
   const COLORS = ["#e42919", "#00b4ae", "#007b69", "#f27c38", "#ffd552", "#91c7d6"];
   const gravity = 2;
@@ -65,6 +65,9 @@ export const initFalling2DMatterJS = () => {
       if (container) {
         container.removeEventListener("mousemove", mousemoveHandler);
         container.removeEventListener("mouseleave", mouseleaveHandler);
+        container.removeEventListener("touchstart", touchStartHandler);
+        container.removeEventListener("touchmove", touchMoveHandler);
+        container.removeEventListener("touchend", touchEndHandler);
       }
     }
   };
@@ -209,35 +212,73 @@ export const initFalling2DMatterJS = () => {
     };
     setTimeout(spawnLoop, 100);
 
-    // Hover lift effect
-    let mouseX = 0;
-    let mouseY = 0;
-    let isMouseOverCanvas = false;
+    // Touch and mouse interaction effect
+    let interactionX = 0;
+    let interactionY = 0;
+    let isInteracting = false;
+    let isTouchDevice = 'ontouchstart' in window;
 
-    mousemoveHandler = (e) => {
+    const updateInteractionPosition = (e) => {
       const rect = container.getBoundingClientRect();
-      mouseX = e.clientX - rect.left;
-      mouseY = e.clientY - rect.top;
-      isMouseOverCanvas = true;
+      const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+      const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+      interactionX = clientX - rect.left;
+      interactionY = clientY - rect.top;
+      isInteracting = true;
+    };
+
+    const stopInteraction = () => {
+      isInteracting = false;
+    };
+
+    // Mouse events
+    mousemoveHandler = (e) => {
+      if (!isTouchDevice) {
+        updateInteractionPosition(e);
+      }
     };
 
     mouseleaveHandler = () => {
-      isMouseOverCanvas = false;
+      if (!isTouchDevice) {
+        stopInteraction();
+      }
     };
 
+    // Touch events
+    const touchStartHandler = (e) => {
+      e.preventDefault();
+      updateInteractionPosition(e);
+    };
+
+    const touchMoveHandler = (e) => {
+      e.preventDefault();
+      updateInteractionPosition(e);
+    };
+
+    const touchEndHandler = (e) => {
+      e.preventDefault();
+      stopInteraction();
+    };
+
+    // Add event listeners
     container.addEventListener("mousemove", mousemoveHandler);
     container.addEventListener("mouseleave", mouseleaveHandler);
+    container.addEventListener("touchstart", touchStartHandler, { passive: false });
+    container.addEventListener("touchmove", touchMoveHandler, { passive: false });
+    container.addEventListener("touchend", touchEndHandler, { passive: false });
 
     Events.on(engine, "afterUpdate", () => {
-      if (!isMouseOverCanvas) return;
+      if (!isInteracting) return;
       const bodies = Composite.allBodies(engine.world).filter((b) => !b.isStatic);
-      const hoverRadius = 150;
+      const interactionRadius = isTouchDevice ? 200 : 150; // Larger radius for touch
+      const forceMultiplier = isTouchDevice ? 0.15 : 0.2; // Gentler force for touch
+      
       bodies.forEach((body) => {
-        const dx = body.position.x - mouseX;
-        const dy = body.position.y - mouseY;
+        const dx = body.position.x - interactionX;
+        const dy = body.position.y - interactionY;
         const distance = Math.sqrt(dx * dx + dy * dy);
-        if (distance < hoverRadius) {
-          const forceStrength = (1 - distance / hoverRadius) * 0.2;
+        if (distance < interactionRadius) {
+          const forceStrength = (1 - distance / interactionRadius) * forceMultiplier;
           Matter.Body.setVelocity(body, {
             x: body.velocity.x,
             y: Math.min(body.velocity.y - forceStrength, -15),
@@ -308,16 +349,13 @@ export const initFalling2DMatterJS = () => {
         return;
       }
 
-      console.log('🔍 Footer: Setting up Intersection Observer for footer section');
       
       const observer = new IntersectionObserver((entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
-            console.log('🎯 Footer: Footer section is in view - initializing Matter.js');
             if (container && !container.hasAttribute('data-matter-initialized')) {
               initPhysics(container);
               container.setAttribute('data-matter-initialized', 'true');
-              console.log('✅ Footer: Matter.js initialized successfully');
             }
             // Disconnect observer after first intersection (once: true equivalent)
             observer.disconnect();
