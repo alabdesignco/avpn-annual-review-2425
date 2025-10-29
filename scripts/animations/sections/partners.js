@@ -54,9 +54,37 @@ export function initPartners() {
     const items  = Array.from(list.querySelectorAll('[data-logo-wall-item]'));
 
     const shuffleFront = root.getAttribute('data-logo-wall-shuffle') !== 'false';
-    const originalTargets = items
+    
+    // Look for both data-logo-wall-target and data-logo-wall-target-parent
+    let originalTargets = items
       .map(item => item.querySelector('[data-logo-wall-target]'))
       .filter(Boolean);
+    
+    // If no targets found, look for target parents and create targets
+    if (originalTargets.length === 0) {
+      const targetParents = items
+        .map(item => item.querySelector('[data-logo-wall-target-parent]'))
+        .filter(Boolean);
+      
+      // Create target elements inside each target parent
+      targetParents.forEach(parent => {
+        if (!parent.querySelector('[data-logo-wall-target]')) {
+          const target = document.createElement('div');
+          target.setAttribute('data-logo-wall-target', '');
+          parent.appendChild(target);
+        }
+      });
+      
+      // Now get the targets again
+      originalTargets = items
+        .map(item => item.querySelector('[data-logo-wall-target]'))
+        .filter(Boolean);
+    }
+
+    // If still no targets, exit early
+    if (originalTargets.length === 0) {
+      return;
+    }
 
     let visibleItems   = [];
     let visibleCount   = 0;
