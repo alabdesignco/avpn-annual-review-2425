@@ -1,20 +1,19 @@
 const initCircularBarChart = () => {
   const data = [
-    { cause: "Affordable Housing", count: 105, percent: 17 },
-    { cause: "Ageing", count: 109, percent: 17 },
-    { cause: "Agriculture", count: 226, percent: 36 },
-    { cause: "Arts & Culture", count: 132, percent: 21 },
-    { cause: "Climate Action & Environment", count: 385, percent: 61 },
-    { cause: "Conservation", count: 129, percent: 20 },
-    { cause: "Education", count: 396, percent: 63 },
-    { cause: "Employability", count: 243, percent: 38 },
-    { cause: "Energy", count: 193, percent: 31 },
-    { cause: "Financial Inclusion", count: 232, percent: 37 },
-    { cause: "Gender", count: 260, percent: 41 },
+    { cause: "Affordable Housing", count: 103, percent: 16 },
+    { cause: "Ageing", count: 108, percent: 17 },
+    { cause: "Agriculture", count: 217, percent: 34 },
+    { cause: "Arts & Culture", count: 126, percent: 20 },
+    { cause: "Climate Action & Environment", count: 364, percent: 58 },
+    { cause: "Conservation", count: 128, percent: 20 },
+    { cause: "Education", count: 379, percent: 60 },
+    { cause: "Employability", count: 229, percent: 36 },
+    { cause: "Energy", count: 188, percent: 30 },
+    { cause: "Financial Inclusion", count: 221, percent: 35 },
+    { cause: "Gender", count: 254, percent: 40 },
     { cause: "Governance", count: 130, percent: 21 },
-    { cause: "Health", count: 333, percent: 53 },
-    { cause: "Livelihood and Poverty Alleviation", count: 350, percent: 55 },
-    { cause: "Nutrition", count: 143, percent: 23 },
+    { cause: "Health & Nutrition", count: 207, percent: 33 },
+    { cause: "Livelihood & Poverty Alleviation", count: 329, percent: 52 },
     { cause: "Water & Sanitation & Hygiene", count: 185, percent: 29 }
   ];
 
@@ -26,15 +25,14 @@ const initCircularBarChart = () => {
   const colorMap = {
     "Education": getColor("--color-education"),
     "Climate Action & Environment": getColor("--color-climate"),
-    "Livelihood and Poverty Alleviation": getColor("--color-livelihood"),
-    "Health": getColor("--color-health"),
+    "Livelihood & Poverty Alleviation": getColor("--color-livelihood"),
+    "Health & Nutrition": getColor("--color-health"),
     "Employability": getColor("--color-employability"),
     "Gender": getColor("--color-gender"),
     "Financial Inclusion": getColor("--color-financial-inclusion"),
     "Agriculture": getColor("--color-agriculture"),
     "Energy": getColor("--color-energy"),
     "Water & Sanitation & Hygiene": getColor("--color-water"),
-    "Nutrition": getColor("--color-nutrition"),
     "Arts & Culture": getColor("--color-arts"),
     "Governance": getColor("--color-governance"),
     "Conservation": getColor("--color-conservation"),
@@ -62,14 +60,14 @@ const initCircularBarChart = () => {
       .style("width", "100%")
       .style("height", "100%")
       .append("g")
-      .attr("transform", `translate(${width / 2},${height / 2 - 100})`);
+      .attr("transform", `translate(${width / 2},${height / 2 - 80})`);
 
     const pie = d3.pie().sort(null).value(1);
     const arc = d3.arc()
       .innerRadius(innerRadius)
-      .outerRadius(d => innerRadius + (d.data.percent * size * 0.0045))
+      .outerRadius(d => innerRadius + (d.data.percent * size * 0.0048))
       .cornerRadius(10)
-      .padAngle(0.03);
+      .padAngle(0.035);
 
     const arcs = svg.selectAll("path")
       .data(pie(data))
@@ -87,13 +85,13 @@ const initCircularBarChart = () => {
         .duration(800)
         .ease(d3.easeCubicOut)
         .attrTween("d", function(d) {
-          const i = d3.interpolate(innerRadius, innerRadius + (d.data.percent * size * 0.0045));
+          const i = d3.interpolate(innerRadius, innerRadius + (d.data.percent * size * 0.0048));
           return function(t) {
             return d3.arc()
               .innerRadius(innerRadius)
               .outerRadius(i(t))
               .cornerRadius(10)
-              .padAngle(0.03)(d);
+              .padAngle(0.035)(d);
           };
         });
     };
