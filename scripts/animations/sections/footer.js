@@ -42,7 +42,7 @@ export const initFalling2DMatterJS = () => {
 
   const COLORS = ["#e42919", "#00b4ae", "#007b69", "#f27c38", "#ffd552", "#91c7d6"];
   const gravity = 2;
-  const objectAmount = 25;
+  const objectAmount = 30;
   const objectRestitution = 0.65;
 
   const getRandomNumber = (min, max) => Math.random() * (max - min) + min;
@@ -294,47 +294,51 @@ export const initFalling2DMatterJS = () => {
     window.addEventListener("resize", resizeHandler);
   };
 
-  // Scroll-triggered init
+  // Intersection Observer init
   if (animateOnScroll) {
-    if (typeof ScrollTrigger === 'undefined') {
-      console.warn('ScrollTrigger is not loaded. Falling back to load event initialization.');
-      window.addEventListener("load", () => {
-        const container = document.querySelector("#canvas-target");
-        if (container) initPhysics(container);
-      });
-      return;
-    }
+    const initFooterIntersectionObserver = () => {
+      const footerSection = document.querySelector(".footer_component");
+      const container = document.querySelector("#canvas-target");
+      
+      if (!footerSection || !container) {
+        console.warn('Footer section or canvas target not found. Falling back to load event initialization.');
+        window.addEventListener("load", () => {
+          if (container) initPhysics(container);
+        });
+        return;
+      }
 
-    // Wait for other ScrollTriggers to initialize first
-    const initFooterScrollTriggers = () => {
-      document.querySelectorAll(".footer_component").forEach((section) => {
-        if (section.querySelector("#canvas-target")) {
-          ScrollTrigger.create({
-            trigger: section,
-            start: "top 80%", // Start when footer is 80% in view
-            end: "bottom 20%", // End when footer is 20% out of view
-            once: true,
-            refreshPriority: 1, // Lower priority than partners.js (-1)
-            onEnter: () => {
-              const container = section.querySelector("#canvas-target");
-              if (container && !container.hasAttribute('data-matter-initialized')) {
-                initPhysics(container);
-                container.setAttribute('data-matter-initialized', 'true');
-              }
+      console.log('🔍 Footer: Setting up Intersection Observer for footer section');
+      
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            console.log('🎯 Footer: Footer section is in view - initializing Matter.js');
+            if (container && !container.hasAttribute('data-matter-initialized')) {
+              initPhysics(container);
+              container.setAttribute('data-matter-initialized', 'true');
+              console.log('✅ Footer: Matter.js initialized successfully');
             }
-          });
-        }
+            // Disconnect observer after first intersection (once: true equivalent)
+            observer.disconnect();
+          }
+        });
+      }, {
+        root: null, // Use viewport as root
+        rootMargin: '0px 0px -20% 0px', // Trigger when 80% of footer is visible (equivalent to "top 80%")
+        threshold: 0.1 // Trigger when 10% of the element is visible
       });
+
+      observer.observe(footerSection);
     };
 
-    // Initialize after other sections have had time to set up their ScrollTriggers
+    // Initialize after DOM is ready
     if (document.readyState === 'loading') {
       document.addEventListener('DOMContentLoaded', () => {
-        // Wait longer since footer is last in the sequence
-        setTimeout(initFooterScrollTriggers, 1000);
+        setTimeout(initFooterIntersectionObserver, 1000);
       });
     } else {
-      setTimeout(initFooterScrollTriggers, 1000);
+      setTimeout(initFooterIntersectionObserver, 1000);
     }
   } else {
     window.addEventListener("load", () => {
