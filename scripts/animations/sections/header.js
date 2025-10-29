@@ -171,22 +171,33 @@ class Grid {
             scale: 1,
             opacity: 1,
             filter: "blur(0px)",
-            duration: 0.5,
-            ease: "power2.out"
+            visibility: "visible",
+            duration: 0.8,
+            ease: "power3.out"
           })
         } else {
           gsap.to(entry.target, {
             opacity: 0,
+            duration: 0.6,
+            ease: "power3.out"
+          })
+          gsap.to(entry.target, {
             scale: 0.5,
             filter: "blur(4px)",
             duration: 0.5,
-            ease: "power2.in"
+            ease: "power3.out",
+            delay: 0.2
+          })
+          gsap.to(entry.target, {
+            visibility: "hidden",
+            duration: 0.1,
+            delay: 0.7
           })
         }
       })
     }, {
       root: null,
-      threshold: 0.1
+      threshold: 0.5
     })
 
     this.imageWrappers.forEach(imageWrapper => {
