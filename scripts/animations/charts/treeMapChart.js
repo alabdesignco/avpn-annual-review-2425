@@ -132,7 +132,7 @@ const initTreeMapChart = () => {
         .attr("fill", textColor)
         .attr("font-size", "1.25rem")
         .attr("opacity", 0)
-        .text(`${d.data.percent.toFixed(2)}%`);
+        .text(`${Math.round(d.data.percent)}%`);
     }
 
     g.on("mouseenter", () => {
