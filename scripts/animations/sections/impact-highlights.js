@@ -5,7 +5,6 @@ class HighlightEffect {
     }
 
     this.highlightedElement = el;
-    this.highlightedWords = this.highlightedElement.querySelectorAll('.word');
     this.delay = delay;
     this.animationDefaults = {
       duration: 0.4,
@@ -17,10 +16,6 @@ class HighlightEffect {
   }
   
   setInitialState() {
-    gsap.set(this.highlightedWords, {
-      scale: 1.3,
-      opacity: 0
-    });
     gsap.set(this.highlightedElement, {
       '--after-scale': 0
     });
@@ -34,35 +29,24 @@ class HighlightEffect {
     ScrollTrigger.create({
       trigger: this.highlightedElement,
       start: 'top 60%',
-      onEnter: () => this.animateWords(),
-      onEnterBack: () => this.animateWords(),
-      onLeave: () => this.resetWords(),
-      onLeaveBack: () => this.resetWords()
+      onEnter: () => this.animateHighlight(),
+      onEnterBack: () => this.animateHighlight(),
+      onLeave: () => this.resetHighlight(),
+      onLeaveBack: () => this.resetHighlight()
     });
   }
 
-  animateWords() {
-    gsap
-    .timeline({defaults: this.animationDefaults, delay: this.delay})
-    .fromTo(this.highlightedWords, {
-      scale: 1.3,
-      opacity: 0
-    }, { 
-      stagger: pos => 0.1+0.05*pos,
-      scale: 1,
-      opacity: 1
-    })
-    .fromTo(this.highlightedElement, {
-      '--after-scale': 0
-    }, {
+  animateHighlight() {
+    gsap.to(this.highlightedElement, {
       duration: 0.8,
       ease: 'expo',
+      delay: this.delay,
       '--after-scale': 1
-    }, 0);
+    });
   }
 
-  resetWords() {
-    gsap.killTweensOf([this.highlightedWords, this.highlightedElement]);
+  resetHighlight() {
+    gsap.killTweensOf(this.highlightedElement);
     gsap.set(this.highlightedElement, {
       '--after-scale': 0
     });
@@ -133,11 +117,6 @@ export const initImpactHighlights = () => {
         }
         
         textColorElements.forEach(textElement => {
-            const split = new SplitText(textElement, { 
-                type: 'words',
-                wordsClass: 'word'
-            });
-            
             new HighlightEffect(textElement, 0.5);
         });
         
