@@ -111,7 +111,7 @@ export const initHorizontalScrolling = () => {
               pin: true,
               invalidateOnRefresh: true,
               onUpdate: (self) => {
-                console.log(`Foreword horizontal progress: ${Math.round(self.progress * 100)}%`);
+                // console.log(`Foreword horizontal progress: ${Math.round(self.progress * 100)}%`);
                 const progress = Math.min(Math.max(self.progress, 0), 1);
                 const activeIndex = Math.min(Math.floor(progress * paragraphCount), paragraphCount - 1);
                 
