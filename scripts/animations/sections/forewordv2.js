@@ -39,6 +39,11 @@ export const initHorizontalScrolling = () => {
           if (ceoAccent1) entranceTl.to(ceoAccent1, { scale: 1, duration: 0.8, ease: "back.out(1.7)" }, 0.6);
           if (ceoAccent2) entranceTl.to(ceoAccent2, { scale: 1, duration: 0.8, ease: "back.out(1.7)" }, 0.6);
           if (ceoLabelWrapper) entranceTl.to(ceoLabelWrapper, { opacity: 1, y: 0, duration: 0.6, ease: "power2.out" }, 0.6);
+          
+          // Set initial scale for shapes
+          const shapes = wrap.querySelectorAll('.shape.is-foreword-1, .shape.is-foreword-2, .shape.is-foreword-3, .shape.is-foreword-4');
+          gsap.set(shapes, { scale: 0, rotation: 0 });
+          
           const richTextElements = wrap.querySelectorAll("#foreword > p");
           if (richTextElements.length) {
             gsap.set(richTextElements, { 
@@ -106,16 +111,35 @@ export const initHorizontalScrolling = () => {
               pin: true,
               invalidateOnRefresh: true,
               onUpdate: (self) => {
-                // console.log(`Foreword horizontal progress: ${Math.round(self.progress * 100)}%`);
+                console.log(`Foreword horizontal progress: ${Math.round(self.progress * 100)}%`);
                 const progress = Math.min(Math.max(self.progress, 0), 1);
                 const activeIndex = Math.min(Math.floor(progress * paragraphCount), paragraphCount - 1);
+                
+                // Shape animations based on scroll progress
+                const shape1 = wrap.querySelector('.shape.shape--rounded.is-foreword-1');
+                const shape2 = wrap.querySelector('.shape.shape--circle.is-foreword-2');
+                const shape3 = wrap.querySelector('.shape.shape--leaf.is-foreword-3');
+                const shape4 = wrap.querySelector('.shape.shape--quarter.is-foreword-4');
+                
+                if (progress >= 0.2 && shape1) {
+                  gsap.to(shape1, { scale: 1, rotation: 360, duration: 0.6, ease: "back.out(1.7)" });
+                }
+                if (progress >= 0.5 && shape2) {
+                  gsap.to(shape2, { scale: 1, rotation: -180, duration: 0.6, ease: "back.out(1.7)" });
+                }
+                if (progress >= 0.8 && shape3) {
+                  gsap.to(shape3, { scale: 1, rotation: 270, duration: 0.6, ease: "back.out(1.7)" });
+                }
+                if (progress >= 0.99 && shape4) {
+                  gsap.to(shape4, { scale: 1, rotation: 90, duration: 0.6, ease: "back.out(1.7)" });
+                }
                 
                 richTextElements.forEach((paragraph, index) => {
                   if (index <= activeIndex) {
                     gsap.to(paragraph, {
                       opacity: 1,
                       clipPath: "circle(150% at 100% 0%)",
-                      duration: 0.8
+                      duration: 1.2
                     });
                     
                     if (!triggeredIndexes.has(index)) {
