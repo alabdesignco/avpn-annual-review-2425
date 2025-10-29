@@ -10,7 +10,13 @@ export function initModalSlide() {
     const modal = modalGroup.querySelector(`[data-modal-slide-name="${targetName}"]`);
 
     if (modal) {
-      modals.forEach((m) => m.setAttribute('data-modal-slide-status', 'not-active'));
+      // Stop videos in all other modals before opening new one
+      modals.forEach((m) => {
+        if (m !== modal) {
+          stopVideosInModal(m);
+        }
+        m.setAttribute('data-modal-slide-status', 'not-active');
+      });
 
       modal.setAttribute('data-modal-slide-status', 'active');
       modalGroup.setAttribute('data-modal-slide-group', 'active');
@@ -25,10 +31,23 @@ export function initModalSlide() {
 
   let onCloseCallback = null;
 
+  const stopVideosInModal = (modal) => {
+    const iframes = modal.querySelectorAll('iframe');
+    iframes.forEach(iframe => {
+      const originalSrc = iframe.dataset.src || iframe.src;
+      iframe.src = '';
+      setTimeout(() => {
+        iframe.src = originalSrc;
+      }, 100);
+    });
+  };
+
   const closeModals = () => {
     const activeModal = modalGroup.querySelector('[data-modal-slide-name][data-modal-slide-status="active"]');
     
     if (activeModal) {
+      stopVideosInModal(activeModal);
+
       gsap.to(activeModal, {
         y: '100%',
         duration: 0.5,
