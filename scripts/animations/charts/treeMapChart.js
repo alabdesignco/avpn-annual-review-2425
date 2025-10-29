@@ -2,17 +2,17 @@ const initTreeMapChart = () => {
   const data = {
     name: "Beneficiary Communities",
     children: [
-      { name: "Children & youths", value: 433, percent: 68.48 },
-      { name: "Women & girls", value: 413, percent: 65.35 },
-      { name: "People in poverty", value: 397, percent: 62.82 },
-      { name: "Environment", value: 306, percent: 48.42 },
-      { name: "People without employment", value: 257, percent: 40.67 },
-      { name: "People with disabilities", value: 208, percent: 32.91 },
-      { name: "Elderly", value: 198, percent: 31.33 },
-      { name: "People with medical needs", value: 198, percent: 31.33 },
-      { name: "Ethnic minorities", value: 182, percent: 28.80 },
-      { name: "Immigrants & asylum seekers & refugees", value: 112, percent: 17.72 },
-      { name: "Offenders & re-offenders", value: 47, percent: 7.44 }
+      { name: "Children & youths", value: 436, percent: 69 },
+      { name: "Women & girls", value: 411, percent: 65 },
+      { name: "People in poverty", value: 398, percent: 63 },
+      { name: "Environment", value: 303, percent: 48 },
+      { name: "People without employment", value: 259, percent: 41 },
+      { name: "People with disabilities", value: 208, percent: 33 },
+      { name: "Elderly", value: 196, percent: 31 },
+      { name: "People with medical needs", value: 196, percent: 31 },
+      { name: "Ethnic minorities", value: 183, percent: 29 },
+      { name: "Immigrants & asylum seekers & refugees", value: 114, percent: 18 },
+      { name: "Offenders & re-offenders", value: 44, percent: 7 }
     ]
   };
 
