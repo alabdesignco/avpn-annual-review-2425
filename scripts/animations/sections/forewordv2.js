@@ -52,28 +52,6 @@ export const initHorizontalScrolling = () => {
               p.classList.add(`foreword-paragraph-${index}`);
             });
 
-            const initParagraphReveal = () => {
-              gsap.to(richTextElements, {
-                opacity: 1,
-                y: 0,
-                duration: 0.8,
-                stagger: 0.2,
-                ease: "power2.out",
-                scrollTrigger: {
-                  trigger: wrap,
-                  start: "top 40%",
-                  end: "bottom -100%",
-                  scrub: 1
-                }
-              });
-            };
-
-            const checkParagraphOpacity = (paragraph) => {
-              const computedStyle = window.getComputedStyle(paragraph);
-              const opacity = parseFloat(computedStyle.opacity);
-              return opacity >= 0.90;
-            };
-
             const triggerHighlights = (paragraph) => {
               const strongElements = paragraph.querySelectorAll('strong');
               strongElements.forEach((strong, sIndex) => {
@@ -89,30 +67,6 @@ export const initHorizontalScrolling = () => {
                 }
               });
             };
-
-            const monitorParagraphOpacity = () => {
-              richTextElements.forEach((paragraph) => {
-                if (!paragraph.hasAttribute('data-highlighted') && checkParagraphOpacity(paragraph)) {
-                  triggerHighlights(paragraph);
-                }
-              });
-            };
-
-            initParagraphReveal();
-
-            ScrollTrigger.create({
-              trigger: wrap,
-              start: "top 20%",
-              end: "bottom -100%",
-              scrub: 1,
-              onUpdate: (self) => {
-                richTextElements.forEach((p) => {
-                  if (!p.hasAttribute('data-highlighted') && self.progress > 0.2 && checkParagraphOpacity(p)) {
-                    triggerHighlights(p);
-                  }
-                });
-              }
-            });
           }
 
         });
@@ -130,6 +84,10 @@ export const initHorizontalScrolling = () => {
           const panels = gsap.utils.toArray("[data-horizontal-scroll-panel]", wrap);
           if (panels.length < 2) return;
 
+          const richTextElements = wrap.querySelectorAll("#foreword > p");
+          const paragraphCount = richTextElements.length;
+          const triggeredIndexes = new Set();
+
           const horizontalTween = gsap.to(panels, {
             x: () => -(wrap.scrollWidth - window.innerWidth),
             ease: "none",
@@ -142,6 +100,36 @@ export const initHorizontalScrolling = () => {
               invalidateOnRefresh: true,
               onUpdate: (self) => {
                 console.log(`Foreword horizontal progress: ${Math.round(self.progress * 100)}%`);
+                const progress = Math.min(Math.max(self.progress, 0), 1);
+                const activeIndex = Math.min(Math.floor(progress * paragraphCount), paragraphCount - 1);
+                
+                richTextElements.forEach((paragraph, index) => {
+                  if (index <= activeIndex) {
+                    gsap.to(paragraph, {
+                      opacity: 1,
+                      y: 0,
+                      duration: 0.3,
+                      ease: "power2.out"
+                    });
+                    
+                    if (!triggeredIndexes.has(index)) {
+                      triggeredIndexes.add(index);
+                      const strongElements = paragraph.querySelectorAll('strong');
+                      strongElements.forEach((strong, sIndex) => {
+                        if (!strong.hasAttribute('data-highlighted')) {
+                          strong.setAttribute('data-highlighted', 'true');
+                          const staggerDelay = sIndex * 0.15;
+                          gsap.to(strong, {
+                            '--highlight-width': '100%',
+                            duration: 0.6,
+                            delay: staggerDelay,
+                            ease: "power2.out"
+                          });
+                        }
+                      });
+                    }
+                  }
+                });
               }
             },
           });
