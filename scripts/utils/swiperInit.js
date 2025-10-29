@@ -20,7 +20,7 @@ export const initSwiperSlider = () => {
         },
         // when window width is >= 992px
         992: {
-          slidesPerView: 1.5,
+          slidesPerView: 1.25,
         }
       },
       navigation: {
