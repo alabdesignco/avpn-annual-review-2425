@@ -40,7 +40,7 @@ export const initFalling2DMatterJS = () => {
   let boxTop, boxBottom, boxLeft, boxRight;
   let resizeHandler, mousemoveHandler, mouseleaveHandler, touchStartHandler, touchMoveHandler, touchEndHandler;
 
-  const COLORS = ["#e42919", "#00b4ae", "#007b69", "#f27c38", "#ffd552", "#91c7d6"];
+  const COLORS = ["#00b4ae", "#00b4ae", "#007b69", "#f27c38", "#ffd552", "#91c7d6"];
   const gravity = 2;
   const objectAmount = 30;
   const objectRestitution = 0.65;
