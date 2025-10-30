@@ -1,6 +1,12 @@
 export function initPartners() {
+  console.log('[partners] initPartners start', { readyState: document.readyState });
+  if (typeof gsap === 'undefined') console.warn('[partners] gsap missing');
+  if (typeof ScrollTrigger === 'undefined') console.warn('[partners] ScrollTrigger missing');
   const loopDelay = 1;
   const duration  = 0.9;
+
+  let entranceComplete = false;
+  const cycleTriggers = [];
 
   const initEntranceAnimations = () => {
     const section = document.querySelector('.section_partners');
@@ -57,12 +63,20 @@ export function initPartners() {
       y: 0, 
       duration: 0.8, 
       ease: 'power2.out' 
-    }, '-=0.2');
+    }, '-=0.2')
+    .call(() => {
+      entranceComplete = true;
+      console.log('[partners] entrance complete, enabling cycles');
+      cycleTriggers.forEach(trigger => trigger());
+    });
   };
 
   initEntranceAnimations();
+  console.log('[partners] entrance initialized');
 
-  document.querySelectorAll('[data-logo-wall-cycle-init]').forEach(root => {
+  const cycleRoots = document.querySelectorAll('[data-logo-wall-cycle-init]');
+  console.log('[partners] cycle roots', { count: cycleRoots.length });
+  cycleRoots.forEach(root => {
     console.log('[partners] cycle init root', root);
     const list   = root.querySelector('[data-logo-wall-list]');
     const items  = Array.from(list.querySelectorAll('[data-logo-wall-item]'));
@@ -223,6 +237,12 @@ export function initPartners() {
     });
 
     const initScrollTrigger = () => {
+      if (!entranceComplete) {
+        console.log('[partners] cycle waiting for entrance to complete');
+        cycleTriggers.push(initScrollTrigger);
+        return;
+      }
+
       st = ScrollTrigger.create({
         trigger: root,
         start: 'top bottom',
