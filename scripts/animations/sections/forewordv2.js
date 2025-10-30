@@ -51,34 +51,10 @@ export const initHorizontalScrolling = () => {
               clipPath: "circle(0% at 100% 0%)"
             });
             richTextElements.forEach((p) => {
-              const strongElements = p.querySelectorAll('strong');
-              strongElements.forEach((strong) => {
-                gsap.set(strong, { '--highlight-width': '0%' });
-              });
             });
             richTextElements.forEach((p, index) => {
               p.classList.add(`foreword-paragraph-${index}`);
             });
-
-            const triggerHighlights = (paragraph) => {
-              const strongElements = paragraph.querySelectorAll('strong');
-              strongElements.forEach((strong, sIndex) => {
-                if (!strong.hasAttribute('data-highlighted')) {
-                  strong.setAttribute('data-highlighted', 'true');
-                  const textLength = strong.textContent.trim().length;
-                  const baseDuration = 0.4;
-                  const durationPerChar = 0.02;
-                  const duration = Math.min(baseDuration + (textLength * durationPerChar), 2.5);
-                  const staggerDelay = sIndex * 0.15;
-                  gsap.to(strong, {
-                    '--highlight-width': '100%',
-                    duration: duration,
-                    delay: staggerDelay,
-                    ease: "power2.out"
-                  });
-                }
-              });
-            };
           }
 
         });
@@ -98,7 +74,6 @@ export const initHorizontalScrolling = () => {
 
           const richTextElements = wrap.querySelectorAll("#foreword > p");
           const paragraphCount = richTextElements.length;
-          const triggeredIndexes = new Set();
 
           const horizontalTween = gsap.to(panels, {
             x: () => -(wrap.scrollWidth - window.innerWidth),
@@ -121,17 +96,25 @@ export const initHorizontalScrolling = () => {
                 const shape3 = wrap.querySelector('.shape.shape--leaf.is-foreword-3');
                 const shape4 = wrap.querySelector('.shape.shape--quarter.is-foreword-4');
                 
-                if (progress >= 0.2 && shape1) {
-                  gsap.to(shape1, { scale: 1, rotation: 360, duration: 0.6, ease: "back.out(1.7)" });
+                if (progress >= 0.2 && shape1 && !shape1.hasAttribute('data-rotating')) {
+                  gsap.to(shape1, { scale: 1, duration: 0.6, ease: "back.out(1.7)" });
+                  gsap.to(shape1, { rotation: "+=360", duration: 20, ease: "none", repeat: -1 });
+                  shape1.setAttribute('data-rotating', 'true');
                 }
-                if (progress >= 0.5 && shape2) {
-                  gsap.to(shape2, { scale: 1, rotation: -180, duration: 0.6, ease: "back.out(1.7)" });
+                if (progress >= 0.5 && shape2 && !shape2.hasAttribute('data-rotating')) {
+                  gsap.to(shape2, { scale: 1, duration: 0.6, ease: "back.out(1.7)" });
+                  gsap.to(shape2, { rotation: "+=360", duration: 18, ease: "none", repeat: -1 });
+                  shape2.setAttribute('data-rotating', 'true');
                 }
-                if (progress >= 0.8 && shape3) {
-                  gsap.to(shape3, { scale: 1, rotation: 270, duration: 0.6, ease: "back.out(1.7)" });
+                if (progress >= 0.8 && shape3 && !shape3.hasAttribute('data-rotating')) {
+                  gsap.to(shape3, { scale: 1, duration: 0.6, ease: "back.out(1.7)" });
+                  gsap.to(shape3, { rotation: "+=360", duration: 16, ease: "none", repeat: -1 });
+                  shape3.setAttribute('data-rotating', 'true');
                 }
-                if (progress >= 0.99 && shape4) {
-                  gsap.to(shape4, { scale: 1, rotation: 90, duration: 0.6, ease: "back.out(1.7)" });
+                if (progress >= 0.99 && shape4 && !shape4.hasAttribute('data-rotating')) {
+                  gsap.to(shape4, { scale: 1, duration: 0.6, ease: "back.out(1.7)" });
+                  gsap.to(shape4, { rotation: "+=360", duration: 14, ease: "none", repeat: -1 });
+                  shape4.setAttribute('data-rotating', 'true');
                 }
                 
                 richTextElements.forEach((paragraph, index) => {
@@ -141,30 +124,6 @@ export const initHorizontalScrolling = () => {
                       clipPath: "circle(150% at 100% 0%)",
                       duration: 1.2
                     });
-                    
-                    // Only apply highlight animation to the last 2 paragraphs
-                    const isLastTwoParagraphs = index >= paragraphCount - 2;
-                    
-                    if (!triggeredIndexes.has(index) && isLastTwoParagraphs) {
-                      triggeredIndexes.add(index);
-                      const strongElements = paragraph.querySelectorAll('strong');
-                      strongElements.forEach((strong, sIndex) => {
-                        if (!strong.hasAttribute('data-highlighted')) {
-                          strong.setAttribute('data-highlighted', 'true');
-                          const textLength = strong.textContent.trim().length;
-                          const baseDuration = 0.4;
-                          const durationPerChar = 0.02;
-                          const duration = Math.min(baseDuration + (textLength * durationPerChar), 2.5);
-                          const staggerDelay = sIndex * 0.15;
-                          gsap.to(strong, {
-                            '--highlight-width': '100%',
-                            duration: duration,
-                            delay: staggerDelay,
-                            ease: "power2.out"
-                          });
-                        }
-                      });
-                    }
                   }
                 });
               }
