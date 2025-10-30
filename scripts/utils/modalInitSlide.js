@@ -77,6 +77,12 @@ export function initModalSlide() {
         { y: '100%' }, 
         { y: '0%', duration: 0.6, ease: 'power3.out' }
       );
+
+      const swipers = modal.querySelectorAll('[data-swiper-wrap]');
+      swipers.forEach((wrap) => {
+        const instance = wrap.swiper;
+        if (instance && instance.autoplay) instance.autoplay.start();
+      });
     }
   };
 
@@ -104,6 +110,11 @@ export function initModalSlide() {
         duration: 0.5,
         ease: 'power3.in',
         onComplete: () => {
+          const swipers = activeModal.querySelectorAll('[data-swiper-wrap]');
+          swipers.forEach((wrap) => {
+            const instance = wrap.swiper;
+            if (instance && instance.autoplay) instance.autoplay.stop();
+          });
           modalTargets.forEach((t) => t.setAttribute('data-modal-slide-status', 'not-active'));
           modals.forEach((m) => m.setAttribute('data-modal-slide-status', 'not-active'));
           modalGroup.setAttribute('data-modal-slide-group', 'not-active');

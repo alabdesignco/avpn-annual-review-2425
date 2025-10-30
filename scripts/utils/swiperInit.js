@@ -13,6 +13,12 @@ export const initSwiperSlider = () => {
       speed: 600,
       mousewheel: true,
       grabCursor: true,
+      autoplay: {
+        delay: 4000,
+        disableOnInteraction: false,
+        pauseOnMouseEnter: true,
+        waitForTransition: true,
+      },
       breakpoints: {
         // when window width is >= 480px
         480: {
@@ -37,6 +43,8 @@ export const initSwiperSlider = () => {
         onlyInViewport: false,
       },      
     });    
+    
+    if (swiper.autoplay) swiper.autoplay.stop();
     
   });
 };
