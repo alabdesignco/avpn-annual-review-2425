@@ -43,6 +43,7 @@ const initCircularBarChart = () => {
 
   const drawChart = () => {
     const containerEl = document.querySelector(".supported-chart");
+    if (!containerEl) return;
     const containerWidth = containerEl.offsetWidth;
     const containerHeight = containerEl.offsetHeight;
     
@@ -53,6 +54,8 @@ const initCircularBarChart = () => {
 
     d3.select(".supported-chart svg").remove();
 
+    const isSmallScreen = window.matchMedia("(max-width: 991px)").matches
+
     const svg = d3.select(".supported-chart")
       .append("svg")
       .attr("viewBox", `0 0 ${width} ${height}`)
@@ -60,7 +63,7 @@ const initCircularBarChart = () => {
       .style("width", "100%")
       .style("height", "100%")
       .append("g")
-      .attr("transform", `translate(${width / 2},${height / 2 - 80})`);
+      .attr("transform", `translate(${width / 2},${height / 2 - (isSmallScreen ? 0 : 80)})`);
 
     const pie = d3.pie().sort(null).value(1);
     const arc = d3.arc()
@@ -148,33 +151,54 @@ const initCircularBarChart = () => {
       .style("fill", "var(--_primitives---brand--primary--navy-medium)")
       .style("text-anchor", "middle");
 
-    arcs
-      .on("mouseover", function(event, d) {
+    let selectedSlice = null;
+
+    const showCenter = (data) => {
+      const lines = wrapText(data.data.cause, innerRadius * 1.8);
+      const lineHeight = size * 0.02;
+      const bottomMargin = lines.length > 1 ? size * 0.008 : 0;
+      const startY = -(lines.length - 1) * lineHeight / 2 - size * 0.01 - bottomMargin;
+      centerCause.selectAll("*").remove();
+      lines.forEach((line, i) => {
+        centerCause.append("tspan")
+          .attr("x", 0)
+          .attr("dy", i === 0 ? 0 : lineHeight)
+          .text(line);
+      });
+      centerCause.attr("y", startY).transition().duration(200).style("opacity", 1);
+      centerGroup.select(".center-percent")
+        .text(`${data.data.percent}%`)
+        .transition().duration(200).style("opacity", 1);
+    };
+
+    const clearCenter = () => {
+      svg.selectAll("path").transition().duration(200).style("opacity", 1);
+      centerGroup.selectAll("text").transition().duration(200).style("opacity", 0);
+    };
+
+    if (isSmallScreen) {
+      arcs.on("click", function(event, d) {
+        if (selectedSlice === this) {
+          selectedSlice = null;
+          clearCenter();
+          return;
+        }
+        selectedSlice = this;
         svg.selectAll("path").transition().duration(200).style("opacity", 0.3);
         d3.select(this).transition().duration(200).style("opacity", 1);
-
-        const lines = wrapText(d.data.cause, innerRadius * 1.8);
-        const lineHeight = size * 0.02;
-        const bottomMargin = lines.length > 1 ? size * 0.008 : 0;
-        const startY = -(lines.length - 1) * lineHeight / 2 - size * 0.01 - bottomMargin;
-
-        centerCause.selectAll("*").remove();
-        lines.forEach((line, i) => {
-          centerCause.append("tspan")
-            .attr("x", 0)
-            .attr("dy", i === 0 ? 0 : lineHeight)
-            .text(line);
-        });
-        centerCause.attr("y", startY).transition().duration(200).style("opacity", 1);
-
-        centerGroup.select(".center-percent")
-          .text(`${d.data.percent}%`)
-          .transition().duration(200).style("opacity", 1);
-      })
-      .on("mouseout", function() {
-        svg.selectAll("path").transition().duration(200).style("opacity", 1);
-        centerGroup.selectAll("text").transition().duration(200).style("opacity", 0);
+        showCenter(d);
       });
+    } else {
+      arcs
+        .on("mouseover", function(event, d) {
+          svg.selectAll("path").transition().duration(200).style("opacity", 0.3);
+          d3.select(this).transition().duration(200).style("opacity", 1);
+          showCenter(d);
+        })
+        .on("mouseout", function() {
+          clearCenter();
+        });
+    }
 
     document.querySelectorAll(".supported-chart_legend-color").forEach((el) => {
       const index = parseInt(el.dataset.index);
@@ -194,38 +218,81 @@ const initCircularBarChart = () => {
         item.querySelector(".supported-chart_legend-color").dataset.index
       );
 
-      item.addEventListener("mouseenter", () => {
-        slices.transition().duration(200).style("opacity", 0.3);
-        d3.select(slices.nodes()[index]).transition().duration(200).style("opacity", 1);
+      if (isSmallScreen) {
+        item.addEventListener("click", () => {
+          const node = slices.nodes()[index];
+          if (selectedSlice === node) {
+            selectedSlice = null;
+            clearCenter();
+            return;
+          }
+          selectedSlice = node;
+          slices.transition().duration(200).style("opacity", 0.3);
+          d3.select(node).transition().duration(200).style("opacity", 1);
 
-        const d = data[index];
-        const lines = wrapText(d.cause, innerRadius * 1.8);
-        const lineHeight = size * 0.02;
-        const bottomMargin = lines.length > 1 ? size * 0.008 : 0;
-        const startY = -(lines.length - 1) * lineHeight / 2 - size * 0.01 - bottomMargin;
+          const d = data[index];
+          const lines = wrapText(d.cause, innerRadius * 1.8);
+          const lineHeight = size * 0.02;
+          const bottomMargin = lines.length > 1 ? size * 0.008 : 0;
+          const startY = -(lines.length - 1) * lineHeight / 2 - size * 0.01 - bottomMargin;
 
-        centerCause.selectAll("*").remove();
-        lines.forEach((line, i) => {
-          centerCause.append("tspan")
-            .attr("x", 0)
-            .attr("dy", i === 0 ? 0 : lineHeight)
-            .text(line);
+          centerCause.selectAll("*").remove();
+          lines.forEach((line, i) => {
+            centerCause.append("tspan")
+              .attr("x", 0)
+              .attr("dy", i === 0 ? 0 : lineHeight)
+              .text(line);
+          });
+          centerCause.attr("y", startY).transition().duration(200).style("opacity", 1);
+          centerGroup.select(".center-percent").text(`${d.percent}%`).transition().duration(200).style("opacity", 1);
         });
-        centerCause.attr("y", startY).transition().duration(200).style("opacity", 1);
+      } else {
+        item.addEventListener("mouseenter", () => {
+          slices.transition().duration(200).style("opacity", 0.3);
+          d3.select(slices.nodes()[index]).transition().duration(200).style("opacity", 1);
 
-        centerGroup.select(".center-percent").text(`${d.percent}%`)
-          .transition().duration(200).style("opacity", 1);
-      });
+          const d = data[index];
+          const lines = wrapText(d.cause, innerRadius * 1.8);
+          const lineHeight = size * 0.02;
+          const bottomMargin = lines.length > 1 ? size * 0.008 : 0;
+          const startY = -(lines.length - 1) * lineHeight / 2 - size * 0.01 - bottomMargin;
 
-      item.addEventListener("mouseleave", () => {
-        slices.transition().duration(200).style("opacity", 1);
-        centerGroup.selectAll("text").transition().duration(200).style("opacity", 0);
-      });
+          centerCause.selectAll("*").remove();
+          lines.forEach((line, i) => {
+            centerCause.append("tspan")
+              .attr("x", 0)
+              .attr("dy", i === 0 ? 0 : lineHeight)
+              .text(line);
+          });
+          centerCause.attr("y", startY).transition().duration(200).style("opacity", 1);
+          centerGroup.select(".center-percent").text(`${d.percent}%`).transition().duration(200).style("opacity", 1);
+        });
+
+        item.addEventListener("mouseleave", () => {
+          slices.transition().duration(200).style("opacity", 1);
+          centerGroup.selectAll("text").transition().duration(200).style("opacity", 0);
+        });
+      }
     });
   };
 
-  drawChart();
-  window.addEventListener("resize", drawChart);
+  const mm = gsap.matchMedia();
+  mm.add(
+    {
+      isMobile: "(max-width:479px)",
+      isMobileLandscape: "(max-width:767px)",
+      isTablet: "(max-width:991px)",
+      isDesktop: "(min-width:992px)"
+    },
+    () => {
+      drawChart();
+      const onResize = () => drawChart();
+      window.addEventListener("resize", onResize);
+      return () => {
+        window.removeEventListener("resize", onResize);
+      };
+    }
+  );
 };
 
 export { initCircularBarChart };
