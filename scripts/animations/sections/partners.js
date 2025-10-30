@@ -11,8 +11,8 @@ export function initPartners() {
       return;
     }
 
-    const introText = section.querySelector('.partners_top .text-size-large');
-    const button = section.querySelector('.partners_top .button');
+    const introText = section.querySelector('.partners_bottom .text-size-large');
+    const button = section.querySelector('.partners_bottom .button');
     const logoWallComponent = section.querySelector('.partners-logo-wall_component');
 
     if (!introText || !button || !logoWallComponent) {
@@ -24,39 +24,48 @@ export function initPartners() {
       y: 30 
     });
 
-    const tl = gsap.timeline({
+    gsap.to(logoWallComponent, {
+      opacity: 1,
+      y: 0,
+      duration: 0.8,
+      ease: 'power2.out',
       scrollTrigger: {
-        trigger: section,
+        trigger: logoWallComponent,
         start: 'top 60%',
         end: 'bottom 20%',
         toggleActions: 'play none none reverse',
-        refreshPriority: -1,
-        onEnter: () => {},
-        onLeaveBack: () => {}
+        refreshPriority: -1
+      },
+      onComplete: () => {
+        entranceComplete = true;
+        cycleTriggers.forEach(trigger => trigger());
       }
     });
 
-    tl.to(introText, { 
-      opacity: 1, 
-      y: 0, 
-      duration: 0.8, 
-      ease: 'power3.out' 
-    })
-    .to(button, { 
-      opacity: 1, 
-      y: 0, 
-      duration: 0.6, 
-      ease: 'power2.out' 
-    }, '-=0.4')
-    .to(logoWallComponent, { 
-      opacity: 1, 
-      y: 0, 
-      duration: 0.8, 
-      ease: 'power2.out' 
-    }, '-=0.2')
-    .call(() => {
-      entranceComplete = true;
-      cycleTriggers.forEach(trigger => trigger());
+    gsap.to(introText, {
+      opacity: 1,
+      y: 0,
+      duration: 0.8,
+      ease: 'power3.out',
+      scrollTrigger: {
+        trigger: introText,
+        start: 'top 60%',
+        end: 'bottom 20%',
+        toggleActions: 'play none none reverse'
+      }
+    });
+
+    gsap.to(button, {
+      opacity: 1,
+      y: 0,
+      duration: 0.6,
+      ease: 'power2.out',
+      scrollTrigger: {
+        trigger: button,
+        start: 'top 60%',
+        end: 'bottom 20%',
+        toggleActions: 'play none none reverse'
+      }
     });
   };
 
