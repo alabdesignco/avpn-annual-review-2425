@@ -96,7 +96,8 @@ class Grid {
     }, "-=0.4")
     timeline.call(() => {
       this.addEvents()
-      this.observeProducts()
+      this.observeImages()
+      this.applyHideAfterIntro()
     })
   }
 
@@ -163,11 +164,20 @@ class Grid {
     })
   }
 
-  observeProducts() {
+  observeImages() {
+    const showThreshold = 0.88
+    const hideThreshold = 0.72
+    const steps = Array.from({ length: 21 }, (_, i) => i / 20)
+
     const observer = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          gsap.to(entry.target, {
+        const el = entry.target
+        const ratio = entry.intersectionRatio
+        const isVisible = el.__visible === true
+
+        if (!isVisible && ratio >= showThreshold) {
+          el.__visible = true
+          gsap.to(el, {
             scale: 1,
             opacity: 1,
             filter: "blur(0px)",
@@ -175,20 +185,21 @@ class Grid {
             duration: 0.8,
             ease: "power3.out"
           })
-        } else {
-          gsap.to(entry.target, {
+        } else if (ratio <= hideThreshold && el.__visible !== false) {
+          el.__visible = false
+          gsap.to(el, {
             opacity: 0,
             duration: 0.6,
             ease: "power3.out"
           })
-          gsap.to(entry.target, {
+          gsap.to(el, {
             scale: 0.5,
             filter: "blur(4px)",
             duration: 0.5,
             ease: "power3.out",
             delay: 0.2
           })
-          gsap.to(entry.target, {
+          gsap.to(el, {
             visibility: "hidden",
             duration: 0.1,
             delay: 0.7
@@ -197,14 +208,31 @@ class Grid {
       })
     }, {
       root: null,
-      threshold: 0.8
+      threshold: steps,
+      rootMargin: "0px 0px -6% 0px"
     })
 
     this.imageWrappers.forEach(imageWrapper => {
+      if (imageWrapper.hasAttribute('data-hide-after')) return
       observer.observe(imageWrapper)
     })
   }
+
+  applyHideAfterIntro() {
+    this.imageWrappers.forEach(w => {
+      if (w.hasAttribute('data-hide-after')) {
+        gsap.set(w, {
+          opacity: 0,
+          scale: 0.5,
+          filter: "blur(4px)",
+          visibility: "hidden"
+        })
+      }
+    })
+  }
 }
+
+  
 
   const grid = new Grid()
 
