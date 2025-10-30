@@ -40,9 +40,9 @@ export const initFalling2DMatterJS = () => {
   let boxTop, boxBottom, boxLeft, boxRight;
   let resizeHandler, mousemoveHandler, mouseleaveHandler, touchStartHandler, touchMoveHandler, touchEndHandler;
 
-  const COLORS = ["#00b4ae", "#00b4ae", "#007b69", "#f27c38", "#ffd552", "#91c7d6"];
+  const COLORS = [ "#00b4ae", "#007b69", "#f27c38", "#ffd552", "#91c7d6"];
   const gravity = 2;
-  const objectAmount = 30;
+  const objectAmount = 25;
   const objectRestitution = 0.65;
 
   const getRandomNumber = (min, max) => Math.random() * (max - min) + min;
@@ -93,7 +93,12 @@ export const initFalling2DMatterJS = () => {
     const containerHeight = rect.height;
     const containerWallDepth = containerWidth / 4;
 
-    const objectSize = containerWidth / 15;
+    const isMobile = window.matchMedia("(max-width:479px)").matches;
+    const isTablet = window.matchMedia("(max-width:991px)").matches;
+    const sizeMultiplier = isMobile ? 0.65 : isTablet ? 1.2 : 1;
+    const spawnAmount = isMobile ? Math.round(objectAmount * 0.6) : isTablet ? Math.round(objectAmount * 1) : objectAmount;
+
+    const objectSize = (containerWidth / 15) * sizeMultiplier;
     const min = objectSize / 2;
     const max = containerWidth - objectSize / 2;
 
@@ -204,7 +209,7 @@ export const initFalling2DMatterJS = () => {
 
     let objectsCreated = 0;
     const spawnLoop = () => {
-      if (objectsCreated < objectAmount) {
+      if (objectsCreated < spawnAmount) {
         createObject();
         objectsCreated++;
         setTimeout(spawnLoop, 100);
