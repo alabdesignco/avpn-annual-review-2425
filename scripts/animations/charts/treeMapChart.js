@@ -2,63 +2,91 @@ const initTreeMapChart = () => {
   const data = {
     name: "Beneficiary Communities",
     children: [
-      { name: "Children & youths", value: 436, percent: 69 },
-      { name: "Women & girls", value: 411, percent: 65 },
-      { name: "People in poverty", value: 398, percent: 63 },
+      { name: "Children & Youths", value: 436, percent: 69 },
+      { name: "Women & Girls", value: 411, percent: 65 },
+      { name: "People in Poverty", value: 398, percent: 63 },
       { name: "Environment", value: 303, percent: 48 },
-      { name: "People without employment", value: 259, percent: 41 },
-      { name: "People with disabilities", value: 208, percent: 33 },
+      { name: "People without Employment", value: 259, percent: 41 },
+      { name: "People with Disabilities", value: 208, percent: 33 },
       { name: "Elderly", value: 196, percent: 31 },
-      { name: "People with medical needs", value: 196, percent: 31 },
-      { name: "Ethnic minorities", value: 183, percent: 29 },
-      { name: "Immigrants & asylum seekers & refugees", value: 114, percent: 18 },
-      { name: "Offenders & re-offenders", value: 44, percent: 7 }
+      { name: "People with Medical Needs", value: 196, percent: 31 },
+      { name: "Ethnic Minorities", value: 183, percent: 29 },
+      { name: "Immigrants, Asylum Seekers & Refugees", value: 114, percent: 18 },
+      { name: "Offenders & Re-Offenders", value: 44, percent: 7 }
     ]
   };
 
   const container = document.querySelector(".beneficiary-treemap");
-  const width = container.clientWidth || 1000;
-  const height = container.clientHeight || 600;
-  const gap = 8;
+  if (!container) return;
 
-  container.innerHTML = "";
+  const mm = gsap.matchMedia();
 
-  const svg = d3.select(container)
-    .append("svg")
-    .attr("viewBox", [0, 0, width, height])
-    .style("width", "100%")
-    .style("height", "100%");
+  mm.add(
+    {
+      isMobile: "(max-width:479px)",
+      isMobileLandscape: "(max-width:767px)",
+      isTablet: "(max-width:991px)",
+      isDesktop: "(min-width:992px)"
+    },
+    (context) => {
+      const { isMobile, isMobileLandscape, isTablet } = context.conditions;
+
+      const width = container.clientWidth || 1000;
+      const height = container.clientHeight || 600;
+      const gap = 8;
+
+      container.innerHTML = "";
+
+      const svg = d3.select(container)
+        .append("svg")
+        .attr("viewBox", [0, 0, width, height])
+        .style("width", "100%")
+        .style("height", "100%");
 
   const colorMap = {
-    "Children & youths": "#00B3AD",
-    "Women & girls": "#F17C38",
-    "People in poverty": "#FED452",
+    "Children & Youths": "#00B3AD",
+    "Women & Girls": "#F17C38",
+    "People in Poverty": "#FED452",
     "Environment": "#ADD5E0",
-    "People without employment": "#4AC1BE",
-    "People with disabilities": "#002943",
+    "People without Employment": "#4AC1BE",
+    "People with Disabilities": "#002943",
     "Elderly": "#F59D6A",
-    "People with medical needs": "#FEE07E",
-    "Ethnic minorities": "#86D1D1",
-    "Immigrants & asylum seekers & refugees": "#80BDB4",
-    "Offenders & re-offenders": "#F2948C",
+    "People with Medical Needs": "#FEE07E",
+    "Ethnic Minorities": "#86D1D1",
+    "Immigrants, Asylum Seekers & Refugees": "#80BDB4",
+    "Offenders & Re-Offenders": "#F2948C",
   };
 
-  const root = d3.hierarchy(data)
-    .sum(d => d.value)
-    .sort((a, b) => b.value - a.value);
+      const isSmallScreen = isMobile || isTablet || isMobileLandscape;
+      const minLayoutValue = 130;
+      const layoutData = isSmallScreen
+        ? {
+            ...data,
+            children: data.children.map((c) => ({ ...c, layoutValue: Math.max(c.value, minLayoutValue) }))
+          }
+        : {
+            ...data,
+            children: data.children.map((c) => ({ ...c, layoutValue: c.value }))
+          };
 
-  d3.treemap()
-    .tile(d3.treemapBinary)
-    .size([width, height])
-    .paddingInner(gap)
-    .round(true)(root);
+      const root = d3.hierarchy(layoutData)
+        .sum(d => d.layoutValue)
+        .sort((a, b) => b.layoutValue - a.layoutValue);
 
-  const leaf = svg.selectAll("g")
-    .data(root.leaves())
-    .join("g")
-    .attr("transform", d => `translate(${d.x0},${d.y0})`)
-    .style("cursor", "pointer")
-    .style("opacity", 0);
+      const tile = (isMobile || isTablet) ? d3.treemapSlice : d3.treemapBinary;
+
+      d3.treemap()
+        .tile(tile)
+        .size([width, height])
+        .paddingInner(gap)
+        .round(true)(root);
+
+      const leaf = svg.selectAll("g")
+        .data(root.leaves())
+        .join("g")
+        .attr("transform", d => `translate(${d.x0},${d.y0})`)
+        .style("cursor", "pointer")
+        .style("opacity", 0);
 
   const getTextColor = (hex) => {
     const c = d3.color(hex);
@@ -94,7 +122,7 @@ const initTreeMapChart = () => {
     });
   };
 
-  leaf.each(function(d) {
+      leaf.each(function(d) {
     const g = d3.select(this);
     const fill = colorMap[d.data.name] || "#ccc";
     const textColor = getTextColor(fill);
@@ -135,7 +163,7 @@ const initTreeMapChart = () => {
         .text(`${Math.round(d.data.percent)}%`);
     }
 
-    g.on("mouseenter", () => {
+        g.on("mouseenter", () => {
       g.raise();
       gsap.to(rect.node(), {
         scale: 1.05,
@@ -159,7 +187,7 @@ const initTreeMapChart = () => {
           ease: "power2.out"
         });
       }
-    }).on("mouseleave", () => {
+        }).on("mouseleave", () => {
       gsap.to(rect.node(), {
         scale: 1,
         duration: 0.25,
@@ -182,20 +210,22 @@ const initTreeMapChart = () => {
           ease: "power2.out"
         });
       }
-    });
-  });
+        });
+      });
 
-  gsap.to(leaf.nodes(), {
-    opacity: 1,
-    duration: 0.6,
-    ease: "power2.out",
-    stagger: 0.08,
-    scrollTrigger: {
-      trigger: container,
-      start: "top 80%",
-      toggleActions: "play none none none"
+      gsap.to(leaf.nodes(), {
+        opacity: 1,
+        duration: 0.6,
+        ease: "power2.out",
+        stagger: 0.08,
+        scrollTrigger: {
+          trigger: container,
+          start: "top 80%",
+          toggleActions: "play none none none"
+        }
+      });
     }
-  });
+  );
 };
 
 export { initTreeMapChart };
