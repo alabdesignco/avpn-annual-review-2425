@@ -35,7 +35,7 @@ export function initAccentShapes() {
           const duration = parseFloat(shape.getAttribute("data-accent-duration")) || 0.8
           const ease = shape.getAttribute("data-accent-ease") || "back.out(1.7)"
           
-          const shouldLoop = shape.hasAttribute("data-accent-loop")
+          const mode = (shape.getAttribute("data-accent-mode") || "").toLowerCase()
           const loopDuration = parseFloat(shape.getAttribute("data-accent-loop-duration")) || 3
           const loopEase = shape.getAttribute("data-accent-loop-ease") || "none"
 
@@ -60,13 +60,49 @@ export function initAccentShapes() {
             ease
           })
 
-          if (shouldLoop) {
-            tl.to(target, {
+          let loopController
+
+          if (shape.hasAttribute("data-accent-mode") && (mode === "" || mode === "rotate")) {
+            loopController = gsap.to(target, {
               rotation: "+=360",
               duration: loopDuration,
               ease: loopEase,
-              repeat: -1
-            }, 0)
+              repeat: -1,
+              paused: true
+            })
+          } else if (mode === "pulse") {
+            const beatTl = gsap.timeline({ repeat: -1, repeatDelay: loopDuration, paused: true })
+            beatTl
+              .to(target, { scale: endScale * 1.12, duration: loopDuration * 0.18, ease: "power2.out" })
+              .to(target, { scale: endScale * 1.02, duration: loopDuration * 0.12, ease: "power2.inOut" })
+              .to(target, { scale: endScale * 1.08, duration: loopDuration * 0.16, ease: "power2.out" })
+              .to(target, { scale: endScale, duration: loopDuration * 0.24, ease: "power2.inOut" })
+            loopController = beatTl
+          } else if (mode === "scrub") {
+            gsap.to(target, {
+              rotation: 45,
+              ease: "none",
+              scrollTrigger: {
+                trigger: shape,
+                start: scrollStart,
+                end: scrollEnd,
+                scrub: true
+              }
+            })
+          }
+
+          if (loopController) {
+            const guardStart = (mode === "" || mode === "rotate" || mode === "pulse") ? "top bottom" : scrollStart
+            const guardEnd = (mode === "" || mode === "rotate" || mode === "pulse") ? "bottom top" : scrollEnd
+            ScrollTrigger.create({
+              trigger: shape,
+              start: guardStart,
+              end: guardEnd,
+              onEnter: () => loopController.play(),
+              onEnterBack: () => loopController.play(),
+              onLeave: () => loopController.pause(),
+              onLeaveBack: () => loopController.pause()
+            })
           }
         })
       })
