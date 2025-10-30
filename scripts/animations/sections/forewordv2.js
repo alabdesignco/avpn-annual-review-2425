@@ -142,7 +142,10 @@ export const initHorizontalScrolling = () => {
                       duration: 1.2
                     });
                     
-                    if (!triggeredIndexes.has(index)) {
+                    // Only apply highlight animation to the last 2 paragraphs
+                    const isLastTwoParagraphs = index >= paragraphCount - 2;
+                    
+                    if (!triggeredIndexes.has(index) && isLastTwoParagraphs) {
                       triggeredIndexes.add(index);
                       const strongElements = paragraph.querySelectorAll('strong');
                       strongElements.forEach((strong, sIndex) => {
