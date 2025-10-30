@@ -17,7 +17,7 @@ class HighlightEffect {
   
   setInitialState() {
     gsap.set(this.highlightedElement, {
-      '--after-scale': 0
+      '--after-scale-x': 0
     });
   }
 
@@ -37,18 +37,20 @@ class HighlightEffect {
   }
 
   animateHighlight() {
-    gsap.to(this.highlightedElement, {
+    gsap.fromTo(this.highlightedElement, {
+      '--after-scale-x': 0
+    }, {
+      '--after-scale-x': 1,
       duration: 0.8,
       ease: 'expo',
-      delay: this.delay,
-      '--after-scale': 1
+      delay: this.delay
     });
   }
 
   resetHighlight() {
     gsap.killTweensOf(this.highlightedElement);
     gsap.set(this.highlightedElement, {
-      '--after-scale': 0
+      '--after-scale-x': 0
     });
   }
 }
