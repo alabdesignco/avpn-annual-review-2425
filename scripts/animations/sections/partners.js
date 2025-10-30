@@ -1,7 +1,4 @@
 export function initPartners() {
-  console.log('[partners] initPartners start', { readyState: document.readyState });
-  if (typeof gsap === 'undefined') console.warn('[partners] gsap missing');
-  if (typeof ScrollTrigger === 'undefined') console.warn('[partners] ScrollTrigger missing');
   const loopDelay = 1;
   const duration  = 0.9;
 
@@ -11,7 +8,6 @@ export function initPartners() {
   const initEntranceAnimations = () => {
     const section = document.querySelector('.section_partners');
     if (!section) {
-      console.warn('[partners] section not found');
       return;
     }
 
@@ -20,11 +16,6 @@ export function initPartners() {
     const logoWallComponent = section.querySelector('.partners-logo-wall_component');
 
     if (!introText || !button || !logoWallComponent) {
-      console.warn('[partners] missing elements', {
-        introText: !!introText,
-        button: !!button,
-        logoWallComponent: !!logoWallComponent
-      });
       return;
     }
 
@@ -40,11 +31,10 @@ export function initPartners() {
         end: 'bottom 20%',
         toggleActions: 'play none none reverse',
         refreshPriority: -1,
-        onEnter: () => console.log('[partners] entrance onEnter'),
-        onLeaveBack: () => console.log('[partners] entrance onLeaveBack')
+        onEnter: () => {},
+        onLeaveBack: () => {}
       }
     });
-    console.log('[partners] entrance timeline created');
 
     tl.to(introText, { 
       opacity: 1, 
@@ -66,18 +56,14 @@ export function initPartners() {
     }, '-=0.2')
     .call(() => {
       entranceComplete = true;
-      console.log('[partners] entrance complete, enabling cycles');
       cycleTriggers.forEach(trigger => trigger());
     });
   };
 
   initEntranceAnimations();
-  console.log('[partners] entrance initialized');
 
   const cycleRoots = document.querySelectorAll('[data-logo-wall-cycle-init]');
-  console.log('[partners] cycle roots', { count: cycleRoots.length });
   cycleRoots.forEach(root => {
-    console.log('[partners] cycle init root', root);
     const list   = root.querySelector('[data-logo-wall-list]');
     const items  = Array.from(list.querySelectorAll('[data-logo-wall-item]'));
 
@@ -111,7 +97,6 @@ export function initPartners() {
 
     // If still no targets, exit early
     if (originalTargets.length === 0) {
-      console.warn('[partners] no targets found');
       return;
     }
 
@@ -141,13 +126,13 @@ export function initPartners() {
       }
       visibleItems = items.filter(isVisible);
       visibleCount = visibleItems.length;
-      console.log('[partners] setup', { totalItems: items.length, visibleCount });
+      
 
       pattern = shuffleArray(
         Array.from({ length: visibleCount }, (_, i) => i)
       );
       patternIndex = 0;
-      console.log('[partners] pattern', pattern);
+      
 
       items.forEach(item => {
         item.querySelectorAll('[data-logo-wall-target]').forEach(old => old.remove());
@@ -176,13 +161,13 @@ export function initPartners() {
       tl = gsap.timeline({ repeat: -1, paused: true });
       tl.call(swapNext);
       tl.to({}, { duration: duration + loopDelay });
-      console.log('[partners] cycle timeline ready');
+      
     }
 
     function swapNext() {
       const nowCount = items.filter(isVisible).length;
       if (nowCount !== visibleCount) {
-        console.log('[partners] visibility changed, resetting', { nowCount, visibleCount });
+        
         setup();
         return;
       }
@@ -190,7 +175,7 @@ export function initPartners() {
 
       const idx = pattern[patternIndex % visibleCount];
       patternIndex++;
-      console.log('[partners] swapNext', { idx, patternIndex });
+      
 
       const container = visibleItems[idx];
       const parent =
@@ -238,7 +223,6 @@ export function initPartners() {
 
     const initScrollTrigger = () => {
       if (!entranceComplete) {
-        console.log('[partners] cycle waiting for entrance to complete');
         cycleTriggers.push(initScrollTrigger);
         return;
       }
@@ -247,14 +231,13 @@ export function initPartners() {
         trigger: root,
         start: 'top bottom',
         end: 'bottom top',
-        onEnter:     () => { console.log('[partners] cycle onEnter'); tl.play(); },
-        onLeave:     () => { console.log('[partners] cycle onLeave'); tl.pause(); },
-        onEnterBack: () => { console.log('[partners] cycle onEnterBack'); tl.play(); },
-        onLeaveBack: () => { console.log('[partners] cycle onLeaveBack'); tl.pause(); }
+        onEnter:     () => { tl.play(); },
+        onLeave:     () => { tl.pause(); },
+        onEnterBack: () => { tl.play(); },
+        onLeaveBack: () => { tl.pause(); }
       });
 
       if (st.isActive) {
-        console.log('[partners] cycle st active, playing');
         tl.play();
       }
     };
@@ -262,21 +245,17 @@ export function initPartners() {
     if (document.readyState === 'complete') {
       ScrollTrigger.refresh();
       gsap.delayedCall(0.3, initScrollTrigger);
-      console.log('[partners] initScrollTrigger post-complete');
     } else {
       window.addEventListener('load', () => {
         ScrollTrigger.refresh();
         gsap.delayedCall(0.3, initScrollTrigger);
-        console.log('[partners] initScrollTrigger on load');
       });
     }
 
     document.addEventListener('visibilitychange', () => {
       if (document.hidden) {
-        console.log('[partners] document hidden, pausing');
         tl.pause();
       } else if (st && st.isActive) {
-        console.log('[partners] document visible, resuming');
         tl.play();
       }
     });
