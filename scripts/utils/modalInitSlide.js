@@ -6,6 +6,57 @@ export function initModalSlide() {
   const modalTargets = modalGroup.querySelectorAll('[data-modal-slide-target]');
   const closeBtns = modalGroup.querySelectorAll('[data-modal-slide-close]');
 
+  const initModalOdometer = (modal) => {
+    const odometerElements = modal.querySelectorAll('[data-odometer]');
+    
+    odometerElements.forEach(element => {
+      const startValue = parseFloat(element.getAttribute('data-count-start')) || 0;
+      const endValue = parseFloat(element.getAttribute('data-count-end')) || parseFloat(element.textContent.replace(/,/g, ''));
+      const duration = parseFloat(element.getAttribute('data-duration')) || 2000;
+      const format = element.getAttribute('data-format') || '(,ddd)';
+      
+      element.textContent = startValue;
+      element.classList.add('odometer');
+
+      const odometer = new Odometer({
+        el: element,
+        value: startValue,
+        format: format,
+        duration: duration
+      });
+
+      element.odometerInstance = { odometer, endValue, hasAnimated: false };
+    });
+  };
+
+  const setupOdometerObserver = (modal) => {
+    const odometerElements = modal.querySelectorAll('[data-odometer]');
+    
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting && !entry.target.odometerInstance.hasAnimated) {
+          const { odometer, endValue } = entry.target.odometerInstance;
+          odometer.update(endValue);
+          entry.target.odometerInstance.hasAnimated = true;
+          observer.unobserve(entry.target);
+        }
+      });
+    }, {
+      threshold: 0.5,
+      rootMargin: '0px 0px -10% 0px'
+    });
+
+    odometerElements.forEach(element => {
+      observer.observe(element);
+    });
+  };
+
+  // Initialize odometer counters in all modals
+  modals.forEach(modal => {
+    initModalOdometer(modal);
+    setupOdometerObserver(modal);
+  });
+
   const openModal = (targetName) => {
     const modal = modalGroup.querySelector(`[data-modal-slide-name="${targetName}"]`);
 
