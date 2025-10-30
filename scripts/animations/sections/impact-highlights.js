@@ -1,60 +1,3 @@
-class HighlightEffect {
-  constructor(el, delay = 0) {
-    if (!el || !(el instanceof HTMLElement)) {
-      throw new Error('Invalid element provided.');
-    }
-
-    this.highlightedElement = el;
-    this.delay = delay;
-    this.animationDefaults = {
-      duration: 0.4,
-      ease: 'power1',
-    };
-    
-    this.setInitialState();
-    this.initializeEffect();
-  }
-  
-  setInitialState() {
-    gsap.set(this.highlightedElement, {
-      '--after-scale-x': 0
-    });
-  }
-
-  initializeEffect() {
-    this.scroll();
-  }
-
-  scroll() {
-    ScrollTrigger.create({
-      trigger: this.highlightedElement,
-      start: 'top 60%',
-      onEnter: () => this.animateHighlight(),
-      onEnterBack: () => this.animateHighlight(),
-      onLeave: () => this.resetHighlight(),
-      onLeaveBack: () => this.resetHighlight()
-    });
-  }
-
-  animateHighlight() {
-    gsap.fromTo(this.highlightedElement, {
-      '--after-scale-x': 0
-    }, {
-      '--after-scale-x': 1,
-      duration: 0.8,
-      ease: 'expo',
-      delay: this.delay
-    });
-  }
-
-  resetHighlight() {
-    gsap.killTweensOf(this.highlightedElement);
-    gsap.set(this.highlightedElement, {
-      '--after-scale-x': 0
-    });
-  }
-}
-
 export const initImpactHighlights = () => {
     const titleContainers = document.querySelectorAll('.section_highlight-content.is-title-waterfall .highlight-title_container');
     const contentContainers = document.querySelectorAll('.section_highlight-content.is-title-waterfall .highlight-content_bottom');
@@ -101,7 +44,6 @@ export const initImpactHighlights = () => {
     contentContainers.forEach(contentContainer => {
         const paragraph = contentContainer.querySelector('.text-size-large');
         const image = contentContainer.querySelector('.highlight-image_wrapper');
-        const textColorElements = contentContainer.querySelectorAll('[data-highlight-stagger]');
         
         if (paragraph) {
             gsap.from(paragraph, {
@@ -117,11 +59,7 @@ export const initImpactHighlights = () => {
                 }
             });
         }
-        
-        textColorElements.forEach(textElement => {
-            new HighlightEffect(textElement, 0.5);
-        });
-        
+
         if (image) {
             gsap.from(image, {
                 scale: 0.8,
