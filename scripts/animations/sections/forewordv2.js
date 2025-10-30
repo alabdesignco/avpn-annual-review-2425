@@ -23,7 +23,7 @@ export const initHorizontalScrolling = () => {
           const ceoAccent2 = wrap.querySelector(".foreword-header_accent.is-2");
           const ceoLabelWrapper = wrap.querySelector(".foreword_ceo-label-wrapper");
 
-          if (ceoImageWrapper) gsap.set(ceoImageWrapper, { opacity: 0 });
+          if (ceoImageWrapper) gsap.set(ceoImageWrapper, { opacity: 0, scale: 0.8 });
           if (ceoAccent1) gsap.set(ceoAccent1, { scale: 0, transformOrigin: "center" });
           if (ceoAccent2) gsap.set(ceoAccent2, { scale: 0, transformOrigin: "center" });
           if (ceoLabelWrapper) gsap.set(ceoLabelWrapper, { opacity: 0, y: 20 });
@@ -35,10 +35,10 @@ export const initHorizontalScrolling = () => {
             }
           });
 
-          if (ceoImageWrapper) entranceTl.to(ceoImageWrapper, { opacity: 1, duration: 0.6 }, 0);
+          if (ceoImageWrapper) entranceTl.to(ceoImageWrapper, { opacity: 1, scale: 1, duration: 0.6, ease: "back.out(1.7)" }, 0);
           if (ceoAccent1) entranceTl.to(ceoAccent1, { scale: 1, duration: 0.8, ease: "back.out(1.7)" }, 0.6);
           if (ceoAccent2) entranceTl.to(ceoAccent2, { scale: 1, duration: 0.8, ease: "back.out(1.7)" }, 0.6);
-          if (ceoLabelWrapper) entranceTl.to(ceoLabelWrapper, { opacity: 1, y: 0, duration: 0.6, ease: "power2.out" }, 0.6);
+          if (ceoLabelWrapper) entranceTl.to(ceoLabelWrapper, { opacity: 1, y: 0, duration: 0.6, ease: "back.out(1.7)" }, 0.6);
           
           // Set initial scale for shapes
           const shapes = wrap.querySelectorAll('.shape.is-foreword-1, .shape.is-foreword-2, .shape.is-foreword-3, .shape.is-foreword-4');
