@@ -21,7 +21,6 @@ import { initMembersSection } from './animations/sections/members.js';
 import { initRegionsSection } from './animations/sections/regions.js';
 import { initEventsSection } from './animations/sections/events.js';
 import { initImpactActionSection } from './animations/sections/impact-action.js';
-// import { initBenefitsSection } from './animations/sections/benefits.js';
 import { initImpactHighlights } from './animations/sections/impact-highlights.js';
 import { initAccentShapes } from './utils/accentShapes.js';
 import { initSwiperSlider } from './utils/swiperInit.js';
@@ -55,7 +54,6 @@ const initAllAnimations = () => {
   initRegionsSection();
   initEventsSection();
   initImpactActionSection();
-  // initBenefitsSection();
   initAccentShapes();
   initSwiperSlider();
   initSocialLinks();
