@@ -25,6 +25,7 @@ import { initImpactActionSection } from './animations/sections/impact-action.js'
 import { initImpactHighlights } from './animations/sections/impact-highlights.js';
 import { initAccentShapes } from './utils/accentShapes.js';
 import { initSwiperSlider } from './utils/swiperInit.js';
+import { initSocialLinks } from './utils/socialLinks.js';
 
 gsap.registerPlugin(ScrollTrigger,SplitText);
 
@@ -57,6 +58,7 @@ const initAllAnimations = () => {
   // initBenefitsSection();
   initAccentShapes();
   initSwiperSlider();
+  initSocialLinks();
 };
 
 document.addEventListener("DOMContentLoaded", async () => {
