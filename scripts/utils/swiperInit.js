@@ -8,11 +8,17 @@ export const initSwiperSlider = () => {
     const prevButton = swiperGroup.querySelector("[data-swiper-prev]");
     const nextButton = swiperGroup.querySelector("[data-swiper-next]");
     
+    const isTouchDevice = 'ontouchstart' in window;
+    
     const swiper = new Swiper(swiperSliderWrap, {
       slidesPerView: 1.25,
       speed: 600,
-      mousewheel: true,
+      mousewheel: !isTouchDevice,
       grabCursor: true,
+      effect: 'fade',
+      fadeEffect: {
+        crossFade: true,
+      },
       autoplay: {
         delay: 4000,
         disableOnInteraction: false,
@@ -20,9 +26,12 @@ export const initSwiperSlider = () => {
         waitForTransition: true,
       },
       breakpoints: {
+        320: {
+          slidesPerView: 1,
+        },
         // when window width is >= 480px
         480: {
-          slidesPerView: 1.8,
+          slidesPerView: 1,
         },
         // when window width is >= 992px
         992: {
