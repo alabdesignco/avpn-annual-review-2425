@@ -12,10 +12,11 @@ export const initEventsSection = () => {
       isMobile: "(max-width:479px)",
       isMobileLandscape: "(max-width:767px)",
       isTablet: "(max-width:991px)",
-      isDesktop: "(min-width:992px)"
+      isDesktop: "(min-width:992px)",
+      hasHover: "(hover: hover) and (pointer: fine)"
     },
     (context) => {
-      const { isMobile, isTablet } = context.conditions;
+      const { isMobile, isTablet, hasHover } = context.conditions;
       const isSmallScreen = isMobile || isTablet;
       const initEntranceAnimations = () => {
         const introParagraph = document.querySelector('.section_events .events_top .text-size-medium');
@@ -161,7 +162,7 @@ export const initEventsSection = () => {
             }
           });
           
-          if (autoplay && !isSmallScreen) {
+          if (autoplay && hasHover) {
             let hoveredVisual = null;
             let originalVisual = null;
             
