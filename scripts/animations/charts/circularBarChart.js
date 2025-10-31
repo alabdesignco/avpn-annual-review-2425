@@ -14,7 +14,7 @@ const initCircularBarChart = () => {
     { cause: "Governance", count: 130, percent: 21 },
     { cause: "Health & Nutrition", count: 207, percent: 33 },
     { cause: "Livelihood & Poverty Alleviation", count: 329, percent: 52 },
-    { cause: "Water & Sanitation & Hygiene", count: 185, percent: 29 }
+    { cause: "Water, Sanitation & Hygiene", count: 185, percent: 29 }
   ];
 
   const getColor = (name) =>
@@ -32,7 +32,7 @@ const initCircularBarChart = () => {
     "Financial Inclusion": getColor("--color-financial-inclusion"),
     "Agriculture": getColor("--color-agriculture"),
     "Energy": getColor("--color-energy"),
-    "Water & Sanitation & Hygiene": getColor("--color-water"),
+    "Water, Sanitation & Hygiene": getColor("--color-water"),
     "Arts & Culture": getColor("--color-arts"),
     "Governance": getColor("--color-governance"),
     "Conservation": getColor("--color-conservation"),
