@@ -26,7 +26,7 @@ import { initAccentShapes } from './utils/accentShapes.js';
 import { initSwiperSlider } from './utils/swiperInit.js';
 import { initSocialLinks } from './utils/socialLinks.js';
 
-gsap.registerPlugin(ScrollTrigger,SplitText);
+gsap.registerPlugin(ScrollTrigger, SplitText);
 
 window.lenis = smoothScroll();
 
@@ -59,14 +59,20 @@ const initAllAnimations = () => {
   initSocialLinks();
 };
 
-document.addEventListener("DOMContentLoaded", async () => {
+document.addEventListener('DOMContentLoaded', async () => {
   await document.fonts.ready;
   initAllAnimations();
 });
 
-// Global ScrollTrigger refresh on window resize
+window.addEventListener('load', () => {
+  requestAnimationFrame(() => {
+    window.lenis.resize();
+    ScrollTrigger.refresh();
+  });
+});
+
 let resizeTimeout;
-window.addEventListener("resize", () => {
+window.addEventListener('resize', () => {
   clearTimeout(resizeTimeout);
   resizeTimeout = setTimeout(() => {
     ScrollTrigger.refresh();
