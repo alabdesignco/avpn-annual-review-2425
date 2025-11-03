@@ -61,11 +61,51 @@ export const initHorizontalScrolling = () => {
 
         wrappers.forEach((wrap) => {
           const disable = wrap.getAttribute("data-horizontal-scroll-disable");
-          if (
+          const shouldDisable = 
             (disable === "mobile" && isMobile) ||
             (disable === "mobileLandscape" && isMobileLandscape) ||
-            (disable === "tablet" && isTablet)
-          ) {
+            (disable === "tablet" && isTablet);
+
+          if (shouldDisable) {
+            const richTextElements = wrap.querySelectorAll("#foreword > p");
+            if (richTextElements.length) {
+              richTextElements.forEach((p, index) => {
+                gsap.to(p, {
+                  opacity: 1,
+                  clipPath: "circle(150% at 100% 0%)",
+                  duration: 1,
+                  scrollTrigger: {
+                    trigger: p,
+                    start: "top 80%",
+                    toggleActions: "play none none none"
+                  },
+                  delay: index * 0.15
+                });
+              });
+            }
+            
+            const shapes = wrap.querySelectorAll('.shape.is-foreword-1, .shape.is-foreword-2, .shape.is-foreword-3, .shape.is-foreword-4');
+            shapes.forEach((shape, index) => {
+              gsap.to(shape, {
+                scale: 1,
+                duration: 0.6,
+                ease: "back.out(1.7)",
+                scrollTrigger: {
+                  trigger: shape,
+                  start: "top 85%",
+                  toggleActions: "play none none none"
+                },
+                delay: index * 0.2
+              });
+              gsap.to(shape, {
+                rotation: "+=360",
+                duration: 20 - (index * 2),
+                ease: "none",
+                repeat: -1,
+                delay: 0.6 + (index * 0.2)
+              });
+            });
+            
             return;
           }
 
