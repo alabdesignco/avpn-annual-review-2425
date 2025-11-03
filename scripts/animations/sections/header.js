@@ -31,8 +31,7 @@ class Grid {
     timeline.set(this.dom, { scale: .5 })
     timeline.set(this.imageWrappers, {
       scale: 0.5,
-      opacity: 0,
-      filter: "blur(4px)"
+      opacity: 0
     })
     if (this.taglines.length > 0) {
       timeline.set(this.taglines, {
@@ -69,7 +68,6 @@ class Grid {
     timeline.to(this.imageWrappers, {
       scale: 1,
       opacity: 1,
-      filter: "blur(0px)",
       duration: 0.6,
       ease: "power3.out",
       stagger: {
@@ -129,16 +127,13 @@ class Grid {
 
   repositionImages() {
     this.imageWrappers.forEach((wrapper) => {
-      const x = this.getResponsiveValue(wrapper, 'x');
-      const y = this.getResponsiveValue(wrapper, 'y');
+      const x = this.getResponsiveValue(wrapper, 'x') || 0;
+      const y = this.getResponsiveValue(wrapper, 'y') || 0;
       
-      if (x || y) {
-        gsap.set(wrapper, {
-          clearProps: "all",
-          ...(x && { x }),
-          ...(y && { y })
-        })
-      }
+      gsap.set(wrapper, {
+        x: x,
+        y: y
+      })
     })
   }
 
@@ -204,7 +199,6 @@ class Grid {
           gsap.to(el, {
             scale: 1,
             opacity: 1,
-            filter: "blur(0px)",
             visibility: "visible",
             duration: 0.8,
             ease: "power3.out"
@@ -218,7 +212,6 @@ class Grid {
           })
           gsap.to(el, {
             scale: 0.5,
-            filter: "blur(4px)",
             duration: 0.5,
             ease: "power3.out",
             delay: 0.2
@@ -247,17 +240,19 @@ class Grid {
     
     this.imageWrappers.forEach(w => {
       if (w.hasAttribute('data-hide-after')) {
-        gsap.set(w, {
+        gsap.to(w, {
           opacity: 0,
           scale: 0.5,
-          filter: "blur(4px)",
-          visibility: "hidden"
+          duration: 0.6,
+          ease: "power3.out",
+          onComplete: () => {
+            gsap.set(w, { visibility: "hidden" })
+          }
         })
       } else if (!isDesktop) {
         gsap.set(w, {
           opacity: 1,
           scale: 1,
-          filter: "blur(0px)",
           visibility: "visible"
         })
       }
