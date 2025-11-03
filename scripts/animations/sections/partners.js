@@ -11,17 +11,31 @@ export function initPartners() {
       return;
     }
 
-    const introText = section.querySelector('.partners_bottom .text-size-large');
+    const introText = section.querySelector('.partners_top .text-size-large');
+    const subText = section.querySelector('.partners_bottom .text-size-large');
     const button = section.querySelector('.partners_bottom .button');
     const logoWallComponent = section.querySelector('.partners-logo-wall_component');
 
-    if (!introText || !button || !logoWallComponent) {
+    if (!introText || !subText || !button || !logoWallComponent) {
       return;
     }
 
-    gsap.set([introText, button, logoWallComponent], { 
+    gsap.set([introText, subText, button, logoWallComponent], { 
       opacity: 0, 
       y: 30 
+    });
+
+    gsap.to(introText, {
+      opacity: 1,
+      y: 0,
+      duration: 0.8,
+      ease: 'power3.out',
+      scrollTrigger: {
+        trigger: introText,
+        start: 'top 60%',
+        end: 'bottom 20%',
+        toggleActions: 'play none none reverse'
+      }
     });
 
     gsap.to(logoWallComponent, {
@@ -42,13 +56,13 @@ export function initPartners() {
       }
     });
 
-    gsap.to(introText, {
+    gsap.to(subText, {
       opacity: 1,
       y: 0,
       duration: 0.8,
       ease: 'power3.out',
       scrollTrigger: {
-        trigger: introText,
+        trigger: subText,
         start: 'top 60%',
         end: 'bottom 20%',
         toggleActions: 'play none none reverse'
