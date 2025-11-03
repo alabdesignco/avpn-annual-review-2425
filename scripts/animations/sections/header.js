@@ -185,6 +185,10 @@ class Grid {
   }
 
   observeImages() {
+    const isDesktop = window.matchMedia('(min-width: 992px)').matches;
+    
+    if (!isDesktop) return;
+    
     const showThreshold = 0.88
     const hideThreshold = 0.72
     const steps = Array.from({ length: 21 }, (_, i) => i / 20)
