@@ -157,11 +157,17 @@ class Grid {
 
   addEvents() {
     let resizeTimer;
+    let lastWidth = window.innerWidth;
+    
     window.addEventListener("resize", () => {
       clearTimeout(resizeTimer);
       resizeTimer = setTimeout(() => {
-        this.centerGrid();
-        this.repositionImages();
+        const currentWidth = window.innerWidth;
+        if (currentWidth !== lastWidth) {
+          this.centerGrid();
+          this.repositionImages();
+          lastWidth = currentWidth;
+        }
       }, 200);
     })
 
