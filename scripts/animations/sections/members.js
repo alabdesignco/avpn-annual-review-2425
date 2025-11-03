@@ -66,16 +66,26 @@ const initMembersTabs = () => {
     startAutoRotate();
   };
 
-  tabItems.forEach((item, index) => {
-    item.addEventListener("mouseenter", () => {
-      currentIndex = index;
-      switchToTab(item);
-      resetAutoRotate();
-    });
+  const supportsHover = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
 
-    item.addEventListener("mouseleave", () => {
-      resetAutoRotate();
-    });
+  tabItems.forEach((item, index) => {
+    if (supportsHover) {
+      item.addEventListener("mouseenter", () => {
+        currentIndex = index;
+        switchToTab(item);
+        resetAutoRotate();
+      });
+
+      item.addEventListener("mouseleave", () => {
+        resetAutoRotate();
+      });
+    } else {
+      item.addEventListener("click", () => {
+        currentIndex = index;
+        switchToTab(item);
+        resetAutoRotate();
+      });
+    }
   });
 
   return startAutoRotate;
