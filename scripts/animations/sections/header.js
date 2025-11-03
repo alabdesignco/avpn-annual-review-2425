@@ -156,9 +156,13 @@ class Grid {
   }
 
   addEvents() {
+    let resizeTimer;
     window.addEventListener("resize", () => {
-      this.centerGrid()
-      this.repositionImages()
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(() => {
+        this.centerGrid();
+        this.repositionImages();
+      }, 200);
     })
 
     const isDesktop = window.innerWidth >= 992;
@@ -186,7 +190,7 @@ class Grid {
     
     const showThreshold = 0.88
     const hideThreshold = 0.72
-    const steps = Array.from({ length: 21 }, (_, i) => i / 20)
+    const steps = [0, 0.5, 0.72, 0.88, 1]
 
     const observer = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
@@ -213,9 +217,7 @@ class Grid {
         }
       })
     }, {
-      root: null,
-      threshold: steps,
-      rootMargin: "0px 0px -6% 0px"
+      threshold: steps
     })
 
     this.imageWrappers.forEach(imageWrapper => {
