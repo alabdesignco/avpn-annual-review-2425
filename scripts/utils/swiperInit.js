@@ -15,10 +15,6 @@ export const initSwiperSlider = () => {
       speed: 600,
       mousewheel: !isTouchDevice,
       grabCursor: true,
-      effect: 'fade',
-      fadeEffect: {
-        crossFade: true,
-      },
       autoplay: {
         delay: 4000,
         disableOnInteraction: false,
