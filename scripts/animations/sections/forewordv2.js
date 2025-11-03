@@ -105,7 +105,12 @@ export const initHorizontalScrolling = () => {
               invalidateOnRefresh: true,
               onUpdate: (self) => {
                 // console.log(`Foreword horizontal progress: ${Math.round(self.progress * 100)}%`);
-                const progress = Math.min(Math.max(self.progress, 0), 1);
+                let progress = Math.min(Math.max(self.progress, 0), 1);
+                
+                if (isTablet && !isMobileLandscape) {
+                  progress = Math.pow(progress, 0.6);
+                }
+                
                 const activeIndex = Math.min(Math.floor(progress * paragraphCount), paragraphCount - 1);
                 
                 // Shape animations based on scroll progress
@@ -137,10 +142,11 @@ export const initHorizontalScrolling = () => {
                 
                 richTextElements.forEach((paragraph, index) => {
                   if (index <= activeIndex) {
+                    const duration = (isTablet && !isMobileLandscape) ? 1.2 : 1.2;
                     gsap.to(paragraph, {
                       opacity: 1,
                       clipPath: "circle(150% at 100% 0%)",
-                      duration: 1.2
+                      duration: duration
                     });
                   }
                 });
