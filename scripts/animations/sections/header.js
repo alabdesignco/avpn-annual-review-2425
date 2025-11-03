@@ -166,7 +166,7 @@ class Grid {
       this.repositionImages()
     })
 
-    const isDesktop = window.matchMedia('(min-width: 992px)').matches;
+    const isDesktop = window.innerWidth >= 992;
     
     if (isDesktop) {
       this.dom.addEventListener("mousemove", (e) => {
@@ -185,7 +185,7 @@ class Grid {
   }
 
   observeImages() {
-    const isDesktop = window.matchMedia('(min-width: 992px)').matches;
+    const isDesktop = window.innerWidth >= 992;
     
     if (!isDesktop) return;
     
@@ -243,6 +243,8 @@ class Grid {
   }
 
   applyHideAfterIntro() {
+    const isDesktop = window.innerWidth >= 992;
+    
     this.imageWrappers.forEach(w => {
       if (w.hasAttribute('data-hide-after')) {
         gsap.set(w, {
@@ -250,6 +252,13 @@ class Grid {
           scale: 0.5,
           filter: "blur(4px)",
           visibility: "hidden"
+        })
+      } else if (!isDesktop) {
+        gsap.set(w, {
+          opacity: 1,
+          scale: 1,
+          filter: "blur(0px)",
+          visibility: "visible"
         })
       }
     })
