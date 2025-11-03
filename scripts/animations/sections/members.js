@@ -29,7 +29,8 @@ const initMembersTabs = () => {
     if (!iconWrapper || !titleElement || !descriptionParagraph) return;
 
     const icon = iconWrapper.innerHTML;
-    const title = titleElement.textContent;
+    const fullTitle = titleElement.innerHTML;
+    const title = fullTitle.replace(/<br\s*\/?>/gi, ' ').replace(/\/\s+/g, '/');
     const description = descriptionParagraph.textContent;
     const color = item.getAttribute("data-member-color");
 
