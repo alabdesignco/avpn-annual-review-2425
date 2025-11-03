@@ -166,18 +166,22 @@ class Grid {
       this.repositionImages()
     })
 
-    this.dom.addEventListener("mousemove", (e) => {
-      const offsetX = (e.clientX / window.innerWidth - 0.5) * 30
-      const offsetY = (e.clientY / window.innerHeight - 0.5) * 30
-      
-      gsap.to(this.grid, {
-        x: this.baseX + offsetX,
-        y: this.baseY + offsetY,
-        duration: 0.8,
-        ease: "power2.out",
-        overwrite: "auto"
+    const isDesktop = window.matchMedia('(min-width: 992px)').matches;
+    
+    if (isDesktop) {
+      this.dom.addEventListener("mousemove", (e) => {
+        const offsetX = (e.clientX / window.innerWidth - 0.5) * 30
+        const offsetY = (e.clientY / window.innerHeight - 0.5) * 30
+        
+        gsap.to(this.grid, {
+          x: this.baseX + offsetX,
+          y: this.baseY + offsetY,
+          duration: 0.8,
+          ease: "power2.out",
+          overwrite: "auto"
+        })
       })
-    })
+    }
   }
 
   observeImages() {
