@@ -66,10 +66,73 @@ const initMembersTabs = () => {
     startAutoRotate();
   };
 
+  const isMobile = window.matchMedia('(max-width: 479px)').matches;
   const supportsHover = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
 
+  const centerTile = tabMain.parentNode;
+  const backdrop = document.querySelector('[data-member-backdrop]');
+  const closeButton = document.querySelector('[data-member-close]');
+
+  const showPopup = () => {
+    if (centerTile) {
+      centerTile.style.display = 'flex';
+      gsap.fromTo(centerTile,
+        { scale: 0.8, opacity: 0 },
+        { scale: 1, opacity: 1, duration: 0.4, ease: "back.out(1.4)" }
+      );
+    }
+    if (backdrop) {
+      backdrop.style.display = 'block';
+      gsap.fromTo(backdrop,
+        { opacity: 0 },
+        { opacity: 0.5, duration: 0.3, ease: "power2.out" }
+      );
+    }
+    if (window.lenis) window.lenis.stop();
+  };
+
+  const hidePopup = () => {
+    if (centerTile) {
+      gsap.to(centerTile, {
+        scale: 0.8,
+        opacity: 0,
+        duration: 0.3,
+        ease: "power2.in",
+        onComplete: () => {
+          centerTile.style.display = 'none';
+        }
+      });
+    }
+    if (backdrop) {
+      gsap.to(backdrop, {
+        opacity: 0,
+        duration: 0.3,
+        ease: "power2.in",
+        onComplete: () => {
+          backdrop.style.display = 'none';
+        }
+      });
+    }
+    if (window.lenis) window.lenis.start();
+  };
+
+  if (isMobile) {
+    if (closeButton) {
+      closeButton.addEventListener('click', hidePopup);
+    }
+    if (backdrop) {
+      backdrop.addEventListener('click', hidePopup);
+    }
+  }
+
   tabItems.forEach((item, index) => {
-    if (supportsHover) {
+    if (isMobile) {
+      item.addEventListener("click", () => {
+        currentIndex = index;
+        switchToTab(item);
+        showPopup();
+      });
+    } else if (supportsHover) {
       item.addEventListener("mouseenter", () => {
         currentIndex = index;
         switchToTab(item);
@@ -88,13 +151,14 @@ const initMembersTabs = () => {
     }
   });
 
-  return startAutoRotate;
+  return isMobile ? null : startAutoRotate;
 };
 
 const initMembersReveal = (startRotation) => {
   const wrappers = document.querySelectorAll('.members-content_wrapper');
   const tabItems = document.querySelectorAll("[cs-element='tab-item']");
   const tabCenter = document.querySelector("[data-member-tab-center]");
+  const isMobile = window.matchMedia('(max-width: 479px)').matches;
   
   wrappers.forEach(wrapper => {
     if (!wrapper.odometerInstance) return;
@@ -137,7 +201,7 @@ const initMembersReveal = (startRotation) => {
       duration: 1.2,
       stagger: {
         amount: 0.8,
-        from: 'center'
+        from: isMobile ? 'start' : 'center'
       },
       ease: 'back.out(1.4)'
     }, '<');
