@@ -95,7 +95,7 @@ export const initFalling2DMatterJS = () => {
 
     const isMobile = window.matchMedia("(max-width:479px)").matches;
     const isTablet = window.matchMedia("(max-width:991px)").matches;
-    const sizeMultiplier = isMobile ? 0.65 : isTablet ? 1.2 : 1;
+    const sizeMultiplier = isMobile ? 2 : isTablet ? 1.2 : 1;
     const spawnAmount = isMobile ? Math.round(objectAmount * 0.6) : isTablet ? Math.round(objectAmount * 1) : objectAmount;
 
     const objectSize = (containerWidth / 15) * sizeMultiplier;
