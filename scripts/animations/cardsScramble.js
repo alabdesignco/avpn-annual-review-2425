@@ -1,12 +1,47 @@
+import { initModalBasic } from '../utils/modalInit.js';
+
 const initCardsScramble = () => {
     const container = document.querySelector('.section_highlight-cards .highlight-card_wrapper');
     if (!container) return;
     
-    const containerW = container.clientWidth;
+    const isTabletOrMobile = window.matchMedia('(max-width: 991px)').matches;
     const cards = document.querySelectorAll('.highlight_card');
     const cardsLength = cards.length;
     const cardContent = document.querySelectorAll('.highlight_card .highlight_card-content');
     
+    if (isTabletOrMobile) {
+        container.classList.add('swiper');
+        container.innerHTML = `<div class="swiper-wrapper">${container.innerHTML}</div>`;
+        
+        const updatedCards = container.querySelectorAll('.highlight_card');
+        updatedCards.forEach(card => {
+            card.classList.add('swiper-slide');
+        });
+        
+        new Swiper(container, {
+            effect: 'cards',
+            grabCursor: true,
+            preventClicks: false,
+            preventClicksPropagation: false,
+            loop: true,
+            touchRatio: 1.5,
+            touchAngle: 45,
+            longSwipesRatio: 0.5,
+            longSwipesMs: 300,
+            cardsEffect: {
+                perSlideOffset: 8,
+                perSlideRotate: 2,
+                rotate: true,
+                slideShadows: false
+            }
+        });
+        
+        initModalBasic();
+        
+        return;
+    }
+    
+    const containerW = container.clientWidth;
     let currentPortion = 0;
     
     cards.forEach(card => {
