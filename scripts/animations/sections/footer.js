@@ -103,7 +103,10 @@ export const initFalling2DMatterJS = () => {
     const max = containerWidth - objectSize / 2;
 
     engine = Engine.create();
-    engine.world.gravity.y = gravity;
+    
+    const baseHeight = 900;
+    const heightScale = Math.min(Math.max(containerHeight / baseHeight, 0.4), 1.2);
+    engine.world.gravity.y = gravity * heightScale;
     engine.timing.timeScale = 0.9;
 
     render = Render.create({
