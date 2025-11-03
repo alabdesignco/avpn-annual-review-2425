@@ -84,28 +84,6 @@ export const initHorizontalScrolling = () => {
               });
             }
             
-            const shapes = wrap.querySelectorAll('.shape.is-foreword-1, .shape.is-foreword-2, .shape.is-foreword-3, .shape.is-foreword-4');
-            shapes.forEach((shape, index) => {
-              gsap.to(shape, {
-                scale: 1,
-                duration: 0.6,
-                ease: "back.out(1.7)",
-                scrollTrigger: {
-                  trigger: shape,
-                  start: "top 85%",
-                  toggleActions: "play none none none"
-                },
-                delay: index * 0.2
-              });
-              gsap.to(shape, {
-                rotation: "+=360",
-                duration: 20 - (index * 2),
-                ease: "none",
-                repeat: -1,
-                delay: 0.6 + (index * 0.2)
-              });
-            });
-            
             return;
           }
 
