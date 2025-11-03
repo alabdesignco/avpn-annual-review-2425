@@ -83,8 +83,8 @@ class Grid {
       ease: "power3.inOut"
     })
     timeline.to(this.imageWrappers, {
-      x: (i, el) => el.dataset.x || 0,
-      y: (i, el) => el.dataset.y || 0,
+      x: (i, el) => this.getResponsiveValue(el, 'x') || 0,
+      y: (i, el) => this.getResponsiveValue(el, 'y') || 0,
       duration: 0.96,
       ease: "power3.inOut"
     }, "-=1.2")
@@ -112,10 +112,25 @@ class Grid {
 
   }
 
+  getResponsiveValue(element, attr) {
+    const isMobile = window.matchMedia('(max-width: 479px)').matches;
+    const isTablet = window.matchMedia('(min-width: 480px) and (max-width: 991px)').matches;
+    
+    if (isMobile) {
+      return element.dataset[`mobile${attr.charAt(0).toUpperCase() + attr.slice(1)}`] || 
+             element.dataset[`tablet${attr.charAt(0).toUpperCase() + attr.slice(1)}`] || 
+             element.dataset[attr];
+    } else if (isTablet) {
+      return element.dataset[`tablet${attr.charAt(0).toUpperCase() + attr.slice(1)}`] || 
+             element.dataset[attr];
+    }
+    return element.dataset[attr];
+  }
+
   repositionImages() {
     this.imageWrappers.forEach((wrapper) => {
-      const x = wrapper.dataset.x
-      const y = wrapper.dataset.y
+      const x = this.getResponsiveValue(wrapper, 'x');
+      const y = this.getResponsiveValue(wrapper, 'y');
       
       if (x || y) {
         gsap.set(wrapper, {
@@ -148,6 +163,7 @@ class Grid {
   addEvents() {
     window.addEventListener("resize", () => {
       this.centerGrid()
+      this.repositionImages()
     })
 
     this.dom.addEventListener("mousemove", (e) => {
