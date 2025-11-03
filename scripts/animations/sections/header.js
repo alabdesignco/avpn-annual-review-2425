@@ -31,7 +31,7 @@ class Grid {
     timeline.set(this.dom, { scale: .5 })
     timeline.set(this.imageWrappers, {
       scale: 0.5,
-      opacity: 0
+      autoAlpha: 0
     })
     if (this.taglines.length > 0) {
       timeline.set(this.taglines, {
@@ -67,7 +67,7 @@ class Grid {
 
     timeline.to(this.imageWrappers, {
       scale: 1,
-      opacity: 1,
+      autoAlpha: 1,
       duration: 0.6,
       ease: "power3.out",
       stagger: {
@@ -198,28 +198,17 @@ class Grid {
           el.__visible = true
           gsap.to(el, {
             scale: 1,
-            opacity: 1,
-            visibility: "visible",
+            autoAlpha: 1,
             duration: 0.8,
             ease: "power3.out"
           })
         } else if (ratio <= hideThreshold && el.__visible !== false) {
           el.__visible = false
           gsap.to(el, {
-            opacity: 0,
+            scale: 0.5,
+            autoAlpha: 0,
             duration: 0.6,
             ease: "power3.out"
-          })
-          gsap.to(el, {
-            scale: 0.5,
-            duration: 0.5,
-            ease: "power3.out",
-            delay: 0.2
-          })
-          gsap.to(el, {
-            visibility: "hidden",
-            duration: 0.1,
-            delay: 0.7
           })
         }
       })
@@ -241,19 +230,15 @@ class Grid {
     this.imageWrappers.forEach(w => {
       if (w.hasAttribute('data-hide-after')) {
         gsap.to(w, {
-          opacity: 0,
           scale: 0.5,
+          autoAlpha: 0,
           duration: 0.6,
-          ease: "power3.out",
-          onComplete: () => {
-            gsap.set(w, { visibility: "hidden" })
-          }
+          ease: "power3.out"
         })
       } else if (!isDesktop) {
         gsap.set(w, {
-          opacity: 1,
           scale: 1,
-          visibility: "visible"
+          autoAlpha: 1
         })
       }
     })
