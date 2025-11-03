@@ -41,7 +41,9 @@ const initCircularBarChart = () => {
   };
 
 
-  const drawChart = () => {
+  let hasAnimated = false;
+
+  const drawChart = (shouldAnimate = false) => {
     const containerEl = document.querySelector(".supported-chart");
     if (!containerEl) return;
     const containerWidth = containerEl.offsetWidth;
@@ -77,12 +79,13 @@ const initCircularBarChart = () => {
       .enter()
       .append("path")
       .attr("fill", d => colorMap[d.data.cause] || "#ccc")
-      .attr("d", d3.arc().innerRadius(innerRadius).outerRadius(innerRadius))
+      .attr("d", d3.arc().innerRadius(innerRadius).outerRadius(shouldAnimate ? innerRadius : innerRadius + (d => d.data.percent * size * 0.0048)))
       .attr("stroke", "#fff")
       .attr("stroke-width", 2)
       .style("cursor", "pointer");
 
-    const animateBars = () => {
+    if (shouldAnimate && !hasAnimated) {
+      hasAnimated = true;
       arcs.transition()
         .delay((d, i) => i * 100)
         .duration(800)
@@ -97,15 +100,7 @@ const initCircularBarChart = () => {
               .padAngle(0.035)(d);
           };
         });
-    };
-
-    gsap.timeline({
-      scrollTrigger: {
-        trigger: ".supported-chart",
-        start: "top 80%",
-        once: true
-      }
-    }).add(() => animateBars());
+    }
 
     const wrapText = (text, maxWidth) => {
       const words = text.split(/\s+/);
@@ -276,6 +271,17 @@ const initCircularBarChart = () => {
     });
   };
 
+  drawChart();
+
+  gsap.timeline({
+    scrollTrigger: {
+      trigger: ".supported-chart",
+      start: "top 80%",
+      once: true,
+      onEnter: () => drawChart(true)
+    }
+  });
+
   const mm = gsap.matchMedia();
   mm.add(
     {
@@ -285,8 +291,7 @@ const initCircularBarChart = () => {
       isDesktop: "(min-width:992px)"
     },
     () => {
-      drawChart();
-      const onResize = () => drawChart();
+      const onResize = () => drawChart(hasAnimated);
       window.addEventListener("resize", onResize);
       return () => {
         window.removeEventListener("resize", onResize);
