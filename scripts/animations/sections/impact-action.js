@@ -1,5 +1,6 @@
 export const initImpactActionSection = () => {
   const highlightScrollSections = document.querySelectorAll('.section_highlight-scroll');
+  const isMobile = window.matchMedia('(max-width: 479px)').matches;
   
   highlightScrollSections.forEach((section) => {
     const contentItems = section.querySelectorAll('.highlight-scroll_content');
@@ -8,11 +9,15 @@ export const initImpactActionSection = () => {
     
     if (headings.length === 0) return;
     
-    // Initialize content items and their circles - hide all initially
     contentItems.forEach((item, index) => {
       const circle = item.querySelector('.highlight_timeline-circle');
       
-      gsap.set(item, { autoAlpha: 0, y: 30 });
+      if (isMobile) {
+        gsap.set(item, { autoAlpha: 0, x: 100 });
+      } else {
+        gsap.set(item, { autoAlpha: 0, y: 30 });
+      }
+      
       if (circle) {
         circle.classList.remove('is-active');
       }
@@ -41,17 +46,15 @@ export const initImpactActionSection = () => {
     
     contentItems.forEach((item, index) => {
       const circle = item.querySelector('.highlight_timeline-circle');
+      const animProps = isMobile 
+        ? { autoAlpha: 1, x: 0, duration: 0.6, ease: "power2.out", delay: index * 0.1 }
+        : { autoAlpha: 1, y: 0, duration: 0.6, ease: "power2.out" };
       
       ScrollTrigger.create({
         trigger: item,
         start: "top center",
         toggleActions: "play none none reverse",
-        animation: gsap.to(item, { 
-          autoAlpha: 1, 
-          y: 0, 
-          duration: 0.6, 
-          ease: "power2.out" 
-        }),
+        animation: gsap.to(item, animProps),
         onEnter: () => {
           if (circle) {
             circle.classList.add('is-active');
