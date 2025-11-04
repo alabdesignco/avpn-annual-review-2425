@@ -142,8 +142,8 @@ const initTreeMapChart = () => {
 
     gsap.set(rect.node(), { scale: 1 });
 
-    const isSmallBox = isMobile && boxH < 50;
-    const labelFontSize = isSmallBox ? "0.75rem" : isMobile ? "0.875rem" : "1rem";
+    const isSmallBox = isSmallScreen && boxH < 50;
+    const labelFontSize = isSmallBox ? "0.75rem" : isSmallScreen ? "0.875rem" : "1rem";
     const labelY = isSmallBox ? boxH / 2 + 4 : 24;
     const label = g.append("text")
       .attr("x", 16)
@@ -154,14 +154,14 @@ const initTreeMapChart = () => {
       .text(d.data.name)
       .call(wrap, boxW - 32);
 
-    const heightThreshold = isMobile ? 0.85 : 0.6;
+    const heightThreshold = isSmallScreen ? 0.95 : 0.6;
     if (label.node().getBBox().height > boxH * heightThreshold) label.style("display","none");
 
     let percentText = null;
-    const minHeight = isMobile ? 30 : 40;
-    const minWidth = isMobile ? 60 : 80;
+    const minHeight = isSmallScreen ? 30 : 40;
+    const minWidth = isSmallScreen ? 60 : 80;
     if (boxH > minHeight && boxW > minWidth) {
-      const percentFontSize = isMobile ? "0.875rem" : "1.25rem";
+      const percentFontSize = isSmallScreen ? "0.875rem" : "1.25rem";
       percentText = g.append("text")
         .attr("x", boxW - 16)
         .attr("y", boxH - 12)
