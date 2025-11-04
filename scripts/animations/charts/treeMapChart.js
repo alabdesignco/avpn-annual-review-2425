@@ -169,54 +169,58 @@ const initTreeMapChart = () => {
         .text(`${Math.round(d.data.percent)}%`);
     }
 
-        g.on("mouseenter", () => {
-      g.raise();
-      gsap.to(rect.node(), {
-        scale: 1.05,
-        duration: 0.25,
-        ease: "power2.out"
-      });
-      gsap.to(rect.node(), {
-        filter: "drop-shadow(0 4px 8px rgba(0,0,0,0.15))",
-        duration: 0.25,
-        ease: "power2.out"
-      });
-      gsap.to(leaf.nodes().filter(n => n !== g.node()), {
-        opacity: 0.3,
-        duration: 0.25,
-        ease: "power2.out"
-      });
-      if (percentText) {
-        gsap.to(percentText.node(), {
-          opacity: 1,
-          duration: 0.25,
-          ease: "power2.out"
-        });
-      }
-        }).on("mouseleave", () => {
-      gsap.to(rect.node(), {
-        scale: 1,
-        duration: 0.25,
-        ease: "power2.out"
-      });
-      gsap.to(rect.node(), {
-        filter: "drop-shadow(0 1px 2px rgba(0,0,0,0.05))",
-        duration: 0.25,
-        ease: "power2.out"
-      });
-      gsap.to(leaf.nodes(), {
-        opacity: 1,
-        duration: 0.25,
-        ease: "power2.out"
-      });
-      if (percentText) {
-        gsap.to(percentText.node(), {
-          opacity: 0,
-          duration: 0.25,
-          ease: "power2.out"
-        });
-      }
-        });
+        const hasHover = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+        
+        if (hasHover) {
+          g.on("mouseenter", () => {
+            g.raise();
+            gsap.to(rect.node(), {
+              scale: 1.05,
+              duration: 0.25,
+              ease: "power2.out"
+            });
+            gsap.to(rect.node(), {
+              filter: "drop-shadow(0 4px 8px rgba(0,0,0,0.15))",
+              duration: 0.25,
+              ease: "power2.out"
+            });
+            gsap.to(leaf.nodes().filter(n => n !== g.node()), {
+              opacity: 0.3,
+              duration: 0.25,
+              ease: "power2.out"
+            });
+            if (percentText) {
+              gsap.to(percentText.node(), {
+                opacity: 1,
+                duration: 0.25,
+                ease: "power2.out"
+              });
+            }
+          }).on("mouseleave", () => {
+            gsap.to(rect.node(), {
+              scale: 1,
+              duration: 0.25,
+              ease: "power2.out"
+            });
+            gsap.to(rect.node(), {
+              filter: "drop-shadow(0 1px 2px rgba(0,0,0,0.05))",
+              duration: 0.25,
+              ease: "power2.out"
+            });
+            gsap.to(leaf.nodes(), {
+              opacity: 1,
+              duration: 0.25,
+              ease: "power2.out"
+            });
+            if (percentText) {
+              gsap.to(percentText.node(), {
+                opacity: 0,
+                duration: 0.25,
+                ease: "power2.out"
+              });
+            }
+          });
+        }
       });
 
       gsap.to(leaf.nodes(), {
