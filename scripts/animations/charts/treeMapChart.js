@@ -122,6 +122,8 @@ const initTreeMapChart = () => {
     });
   };
 
+      let activeBox = null;
+
       leaf.each(function(d) {
     const g = d3.select(this);
     const fill = colorMap[d.data.name] || "#ccc";
@@ -140,8 +142,8 @@ const initTreeMapChart = () => {
 
     gsap.set(rect.node(), { scale: 1 });
 
-    const labelFontSize = isMobile ? "0.875rem" : "1rem";
     const isSmallBox = isMobile && boxH < 50;
+    const labelFontSize = isSmallBox ? "0.75rem" : isMobile ? "0.875rem" : "1rem";
     const labelY = isSmallBox ? boxH / 2 + 4 : 24;
     const label = g.append("text")
       .attr("x", 16)
@@ -152,7 +154,8 @@ const initTreeMapChart = () => {
       .text(d.data.name)
       .call(wrap, boxW - 32);
 
-    if (label.node().getBBox().height > boxH * 0.6) label.style("display","none");
+    const heightThreshold = isMobile ? 0.85 : 0.6;
+    if (label.node().getBBox().height > boxH * heightThreshold) label.style("display","none");
 
     let percentText = null;
     const minHeight = isMobile ? 30 : 40;
@@ -218,6 +221,65 @@ const initTreeMapChart = () => {
                 duration: 0.25,
                 ease: "power2.out"
               });
+            }
+          });
+        } else {
+          g.on("click", () => {
+            const isActive = activeBox === g.node();
+            
+            if (activeBox && !isActive) {
+              const prevG = d3.select(activeBox);
+              const prevRect = prevG.select("rect");
+              const prevPercent = prevG.selectAll("text").filter(function() {
+                return d3.select(this).attr("text-anchor") === "end";
+              });
+              
+              gsap.to(prevRect.node(), {
+                scale: 1,
+                filter: "drop-shadow(0 1px 2px rgba(0,0,0,0.05))",
+                duration: 0.25,
+                ease: "power2.out"
+              });
+              if (!prevPercent.empty()) {
+                gsap.to(prevPercent.node(), {
+                  opacity: 0,
+                  duration: 0.25,
+                  ease: "power2.out"
+                });
+              }
+            }
+            
+            if (isActive) {
+              gsap.to(rect.node(), {
+                scale: 1,
+                filter: "drop-shadow(0 1px 2px rgba(0,0,0,0.05))",
+                duration: 0.25,
+                ease: "power2.out"
+              });
+              if (percentText) {
+                gsap.to(percentText.node(), {
+                  opacity: 0,
+                  duration: 0.25,
+                  ease: "power2.out"
+                });
+              }
+              activeBox = null;
+            } else {
+              g.raise();
+              gsap.to(rect.node(), {
+                scale: 1.05,
+                filter: "drop-shadow(0 4px 8px rgba(0,0,0,0.15))",
+                duration: 0.25,
+                ease: "power2.out"
+              });
+              if (percentText) {
+                gsap.to(percentText.node(), {
+                  opacity: 1,
+                  duration: 0.25,
+                  ease: "power2.out"
+                });
+              }
+              activeBox = g.node();
             }
           });
         }
