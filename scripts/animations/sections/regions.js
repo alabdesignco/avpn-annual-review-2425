@@ -5,6 +5,7 @@ export const initRegionsSection = () => {
   const overlays = Array.from(document.querySelectorAll('.regions_base.is-overlay'));
   const reflectionItems = Array.from(document.querySelectorAll('.regions-reflections_item'));
   const reflectionsList = document.querySelector('.regions-reflections_list');
+  const contentTrack = document.querySelector('.regions-content_track');
   
   if (!buttons.length || !overlays.length) return;
 
@@ -244,7 +245,7 @@ export const initRegionsSection = () => {
     }
   };
 
-  buttons.forEach(btn => {
+  buttons.forEach((btn, index) => {
     const key = keyFor(btn);
     const overlay = overlayMap.get(key);
     const reflection = reflectionMap.get(key);
@@ -252,8 +253,24 @@ export const initRegionsSection = () => {
     if (!overlay) return;
 
     btn.addEventListener('click', () => {
-      if (isMobile() && reflection) {
-        showMobileModal(reflection, overlay);
+      if (isMobile()) {
+        if (contentTrack) {
+          const align = btn.getAttribute('data-scroll-align') || 'end';
+          let scrollAmount;
+          
+          if (align === 'start') {
+            scrollAmount = 0;
+          } else if (align === 'center') {
+            scrollAmount = (contentTrack.scrollWidth - contentTrack.clientWidth) / 2;
+          } else {
+            scrollAmount = contentTrack.scrollWidth - contentTrack.clientWidth;
+          }
+          
+          contentTrack.scrollTo({ left: scrollAmount, behavior: 'smooth' });
+        }
+        if (reflection) {
+          showMobileModal(reflection, overlay);
+        }
       }
     });
     
