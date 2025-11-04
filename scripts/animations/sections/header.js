@@ -1,5 +1,22 @@
 import { preloadImages } from '../../utils/imageLoaded.js'
 
+const shouldHideAtBreakpoint = (element) => {
+  if (!element.hasAttribute('data-hide-after')) return false;
+  
+  const value = element.getAttribute('data-hide-after');
+  if (!value || value === '') return true;
+  
+  const breakpoints = {
+    mobile: window.matchMedia('(max-width: 479px)').matches,
+    tablet: window.matchMedia('(min-width: 480px) and (max-width: 991px)').matches,
+    desktop: window.matchMedia('(min-width: 992px)').matches
+  };
+  
+  const hideOnBreakpoints = value.split(',').map(bp => bp.trim().toLowerCase());
+  
+  return hideOnBreakpoints.some(bp => breakpoints[bp]);
+};
+
 export const initHeaderSection = () => {
   const container = document.querySelector(".section_home-header .home-header_wrapper");
   if (!container) return;
@@ -236,7 +253,7 @@ class Grid {
     const isDesktop = window.innerWidth >= 992;
     
     this.imageWrappers.forEach(w => {
-      if (w.hasAttribute('data-hide-after')) {
+      if (shouldHideAtBreakpoint(w)) {
         gsap.to(w, {
           scale: 0.5,
           autoAlpha: 0,
