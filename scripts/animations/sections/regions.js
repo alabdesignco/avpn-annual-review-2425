@@ -142,6 +142,11 @@ export const initRegionsSection = () => {
 
     if (window.lenis) window.lenis.stop();
 
+    const closeBtn = reflectionsList.querySelector('[data-modal-region-close]');
+    if (closeBtn) {
+      gsap.set(closeBtn, { autoAlpha: 0 });
+    }
+
     overlays.forEach(item => {
       gsap.set(item, { autoAlpha: 0, pointerEvents: 'none' });
     });
@@ -168,7 +173,12 @@ export const initRegionsSection = () => {
         autoAlpha: 1, 
         y: '0%', 
         duration: 0.4, 
-        ease: 'power2.out'
+        ease: 'power2.out',
+        onComplete: () => {
+          if (closeBtn) {
+            gsap.to(closeBtn, { autoAlpha: 1, duration: 0.2 });
+          }
+        }
       }
     );
   };
@@ -179,27 +189,59 @@ export const initRegionsSection = () => {
     const visibleItem = reflectionItems.find(item => gsap.getProperty(item, 'opacity') > 0);
     if (!visibleItem) return;
 
-    overlays.forEach(overlay => {
-      gsap.killTweensOf(overlay);
-      gsap.to(overlay, { 
+    const closeBtn = reflectionsList.querySelector('[data-modal-region-close]');
+    
+    if (closeBtn) {
+      gsap.to(closeBtn, { 
         autoAlpha: 0, 
         duration: 0.2,
-        onComplete: () => gsap.set(overlay, { display: 'none' })
-      });
-    });
+        onComplete: () => {
+          overlays.forEach(overlay => {
+            gsap.killTweensOf(overlay);
+            gsap.to(overlay, { 
+              autoAlpha: 0, 
+              duration: 0.2,
+              onComplete: () => gsap.set(overlay, { display: 'none' })
+            });
+          });
 
-    gsap.killTweensOf(visibleItem);
-    gsap.to(visibleItem, {
-      autoAlpha: 0,
-      y: '100%',
-      duration: 0.3,
-      ease: 'power2.in',
-      onComplete: () => {
-        gsap.set(visibleItem, { display: 'none' });
-        reflectionsList.style.visibility = 'hidden';
-        if (window.lenis) window.lenis.start();
-      }
-    });
+          gsap.killTweensOf(visibleItem);
+          gsap.to(visibleItem, {
+            autoAlpha: 0,
+            y: '100%',
+            duration: 0.3,
+            ease: 'power2.in',
+            onComplete: () => {
+              gsap.set(visibleItem, { display: 'none' });
+              reflectionsList.style.visibility = 'hidden';
+              if (window.lenis) window.lenis.start();
+            }
+          });
+        }
+      });
+    } else {
+      overlays.forEach(overlay => {
+        gsap.killTweensOf(overlay);
+        gsap.to(overlay, { 
+          autoAlpha: 0, 
+          duration: 0.2,
+          onComplete: () => gsap.set(overlay, { display: 'none' })
+        });
+      });
+
+      gsap.killTweensOf(visibleItem);
+      gsap.to(visibleItem, {
+        autoAlpha: 0,
+        y: '100%',
+        duration: 0.3,
+        ease: 'power2.in',
+        onComplete: () => {
+          gsap.set(visibleItem, { display: 'none' });
+          reflectionsList.style.visibility = 'hidden';
+          if (window.lenis) window.lenis.start();
+        }
+      });
+    }
   };
 
   buttons.forEach(btn => {
