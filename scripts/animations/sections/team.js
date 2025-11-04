@@ -43,9 +43,39 @@ export function initTeam() {
   groups.forEach((group) => {
     const buttons = group.querySelectorAll('[data-filter-target]');
     const items = group.querySelectorAll('[data-filter-name]');
+    const loadMoreBtn = document.querySelector('[data-team-load-more]');
     const transitionDelay = 300;
+    const isMobile = window.matchMedia('(max-width: 767px)').matches;
+    const itemsPerLoad = loadMoreBtn 
+      ? parseInt(loadMoreBtn.getAttribute(isMobile ? 'data-items-per-load-mobile' : 'data-items-per-load')) || 10 
+      : 10;
+    let currentlyShown = {};
+
+    const updateLoadMoreButton = (target) => {
+      if (!loadMoreBtn) return;
+      
+      const categoryItems = Array.from(items).filter(
+        item => item.getAttribute('data-filter-name') === target
+      );
+      
+      if (categoryItems.length <= itemsPerLoad) {
+        loadMoreBtn.style.display = 'none';
+        return;
+      }
+      
+      const shown = currentlyShown[target] || itemsPerLoad;
+      loadMoreBtn.style.display = shown >= categoryItems.length ? 'none' : 'flex';
+    };
 
     const handleTabSwitch = (target) => {
+      if (!currentlyShown[target]) {
+        currentlyShown[target] = itemsPerLoad;
+      }
+
+      const categoryItems = Array.from(items).filter(
+        item => item.getAttribute('data-filter-name') === target
+      );
+
       items.forEach((item) => {
         const itemCategory = item.getAttribute('data-filter-name');
         const shouldBeActive = itemCategory === target;
@@ -58,10 +88,16 @@ export function initTeam() {
             item.setAttribute('aria-hidden', 'true');
           }, transitionDelay);
         } else if (shouldBeActive) {
-          setTimeout(() => {
-            item.setAttribute('data-filter-status', 'active');
-            item.setAttribute('aria-hidden', 'false');
-          }, transitionDelay);
+          const itemIndex = categoryItems.indexOf(item);
+          if (itemIndex < currentlyShown[target]) {
+            setTimeout(() => {
+              item.setAttribute('data-filter-status', 'active');
+              item.setAttribute('aria-hidden', 'false');
+            }, transitionDelay);
+          } else {
+            item.setAttribute('data-filter-status', 'not-active');
+            item.setAttribute('aria-hidden', 'true');
+          }
         }
       });
 
@@ -70,7 +106,50 @@ export function initTeam() {
         button.setAttribute('data-filter-status', isActive ? 'active' : 'not-active');
         button.setAttribute('aria-pressed', isActive ? 'true' : 'false');
       });
+      
+      updateLoadMoreButton(target);
     };
+
+    if (loadMoreBtn) {
+      loadMoreBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        loadMoreBtn.blur();
+        loadMoreBtn.style.pointerEvents = 'none';
+        
+        const activeButton = group.querySelector('[data-filter-status="active"]');
+        if (!activeButton) return;
+        
+        const target = activeButton.getAttribute('data-filter-target');
+        const categoryItems = Array.from(items).filter(
+          item => item.getAttribute('data-filter-name') === target
+        );
+        
+        const currentShown = currentlyShown[target] || itemsPerLoad;
+        const nextBatch = categoryItems.slice(currentShown, currentShown + itemsPerLoad);
+        
+        nextBatch.forEach((item, index) => {
+          setTimeout(() => {
+            item.setAttribute('data-filter-status', 'active');
+            item.setAttribute('aria-hidden', 'false');
+          }, transitionDelay + (index * 50));
+        });
+        
+        currentlyShown[target] = currentShown + nextBatch.length;
+        
+        setTimeout(() => {
+          loadMoreBtn.style.pointerEvents = 'auto';
+        }, 500);
+        
+        if (currentlyShown[target] >= categoryItems.length) {
+          gsap.to(loadMoreBtn, {
+            opacity: 0,
+            y: -20,
+            duration: 0.4,
+            onComplete: () => loadMoreBtn.style.display = 'none'
+          });
+        }
+      });
+    }
 
     buttons.forEach((button) => {
       button.addEventListener('click', () => {
