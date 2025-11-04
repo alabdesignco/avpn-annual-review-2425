@@ -43,12 +43,7 @@ export function initTeam() {
   groups.forEach((group) => {
     const buttons = group.querySelectorAll('[data-filter-target]');
     const items = group.querySelectorAll('[data-filter-name]');
-    const loadMoreBtn = document.querySelector('[data-team-load-more]');
     const transitionDelay = 300;
-
-    if (loadMoreBtn) {
-      gsap.set(loadMoreBtn, { display: 'none' });
-    }
 
     const handleTabSwitch = (target) => {
       items.forEach((item) => {
