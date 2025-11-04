@@ -9,7 +9,8 @@ const smoothScroll = () => {
     smoothTouch: true,
     syncTouch: true,
     touchMultiplier: 1,
-    infinite: false
+    infinite: false,
+    prevent: (node) => node.classList.contains('regions_wrapper') || node.closest('.regions_wrapper')
   });
 
   lenis.on('scroll', ScrollTrigger.update);
