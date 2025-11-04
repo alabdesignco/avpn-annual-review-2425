@@ -21,6 +21,8 @@ export function initModalBasic() {
         if (modalGroup) {
           modalGroup.setAttribute('data-modal-group-status', 'active');
         }
+        
+        if (window.lenis) window.lenis.stop();
       });
     });
   
@@ -44,5 +46,7 @@ export function initModalBasic() {
        if (modalGroup) {
          modalGroup.setAttribute('data-modal-group-status', 'not-active');
        }
+       
+       if (window.lenis) window.lenis.start();
      }
   }
