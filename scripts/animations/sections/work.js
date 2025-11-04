@@ -8,33 +8,71 @@ export function initWork() {
 
     if (!workListItems.length || !button) return;
 
-    gsap.set([...workListItems, button], { 
-      opacity: 0, 
-      y: 30 
-    });
+    const isMobile = window.matchMedia('(max-width: 479px)').matches;
 
-    const tl = gsap.timeline({
-      scrollTrigger: {
-        trigger: section,
-        start: 'top 60%',
-        end: 'bottom 20%',
-        toggleActions: 'play none none reverse',
-      }
-    });
+    if (isMobile) {
+      workListItems.forEach((item, index) => {
+        const isOdd = index % 2 === 0;
+        gsap.set(item, { 
+          opacity: 0, 
+          x: isOdd ? 100 : -100
+        });
+      });
+      gsap.set(button, { opacity: 0, y: 30 });
 
-    tl.to(workListItems, { 
-      opacity: 1, 
-      y: 0, 
-      duration: 0.6, 
-      ease: 'power2.out',
-      stagger: 0.15
-    })
-    .to(button, { 
-      opacity: 1, 
-      y: 0, 
-      duration: 0.6, 
-      ease: 'power2.out' 
-    }, '-=0.3');
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: section,
+          start: 'top 60%',
+          end: 'bottom 20%',
+          toggleActions: 'play none none reverse',
+        }
+      });
+
+      workListItems.forEach((item, index) => {
+        tl.to(item, {
+          opacity: 1,
+          x: 0,
+          duration: 0.6,
+          ease: 'power2.out'
+        }, index * 0.15);
+      });
+
+      tl.to(button, { 
+        opacity: 1, 
+        y: 0, 
+        duration: 0.6, 
+        ease: 'power2.out' 
+      }, '-=0.3');
+    } else {
+      gsap.set([...workListItems, button], { 
+        opacity: 0, 
+        y: 30 
+      });
+
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: section,
+          start: 'top 60%',
+          end: 'bottom 20%',
+          toggleActions: 'play none none reverse',
+        }
+      });
+
+      tl.to(workListItems, { 
+        opacity: 1, 
+        y: 0, 
+        duration: 0.6, 
+        ease: 'power2.out',
+        stagger: 0.15
+      })
+      .to(button, { 
+        opacity: 1, 
+        y: 0, 
+        duration: 0.6, 
+        ease: 'power2.out' 
+      }, '-=0.3');
+    }
   };
 
   initEntranceAnimations();
