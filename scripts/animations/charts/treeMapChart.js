@@ -58,7 +58,7 @@ const initTreeMapChart = () => {
   };
 
       const isSmallScreen = isMobile || isTablet || isMobileLandscape;
-      const minLayoutValue = 130;
+      const minLayoutValue = 200;
       const layoutData = isSmallScreen
         ? {
             ...data,
@@ -140,11 +140,14 @@ const initTreeMapChart = () => {
 
     gsap.set(rect.node(), { scale: 1 });
 
+    const labelFontSize = isMobile ? "0.875rem" : "1rem";
+    const isSmallBox = isMobile && boxH < 50;
+    const labelY = isSmallBox ? boxH / 2 + 4 : 24;
     const label = g.append("text")
       .attr("x", 16)
-      .attr("y", 24)
+      .attr("y", labelY)
       .attr("fill", textColor)
-      .attr("font-size", "1rem")
+      .attr("font-size", labelFontSize)
       .attr("font-weight", 600)
       .text(d.data.name)
       .call(wrap, boxW - 32);
@@ -152,13 +155,16 @@ const initTreeMapChart = () => {
     if (label.node().getBBox().height > boxH * 0.6) label.style("display","none");
 
     let percentText = null;
-    if (boxH > 40 && boxW > 80) {
+    const minHeight = isMobile ? 30 : 40;
+    const minWidth = isMobile ? 60 : 80;
+    if (boxH > minHeight && boxW > minWidth) {
+      const percentFontSize = isMobile ? "0.875rem" : "1.25rem";
       percentText = g.append("text")
         .attr("x", boxW - 16)
         .attr("y", boxH - 12)
         .attr("text-anchor", "end")
         .attr("fill", textColor)
-        .attr("font-size", "1.25rem")
+        .attr("font-size", percentFontSize)
         .attr("opacity", 0)
         .text(`${Math.round(d.data.percent)}%`);
     }
