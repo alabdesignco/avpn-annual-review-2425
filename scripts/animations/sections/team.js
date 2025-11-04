@@ -51,6 +51,10 @@ export function initTeam() {
       : 10;
     let currentlyShown = {};
 
+    if (loadMoreBtn) {
+      gsap.set(loadMoreBtn, { opacity: 0, y: 20 });
+    }
+
     const updateLoadMoreButton = (target) => {
       if (!loadMoreBtn) return;
       
@@ -59,12 +63,25 @@ export function initTeam() {
       );
       
       if (categoryItems.length <= itemsPerLoad) {
-        loadMoreBtn.style.display = 'none';
+        gsap.set(loadMoreBtn, { display: 'none', opacity: 0 });
         return;
       }
       
       const shown = currentlyShown[target] || itemsPerLoad;
-      loadMoreBtn.style.display = shown >= categoryItems.length ? 'none' : 'flex';
+      const shouldShow = shown < categoryItems.length;
+      
+      if (shouldShow) {
+        gsap.set(loadMoreBtn, { display: 'flex' });
+        gsap.to(loadMoreBtn, {
+          opacity: 1,
+          y: 0,
+          duration: 0.6,
+          delay: transitionDelay / 1000 + 0.2,
+          ease: 'power2.out'
+        });
+      } else {
+        gsap.set(loadMoreBtn, { display: 'none', opacity: 0 });
+      }
     };
 
     const handleTabSwitch = (target) => {
