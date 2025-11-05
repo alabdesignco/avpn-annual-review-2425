@@ -22,7 +22,6 @@ class Grid {
   }
 
   intro() {
-    this.repositionImages()
     this.centerGrid()
     this.setupSplitText()
 
@@ -80,12 +79,6 @@ class Grid {
       duration: 1.2,
       ease: "power3.inOut"
     })
-    timeline.to(this.imageWrappers, {
-      x: (i, el) => this.getResponsiveValue(el, 'x') || 0,
-      y: (i, el) => this.getResponsiveValue(el, 'y') || 0,
-      duration: 0.96,
-      ease: "power3.inOut"
-    }, "-=1.2")
     timeline.to(this.navbar, {
       y: 0,
       autoAlpha: 1,
@@ -93,9 +86,19 @@ class Grid {
       ease: "power3.out"
     }, "-=0.4")
     timeline.call(() => {
+      this.animateToPositions()
       this.addEvents()
       this.observeImages()
       this.applyHideAfterIntro()
+    })
+  }
+
+  animateToPositions() {
+    gsap.to(this.imageWrappers, {
+      x: (i, el) => this.getResponsiveValue(el, 'x') || 0,
+      y: (i, el) => this.getResponsiveValue(el, 'y') || 0,
+      duration: 0.96,
+      ease: "power3.inOut"
     })
   }
 
@@ -233,16 +236,26 @@ class Grid {
   }
 
   applyHideAfterIntro() {
+    const isMobile = window.matchMedia('(max-width: 479px)').matches;
+    const isTablet = window.matchMedia('(min-width: 480px) and (max-width: 991px)').matches;
     const isDesktop = window.innerWidth >= 992;
     
     this.imageWrappers.forEach(w => {
       if (w.hasAttribute('data-hide-after')) {
-        gsap.to(w, {
-          scale: 0.5,
-          autoAlpha: 0,
-          duration: 0.6,
-          ease: "power3.out"
-        })
+        const breakpoint = w.getAttribute('data-hide-after');
+        const shouldHide = !breakpoint || 
+                          (breakpoint === 'mobile' && isMobile) ||
+                          (breakpoint === 'tablet' && isTablet) ||
+                          (breakpoint === 'desktop' && isDesktop);
+        
+        if (shouldHide) {
+          gsap.to(w, {
+            scale: 0.5,
+            autoAlpha: 0,
+            duration: 0.6,
+            ease: "power3.out"
+          })
+        }
       } else if (!isDesktop) {
         gsap.set(w, {
           scale: 1,
