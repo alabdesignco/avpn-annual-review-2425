@@ -220,80 +220,101 @@ export const initFalling2DMatterJS = () => {
     };
     setTimeout(spawnLoop, 100);
 
-    // Touch and mouse interaction effect
-    let interactionX = 0;
-    let interactionY = 0;
-    let isInteracting = false;
-    let isTouchDevice = 'ontouchstart' in window;
+    if (!isMobile) {
+      let interactionX = 0;
+      let interactionY = 0;
+      let isInteracting = false;
+      let isTouchDevice = 'ontouchstart' in window;
 
-    const updateInteractionPosition = (e) => {
-      const rect = container.getBoundingClientRect();
-      const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-      const clientY = e.touches ? e.touches[0].clientY : e.clientY;
-      interactionX = clientX - rect.left;
-      interactionY = clientY - rect.top;
-      isInteracting = true;
-    };
+      const updateInteractionPosition = (e) => {
+        const rect = container.getBoundingClientRect();
+        const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+        const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+        interactionX = clientX - rect.left;
+        interactionY = clientY - rect.top;
+        isInteracting = true;
+      };
 
-    const stopInteraction = () => {
-      isInteracting = false;
-    };
+      const stopInteraction = () => {
+        isInteracting = false;
+      };
 
-    // Mouse events
-    mousemoveHandler = (e) => {
-      if (!isTouchDevice) {
+      mousemoveHandler = (e) => {
+        if (!isTouchDevice) {
+          updateInteractionPosition(e);
+        }
+      };
+
+      mouseleaveHandler = () => {
+        if (!isTouchDevice) {
+          stopInteraction();
+        }
+      };
+
+      touchStartHandler = (e) => {
+        e.preventDefault();
         updateInteractionPosition(e);
-      }
-    };
+      };
 
-    mouseleaveHandler = () => {
-      if (!isTouchDevice) {
+      touchMoveHandler = (e) => {
+        e.preventDefault();
+        updateInteractionPosition(e);
+      };
+
+      touchEndHandler = (e) => {
+        e.preventDefault();
         stopInteraction();
-      }
-    };
+      };
 
-    // Touch events
-    const touchStartHandler = (e) => {
-      e.preventDefault();
-      updateInteractionPosition(e);
-    };
+      container.addEventListener("mousemove", mousemoveHandler);
+      container.addEventListener("mouseleave", mouseleaveHandler);
+      container.addEventListener("touchstart", touchStartHandler, { passive: false });
+      container.addEventListener("touchmove", touchMoveHandler, { passive: false });
+      container.addEventListener("touchend", touchEndHandler, { passive: false });
 
-    const touchMoveHandler = (e) => {
-      e.preventDefault();
-      updateInteractionPosition(e);
-    };
-
-    const touchEndHandler = (e) => {
-      e.preventDefault();
-      stopInteraction();
-    };
-
-    // Add event listeners
-    container.addEventListener("mousemove", mousemoveHandler);
-    container.addEventListener("mouseleave", mouseleaveHandler);
-    container.addEventListener("touchstart", touchStartHandler, { passive: false });
-    container.addEventListener("touchmove", touchMoveHandler, { passive: false });
-    container.addEventListener("touchend", touchEndHandler, { passive: false });
-
-    Events.on(engine, "afterUpdate", () => {
-      if (!isInteracting) return;
-      const bodies = Composite.allBodies(engine.world).filter((b) => !b.isStatic);
-      const interactionRadius = isTouchDevice ? 200 : 150; // Larger radius for touch
-      const forceMultiplier = isTouchDevice ? 0.15 : 0.2; // Gentler force for touch
+      Events.on(engine, "afterUpdate", () => {
+        if (!isInteracting) return;
+        const bodies = Composite.allBodies(engine.world).filter((b) => !b.isStatic);
+        const interactionRadius = isTouchDevice ? 200 : 150;
+        const forceMultiplier = isTouchDevice ? 0.15 : 0.2;
+        
+        bodies.forEach((body) => {
+          const dx = body.position.x - interactionX;
+          const dy = body.position.y - interactionY;
+          const distance = Math.sqrt(dx * dx + dy * dy);
+          if (distance < interactionRadius) {
+            const forceStrength = (1 - distance / interactionRadius) * forceMultiplier;
+            Matter.Body.setVelocity(body, {
+              x: body.velocity.x,
+              y: Math.min(body.velocity.y - forceStrength, -15),
+            });
+          }
+        });
+      });
+    } else {
+      let burstTimer = 0;
+      const burstInterval = 6000;
       
-      bodies.forEach((body) => {
-        const dx = body.position.x - interactionX;
-        const dy = body.position.y - interactionY;
-        const distance = Math.sqrt(dx * dx + dy * dy);
-        if (distance < interactionRadius) {
-          const forceStrength = (1 - distance / interactionRadius) * forceMultiplier;
-          Matter.Body.setVelocity(body, {
-            x: body.velocity.x,
-            y: Math.min(body.velocity.y - forceStrength, -15),
-          });
+      Events.on(engine, "afterUpdate", () => {
+        const currentTime = Date.now();
+        
+        if (currentTime - burstTimer > burstInterval) {
+          burstTimer = currentTime;
+          const bodies = Composite.allBodies(engine.world).filter((b) => !b.isStatic);
+          const numToLevitate = Math.floor(Math.random() * 5) + 2;
+          
+          for (let i = 0; i < numToLevitate; i++) {
+            const randomBody = bodies[Math.floor(Math.random() * bodies.length)];
+            if (randomBody) {
+              Matter.Body.setVelocity(randomBody, {
+                x: randomBody.velocity.x + (Math.random() - 0.5) * 2.5,
+                y: Math.min(randomBody.velocity.y - (5 + Math.random() * 6), -7)
+              });
+            }
+          }
         }
       });
-    });
+    }
 
     // Responsive resize — updates canvas and walls
     let resizeTimeout;
