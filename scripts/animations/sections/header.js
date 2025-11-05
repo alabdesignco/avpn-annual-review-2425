@@ -94,11 +94,27 @@ class Grid {
   }
 
   animateToPositions() {
-    gsap.to(this.imageWrappers, {
-      x: (i, el) => this.getResponsiveValue(el, 'x') || 0,
-      y: (i, el) => this.getResponsiveValue(el, 'y') || 0,
-      duration: 0.96,
-      ease: "power3.inOut"
+    const isMobile = window.matchMedia('(max-width: 479px)').matches;
+    const isTablet = window.matchMedia('(min-width: 480px) and (max-width: 991px)').matches;
+    const isDesktop = window.innerWidth >= 992;
+
+    this.imageWrappers.forEach(el => {
+      if (el.hasAttribute('data-hide-after')) {
+        const breakpoint = el.getAttribute('data-hide-after');
+        const shouldHide = !breakpoint || 
+                          (breakpoint === 'mobile' && isMobile) ||
+                          (breakpoint === 'tablet' && isTablet) ||
+                          (breakpoint === 'desktop' && isDesktop);
+        
+        if (shouldHide) return;
+      }
+
+      gsap.to(el, {
+        x: this.getResponsiveValue(el, 'x') || 0,
+        y: this.getResponsiveValue(el, 'y') || 0,
+        duration: 0.96,
+        ease: "power3.inOut"
+      })
     })
   }
 
