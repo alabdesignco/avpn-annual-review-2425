@@ -25,6 +25,7 @@ import { initImpactHighlights } from './animations/sections/impact-highlights.js
 import { initAccentShapes } from './utils/accentShapes.js';
 import { initSwiperSlider } from './utils/swiperInit.js';
 import { initSocialLinks } from './utils/socialLinks.js';
+import { initAnchorNav } from './utils/anchorNav.js';
 
 gsap.registerPlugin(ScrollTrigger, SplitText);
 
@@ -57,6 +58,7 @@ const initAllAnimations = () => {
   initAccentShapes();
   initSwiperSlider();
   initSocialLinks();
+  initAnchorNav();
 };
 
 document.addEventListener('DOMContentLoaded', async () => {

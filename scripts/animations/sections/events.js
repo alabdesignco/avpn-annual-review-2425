@@ -25,8 +25,12 @@ export const initEventsSection = () => {
 
         if (!introParagraph || !eventItems.length || !button) return;
 
-        gsap.set([introParagraph, ...eventItems, button], { 
+        gsap.set([introParagraph, button], { 
           opacity: 0, 
+          y: 30 
+        });
+        
+        gsap.set(eventItems, { 
           y: 30 
         });
 
@@ -46,7 +50,6 @@ export const initEventsSection = () => {
           ease: 'power3.out' 
         })
         .to(eventItems, { 
-          opacity: 1, 
           y: 0, 
           duration: 0.6, 
           ease: 'power2.out',
@@ -80,6 +83,12 @@ export const initEventsSection = () => {
 
         function startProgressBar(index) {
           if (progressBarTween) progressBarTween.kill();
+          
+          contentItems.forEach((item) => {
+            const itemBar = item.querySelector('[data-tabs="item-progress"]');
+            if (itemBar) gsap.set(itemBar, { scaleX: 0 });
+          });
+          
           const bar = contentItems[index].querySelector('[data-tabs="item-progress"]');
           if (!bar) return;
           
@@ -167,6 +176,13 @@ export const initEventsSection = () => {
             let originalVisual = null;
             
             item.addEventListener("mouseenter", () => {
+              contentItems.forEach((otherItem) => {
+                if (otherItem !== item) {
+                  otherItem.classList.remove("is-active");
+                }
+              });
+              item.classList.add("is-active");
+              
               const visual = visualItems[i];
               if (visual && visual !== activeVisual) {
                 originalVisual = activeVisual;
@@ -185,10 +201,17 @@ export const initEventsSection = () => {
                 );
               }
               
-              if (item === activeContent && progressBarTween && !isModalOpen) progressBarTween.pause();
+              if (progressBarTween && !isModalOpen) progressBarTween.pause();
             });
             
             item.addEventListener("mouseleave", () => {
+              contentItems.forEach((contentItem) => {
+                contentItem.classList.remove("is-active");
+              });
+              if (activeContent) {
+                activeContent.classList.add("is-active");
+              }
+              
               if (hoveredVisual && originalVisual && hoveredVisual !== activeVisual) {
                 gsap.to(hoveredVisual, {
                   autoAlpha: 0,
@@ -206,7 +229,7 @@ export const initEventsSection = () => {
                 originalVisual = null;
               }
               
-              if (item === activeContent && progressBarTween && !isModalOpen) progressBarTween.resume();
+              if (progressBarTween && !isModalOpen) progressBarTween.resume();
             });
           }
         });
