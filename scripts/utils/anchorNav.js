@@ -1,4 +1,19 @@
 export function initAnchorNav() {
+  const dotsNav = document.querySelector('.dots-nav');
+  if (!dotsNav) return;
+
+  gsap.set(dotsNav, { x: 100, opacity: 0, pointerEvents: 'none' });
+
+  const forewordSection = document.querySelector('[data-section="foreword"]');
+  if (forewordSection) {
+    ScrollTrigger.create({
+      trigger: forewordSection,
+      start: 'bottom top',
+      onEnter: () => gsap.to(dotsNav, { x: 0, opacity: 1, pointerEvents: 'auto', duration: 0.6, ease: 'power2.out' }),
+      onLeaveBack: () => gsap.to(dotsNav, { x: 100, opacity: 0, pointerEvents: 'none', duration: 0.4, ease: 'power2.in' })
+    });
+  }
+
   const links = document.querySelectorAll('.dots-nav [data-anchor-target]');
   
   links.forEach(link => {
@@ -21,8 +36,9 @@ export function initAnchorNav() {
     }, true);
 
     const target = link.getAttribute('data-anchor-target');
+    const customLabel = link.getAttribute('data-label');
     const id = target.startsWith('#') ? target.slice(1) : target;
-    const label = id.charAt(0).toUpperCase() + id.slice(1).replace(/-/g, ' ');
+    const label = customLabel || id.charAt(0).toUpperCase() + id.slice(1).replace(/-/g, ' ');
     
     const tooltip = document.createElement('span');
     tooltip.className = 'dot-tooltip';
@@ -74,31 +90,5 @@ export function initAnchorNav() {
       }
     }
   });
-
-  const style = document.createElement('style');
-  style.textContent = `
-    .dot-tooltip {
-      position: absolute;
-      right: 100%;
-      top: 50%;
-      transform: translateY(-50%);
-      margin-right: 1rem;
-      background: rgba(0, 0, 0, 0.9);
-      color: white;
-      padding: 0.5rem 0.75rem;
-      border-radius: 0.25rem;
-      font-size: 0.875rem;
-      white-space: nowrap;
-      pointer-events: none;
-      opacity: 0;
-      transition: opacity 0.2s ease;
-      z-index: 1000;
-    }
-    
-    .dots-nav [data-anchor-target]:hover .dot-tooltip {
-      opacity: 1;
-    }
-  `;
-  document.head.appendChild(style);
 }
 
