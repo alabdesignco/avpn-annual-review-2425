@@ -43,7 +43,7 @@ const initMembersTabs = () => {
       gsap.fromTo(
         tabMain.parentNode,
         { scale: 0.8, opacity: 0 },
-        { scale: 1, opacity: 1, duration: 1, ease: "back.out(1.4)" }
+        { scale: 1, opacity: 1, duration: 0.6, ease: "back.out(1.4)" }
       );
     }
   };
