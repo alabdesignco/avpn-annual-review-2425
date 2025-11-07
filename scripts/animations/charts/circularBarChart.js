@@ -42,6 +42,7 @@ const initCircularBarChart = () => {
 
 
   let hasAnimated = false;
+  let hasInitialized = false;
 
   const drawChart = (shouldAnimate = false) => {
     const containerEl = document.querySelector(".supported-chart");
@@ -81,7 +82,14 @@ const initCircularBarChart = () => {
       .enter()
       .append("path")
       .attr("fill", d => colorMap[d.data.cause] || "#ccc")
-      .attr("d", d3.arc().innerRadius(innerRadius).outerRadius(shouldAnimate ? innerRadius : innerRadius + (d => d.data.percent * size * outerRadiusMultiplier)))
+      .attr("d", d => {
+        const outerRadius = shouldAnimate ? innerRadius : innerRadius + (d.data.percent * size * outerRadiusMultiplier);
+        return d3.arc()
+          .innerRadius(innerRadius)
+          .outerRadius(outerRadius)
+          .cornerRadius(10)
+          .padAngle(0.035)(d);
+      })
       .attr("stroke", "#fff")
       .attr("stroke-width", 2)
       .style("cursor", "pointer");
@@ -273,14 +281,15 @@ const initCircularBarChart = () => {
     });
   };
 
-  drawChart();
-
   gsap.timeline({
     scrollTrigger: {
       trigger: ".supported-chart",
-      start: "top 80%",
+      start: "top center",
       once: true,
-      onEnter: () => drawChart(true)
+      onEnter: () => {
+        hasInitialized = true;
+        drawChart(true);
+      }
     }
   });
 
@@ -293,7 +302,10 @@ const initCircularBarChart = () => {
       isDesktop: "(min-width:992px)"
     },
     () => {
-      const onResize = () => drawChart(hasAnimated);
+      const onResize = () => {
+        if (!hasInitialized) return;
+        drawChart(false);
+      };
       window.addEventListener("resize", onResize);
       return () => {
         window.removeEventListener("resize", onResize);
