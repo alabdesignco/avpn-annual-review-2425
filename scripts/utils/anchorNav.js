@@ -20,7 +20,7 @@ export function initAnchorNav() {
     if (membersSection) {
       ScrollTrigger.create({
         trigger: membersSection,
-        start: 'bottom top',
+        start: 'top center',
         onEnter: () => {
           if (isMobile) {
             gsap.to(dotsNav, { y: 0, opacity: 1, pointerEvents: 'auto', duration: 0.6, ease: 'power2.out' });
