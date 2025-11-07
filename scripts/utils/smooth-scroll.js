@@ -7,7 +7,7 @@ const smoothScroll = () => {
     allowNestedScroll: true,
     smoothWheel: true,
     wheelMultiplier: 0.9,
-    smoothTouch: true,
+    smoothTouch: false,
     syncTouch: true,
     touchMultiplier: 1,
     infinite: false,

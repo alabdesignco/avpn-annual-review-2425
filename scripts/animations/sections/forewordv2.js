@@ -84,6 +84,63 @@ export const initHorizontalScrolling = () => {
               });
             }
             
+            const shape1 = wrap.querySelector('.shape.shape--rounded.is-foreword-1');
+            const shape2 = wrap.querySelector('.shape.shape--circle.is-foreword-2');
+            const shape3 = wrap.querySelector('.shape.shape--leaf.is-foreword-3');
+            const shape4 = wrap.querySelector('.shape.shape--quarter.is-foreword-4');
+            
+            if (shape1) {
+              gsap.to(shape1, {
+                scale: 1,
+                duration: 0.6,
+                ease: "back.out(1.7)",
+                scrollTrigger: {
+                  trigger: richTextElements[0] || wrap,
+                  start: "top 60%",
+                  toggleActions: "play none none none"
+                }
+              });
+            }
+            
+            if (shape2) {
+              gsap.to(shape2, {
+                scale: 1,
+                duration: 0.6,
+                ease: "back.out(1.7)",
+                scrollTrigger: {
+                  trigger: richTextElements[Math.floor(richTextElements.length * 0.33)] || wrap,
+                  start: "top 60%",
+                  toggleActions: "play none none none"
+                }
+              });
+            }
+            
+            if (shape3) {
+              gsap.to(shape3, {
+                scale: 1,
+                duration: 0.6,
+                ease: "back.out(1.7)",
+                scrollTrigger: {
+                  trigger: richTextElements[Math.floor(richTextElements.length * 0.66)] || wrap,
+                  start: "top 60%",
+                  toggleActions: "play none none none"
+                }
+              });
+            }
+            
+            if (shape4) {
+              gsap.to(shape4, {
+                scale: 1,
+                duration: 0.6,
+                ease: "back.out(1.7)",
+                scrollTrigger: {
+                  trigger: richTextElements[richTextElements.length - 1] || wrap,
+                  start: "top 60%",
+                  toggleActions: "play none none none"
+                }
+              });
+            }
+            
             return;
           }
 
