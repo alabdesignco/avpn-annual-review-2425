@@ -49,14 +49,15 @@ const initCircularBarChart = () => {
     const containerWidth = containerEl.offsetWidth;
     const containerHeight = containerEl.offsetHeight;
     
+    d3.select(".supported-chart svg").remove();
+
+    const isSmallScreen = window.matchMedia("(max-width: 479px)").matches
+    const isMobileOrTablet = window.matchMedia("(max-width: 991px)").matches
+    
     const size = Math.min(containerWidth, containerHeight);
     const width = size;
     const height = size;
-    const innerRadius = size * 0.15;
-
-    d3.select(".supported-chart svg").remove();
-
-    const isSmallScreen = window.matchMedia("(max-width: 991px)").matches
+    const innerRadius = size * (isSmallScreen ? 0.20 : 0.15);
 
     const svg = d3.select(".supported-chart")
       .append("svg")
@@ -65,21 +66,22 @@ const initCircularBarChart = () => {
       .style("width", "100%")
       .style("height", "100%")
       .append("g")
-      .attr("transform", `translate(${width / 2},${height / 2 - (isSmallScreen ? 0 : 80)})`);
+      .attr("transform", `translate(${width / 2},${height / 2 - (isMobileOrTablet ? 0 : 80)})`);
 
     const pie = d3.pie().sort(null).value(1);
+    const outerRadiusMultiplier = isSmallScreen ? 0.0055 : 0.0048;
     const arc = d3.arc()
       .innerRadius(innerRadius)
-      .outerRadius(d => innerRadius + (d.data.percent * size * 0.0048))
+      .outerRadius(d => innerRadius + (d.data.percent * size * outerRadiusMultiplier))
       .cornerRadius(10)
       .padAngle(0.035);
-
+    
     const arcs = svg.selectAll("path")
       .data(pie(data))
       .enter()
       .append("path")
       .attr("fill", d => colorMap[d.data.cause] || "#ccc")
-      .attr("d", d3.arc().innerRadius(innerRadius).outerRadius(shouldAnimate ? innerRadius : innerRadius + (d => d.data.percent * size * 0.0048)))
+      .attr("d", d3.arc().innerRadius(innerRadius).outerRadius(shouldAnimate ? innerRadius : innerRadius + (d => d.data.percent * size * outerRadiusMultiplier)))
       .attr("stroke", "#fff")
       .attr("stroke-width", 2)
       .style("cursor", "pointer");
@@ -91,7 +93,7 @@ const initCircularBarChart = () => {
         .duration(800)
         .ease(d3.easeCubicOut)
         .attrTween("d", function(d) {
-          const i = d3.interpolate(innerRadius, innerRadius + (d.data.percent * size * 0.0048));
+          const i = d3.interpolate(innerRadius, innerRadius + (d.data.percent * size * outerRadiusMultiplier));
           return function(t) {
             return d3.arc()
               .innerRadius(innerRadius)
@@ -110,7 +112,7 @@ const initCircularBarChart = () => {
       }
       
       const metrics = document.createElement("canvas").getContext("2d");
-      metrics.font = `700 ${size * 0.020}px sans-serif`;
+      metrics.font = `700 ${size * (isSmallScreen ? 0.035 : 0.020)}px sans-serif`;
       
       let midPoint = Math.ceil(words.length / 2);
       let line1 = words.slice(0, midPoint).join(" ");
@@ -132,16 +134,16 @@ const initCircularBarChart = () => {
     const centerCause = centerGroup.append("text")
       .attr("class", "center-cause")
       .attr("opacity", 0)
-      .style("font-size", `${size * 0.020}px`)
+      .style("font-size", `${size * (isSmallScreen ? 0.035 : 0.020)}px`)
       .style("font-weight", "700")
       .style("fill", "var(--color-scheme-1--text)")
       .style("text-anchor", "middle");
 
     centerGroup.append("text")
       .attr("class", "center-percent")
-      .attr("y", size * 0.025)
+      .attr("y", size * (isSmallScreen ? 0.050 : 0.025))
       .attr("opacity", 0)
-      .style("font-size", `${size * 0.018}px`)
+      .style("font-size", `${size * (isSmallScreen ? 0.038 : 0.018)}px`)
       .style("font-weight", "700")
       .style("fill", "var(--_primitives---brand--primary--navy-medium)")
       .style("text-anchor", "middle");
@@ -150,7 +152,7 @@ const initCircularBarChart = () => {
 
     const showCenter = (data) => {
       const lines = wrapText(data.data.cause, innerRadius * 1.8);
-      const lineHeight = size * 0.02;
+      const lineHeight = size * (isSmallScreen ? 0.040 : 0.02);
       const bottomMargin = lines.length > 1 ? size * 0.008 : 0;
       const startY = -(lines.length - 1) * lineHeight / 2 - size * 0.01 - bottomMargin;
       centerCause.selectAll("*").remove();
@@ -227,7 +229,7 @@ const initCircularBarChart = () => {
 
           const d = data[index];
           const lines = wrapText(d.cause, innerRadius * 1.8);
-          const lineHeight = size * 0.02;
+          const lineHeight = size * (isSmallScreen ? 0.040 : 0.02);
           const bottomMargin = lines.length > 1 ? size * 0.008 : 0;
           const startY = -(lines.length - 1) * lineHeight / 2 - size * 0.01 - bottomMargin;
 
@@ -248,7 +250,7 @@ const initCircularBarChart = () => {
 
           const d = data[index];
           const lines = wrapText(d.cause, innerRadius * 1.8);
-          const lineHeight = size * 0.02;
+          const lineHeight = size * (isSmallScreen ? 0.040 : 0.02);
           const bottomMargin = lines.length > 1 ? size * 0.008 : 0;
           const startY = -(lines.length - 1) * lineHeight / 2 - size * 0.01 - bottomMargin;
 
