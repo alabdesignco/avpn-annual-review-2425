@@ -42,7 +42,7 @@ export const initHorizontalScrolling = () => {
           
           // Set initial scale for shapes
           const shapes = wrap.querySelectorAll('.shape.is-foreword-1, .shape.is-foreword-2, .shape.is-foreword-3, .shape.is-foreword-4');
-          gsap.set(shapes, { scale: 0, rotation: 0 });
+          gsap.set(shapes, { scale: 0 });
           
           const richTextElements = wrap.querySelectorAll("#foreword > p");
           if (richTextElements.length) {
