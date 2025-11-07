@@ -13,7 +13,6 @@ import { initCardsScramble } from './animations/cardsScramble.js';
 import { initWork } from './animations/sections/work.js';
 import { initPartners } from './animations/sections/partners.js';
 import { initTeam } from './animations/sections/team.js';
-import { initGlobalParallax } from './utils/globalParallax.js';
 import { initSectionBgTransition } from './utils/sectionBgTransition.js';
 import { initFalling2DMatterJS } from './animations/sections/footer.js';
 import { initImageBreakSection } from './animations/sections/image-break.js';
@@ -47,7 +46,6 @@ const initAllAnimations = () => {
   initWork();
   initPartners();
   initTeam();
-  initGlobalParallax();
   initSectionBgTransition();
   initFalling2DMatterJS();
   initImageBreakSection();

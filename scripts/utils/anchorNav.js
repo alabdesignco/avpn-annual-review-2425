@@ -16,10 +16,10 @@ export function initAnchorNav() {
       gsap.set(dotsNav, { x: 100, opacity: 0, pointerEvents: 'none' });
     }
 
-    const forewordSection = document.querySelector('[data-section="foreword"]');
-    if (forewordSection) {
+    const membersSection = document.querySelector('[data-section="members"]');
+    if (membersSection) {
       ScrollTrigger.create({
-        trigger: forewordSection,
+        trigger: membersSection,
         start: 'bottom top',
         onEnter: () => {
           if (isMobile) {
