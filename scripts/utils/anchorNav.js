@@ -2,17 +2,46 @@ export function initAnchorNav() {
   const dotsNav = document.querySelector('.dots-nav');
   if (!dotsNav) return;
 
-  gsap.set(dotsNav, { x: 100, opacity: 0, pointerEvents: 'none' });
+  const mm = gsap.matchMedia();
 
-  const forewordSection = document.querySelector('[data-section="foreword"]');
-  if (forewordSection) {
-    ScrollTrigger.create({
-      trigger: forewordSection,
-      start: 'bottom top',
-      onEnter: () => gsap.to(dotsNav, { x: 0, opacity: 1, pointerEvents: 'auto', duration: 0.6, ease: 'power2.out' }),
-      onLeaveBack: () => gsap.to(dotsNav, { x: 100, opacity: 0, pointerEvents: 'none', duration: 0.4, ease: 'power2.in' })
-    });
-  }
+  mm.add({
+    isMobile: "(max-width: 767px)",
+    isDesktop: "(min-width: 768px)"
+  }, (context) => {
+    const { isMobile } = context.conditions;
+
+    if (isMobile) {
+      gsap.set(dotsNav, { y: 100, opacity: 0, pointerEvents: 'none' });
+    } else {
+      gsap.set(dotsNav, { x: 100, opacity: 0, pointerEvents: 'none' });
+    }
+
+    const forewordSection = document.querySelector('[data-section="foreword"]');
+    if (forewordSection) {
+      ScrollTrigger.create({
+        trigger: forewordSection,
+        start: 'bottom top',
+        onEnter: () => {
+          if (isMobile) {
+            gsap.to(dotsNav, { y: 0, opacity: 1, pointerEvents: 'auto', duration: 0.6, ease: 'power2.out' });
+          } else {
+            gsap.to(dotsNav, { x: 0, opacity: 1, pointerEvents: 'auto', duration: 0.6, ease: 'power2.out' });
+          }
+        },
+        onLeaveBack: () => {
+          if (isMobile) {
+            gsap.to(dotsNav, { y: 100, opacity: 0, pointerEvents: 'none', duration: 0.4, ease: 'power2.in' });
+          } else {
+            gsap.to(dotsNav, { x: 100, opacity: 0, pointerEvents: 'none', duration: 0.4, ease: 'power2.in' });
+          }
+        }
+      });
+    }
+
+    return () => {
+      gsap.set(dotsNav, { clearProps: 'x,y,opacity,pointerEvents' });
+    };
+  });
 
   const links = document.querySelectorAll('.dots-nav [data-anchor-target]');
   
