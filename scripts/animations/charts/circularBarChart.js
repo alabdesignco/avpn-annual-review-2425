@@ -281,17 +281,21 @@ const initCircularBarChart = () => {
     });
   };
 
-  gsap.timeline({
-    scrollTrigger: {
-      trigger: ".supported-chart",
-      start: "top center",
-      once: true,
-      onEnter: () => {
-        hasInitialized = true;
-        drawChart(true);
-      }
-    }
-  });
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting && !hasInitialized) {
+          hasInitialized = true;
+          drawChart(true);
+          observer.disconnect();
+        }
+      });
+    },
+    { threshold: 0.2 }
+  );
+
+  const chartEl = document.querySelector(".supported-chart");
+  if (chartEl) observer.observe(chartEl);
 
   const mm = gsap.matchMedia();
   mm.add(
