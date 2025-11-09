@@ -19,23 +19,26 @@ const initTreeMapChart = () => {
   const container = document.querySelector(".beneficiary-treemap");
   if (!container) return;
 
+  let resizeTimeout;
   const mm = gsap.matchMedia();
 
-  mm.add(
-    {
-      isMobile: "(max-width:479px)",
-      isMobileLandscape: "(max-width:767px)",
-      isTablet: "(max-width:991px)",
-      isDesktop: "(min-width:992px)"
-    },
-    (context) => {
-      const { isMobile, isMobileLandscape, isTablet } = context.conditions;
+  const renderChart = () => {
+    clearTimeout(resizeTimeout);
+    
+    resizeTimeout = setTimeout(() => {
+      const isMobile = window.matchMedia("(max-width:479px)").matches;
+      const isMobileLandscape = window.matchMedia("(max-width:767px)").matches;
+      const isTablet = window.matchMedia("(max-width:1279px)").matches;
+
+      ScrollTrigger.getAll().forEach(st => {
+        if (st.trigger === container) st.kill();
+      });
+
+      container.innerHTML = "";
 
       const width = container.clientWidth || 1000;
       const height = container.clientHeight || 600;
       const gap = 8;
-
-      container.innerHTML = "";
 
       const svg = d3.select(container)
         .append("svg")
@@ -73,7 +76,9 @@ const initTreeMapChart = () => {
         .sum(d => d.layoutValue)
         .sort((a, b) => b.layoutValue - a.layoutValue);
 
-      const tile = (isMobile || isTablet) ? d3.treemapSlice : d3.treemapBinary;
+      const tile = (isMobile || isMobileLandscape) ? d3.treemapSlice : 
+                   isTablet ? d3.treemapSquarify : 
+                   d3.treemapBinary;
 
       d3.treemap()
         .tile(tile)
@@ -296,6 +301,19 @@ const initTreeMapChart = () => {
           toggleActions: "play none none none"
         }
       });
+    }, 150);
+  };
+
+  mm.add(
+    {
+      isMobile: "(max-width:479px)",
+      isMobileLandscape: "(max-width:767px)",
+      isTablet: "(max-width:1279px)",
+      isDesktop: "(min-width:1280px)"
+    },
+    (context) => {
+      renderChart();
+      window.addEventListener("resize", renderChart);
     }
   );
 };
