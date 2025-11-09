@@ -8,7 +8,7 @@ const initSectionTitleScroll = () => {
     
     if (!accentShape1 || !accentShape2 || !titleText) return;
     
-    const split = new SplitText(titleText, { type: "words", mask:'words' });
+    const split = new SplitText(titleText, { type: "lines, words", mask:'lines', linesClass: 'section-title_line' });
     
     gsap.set([accentShape1, accentShape2], { 
       scale: 0,
