@@ -1,17 +1,12 @@
 const smoothScroll = () => {
   const lenis = new Lenis({
+    autoRaf: false,
     duration: 1.5,
     easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-    orientation: 'vertical',
-    gestureOrientation: 'vertical',
-    allowNestedScroll: true,
     smoothWheel: true,
     wheelMultiplier: 0.9,
-    smoothTouch: false,
     syncTouch: true,
     touchMultiplier: 1,
-    infinite: false,
-    // prevent: (node) => node.classList?.contains('regions-content_track'),
   });
 
   lenis.on('scroll', ScrollTrigger.update);
